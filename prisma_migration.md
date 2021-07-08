@@ -8,7 +8,7 @@
 - Run `npm i`
 
 3. Configure environment variables
-- Create a `.env` file based on the `.env.sample` file, substituting the password with the password you defined
+- Create a `.env` file based on the `.env.sample` file, substituting the password with the password you defined for the database
 
 4. Run prisma migrate
 - Run `npx prisma migrate dev --name "init"`
