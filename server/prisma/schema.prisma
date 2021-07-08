@@ -11,7 +11,60 @@ generator client {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  username String @unique
+  id       Int     @id @default(autoincrement())
+  username String  @unique
   password String
+  values   Value[]
+  goals    Goal[]
+}
+
+model Value {
+  id           Int     @id @default(autoincrement())
+  // Link a user, joining via the userId in the Value model,
+  // and the id in the User model
+  User         User    @relation(fields: [userId], references: [id])
+  userId       Int
+  name         String
+  description  String?
+  // May be a better datatype for this
+  importanance Int?
+  goals        Goal[]
+}
+
+// Implicit many to many between Value and Goal
+// Prisma automatically creates a joining table
+
+model Goal {
+  id          Int         @id @default(autoincrement())
+  name        String
+  description String?
+  // Link a user, joining via the userId in the Goal model,
+  // and the id in the User model
+  User        User        @relation(fields: [userId], references: [id])
+  userId      Int
+  behaviours  Behaviour[]
+  values      Value[]
+  valueId     Int?
+}
+
+model Behaviour {
+  id              Int              @id @default(autoincrement())
+  Goal            Goal             @relation(fields: [goalId], references: [id])
+  goalId          Int
+  name            String
+  description     String?
+  // This field will be however we store the sheduling
+  // e.g. Stringified JSON object
+  shedule         String
+  // May be a better datatype for this
+  difficulty      Int?
+  behaviourEvents BehaviourEvent[]
+}
+
+model BehaviourEvent {
+  id          Int       @id @default(autoincrement())
+  Behaviour   Behaviour @relation(fields: [behaviourId], references: [id])
+  behaviourId Int
+  comment     String?
+  timeStamp   DateTime  @default(now())
 }
