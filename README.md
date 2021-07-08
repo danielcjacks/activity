@@ -1,3 +1,3 @@
 # ACTIVITY
 
-- Acceptance and commitment therapy tool for you
+- Acceptance and Commitment Therapy Informed Visual Intervention Tool for You
