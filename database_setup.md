@@ -7,7 +7,7 @@
 - Keep everything else as default
 - Make sure you remember your the password you set
 
-1. Start PostgreSQL server
+2. Start PostgreSQL server
 - Find the PostgresSQL data folder
   - Mine was `C:\Program Files\PostgreSQL\13\data`
 - Run `postgres -D "<path>"
