@@ -11,6 +11,7 @@
 - Create a `.env` file based on the `.env.sample` file, substituting the password with the password you defined for the database
 
 4. Run prisma migrate
+- Move into the `server` folder
 - Run `npx prisma migrate dev --name "init"`
 
 5. Check migration succeeded
