@@ -1,0 +1,8 @@
+{
+    "name": "activity",
+    "version": "1.0.0",
+    "scripts": {
+        "start-server": "cd ./server && npm run start",
+        "start-client": "cd ./client && npm run start"
+    }
+}
