@@ -1,6 +1,4 @@
 const jwt = require('jsonwebtoken')
-import { Request, Response, NextFunction } from 'express'
-import { PrismaClient } from '@prisma/client'
 
 const JWT_SECRET = process.env.JWT_SECRET
 
