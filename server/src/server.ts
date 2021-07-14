@@ -23,7 +23,7 @@ app.get('/users', async (req, res) => {
 })
 
 app.post('/login', login)
-app.post('/users', signup)
+app.post('/signup', signup)
 
 app.use(authorize_token)
 
