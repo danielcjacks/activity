@@ -27,6 +27,22 @@ app.post('/users', async (req, res) => {
   }
 });
 
+app.post('/prisma/:table_name/:method', async (req, res) => {
+  try {
+    if (typeof req.body !== 'object' || Array.isArray(req.body)) {
+      throw new Error('Body must be an object')
+    }
+
+    // @ts-ignore
+    const result = await prisma[req.params.table_name][req.params.method](req.body)
+
+    res.status(201).json(result);
+  } catch (error) {
+    res.status(400).send(error.toString());
+  }
+
+})
+
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
