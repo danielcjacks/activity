@@ -20,7 +20,7 @@ export const routerStore: RouterStore = makeMobxLocation({ hashHistory: true }) 
 // export const router_store = makeMobxLocation({ arrayFormat: 'index' }) // will index array params in the url, refer to https://www.npmjs.com/package/query-string#arrayformat
 
 export const getUrlLocationPath = (): string[] => {
-    const matchResults = routerStore.hash.match(/(?:^|#*\/*)(.*?)(?:\?|$)/) // gives just the path part of the has, not the #/ or the query params
+    const matchResults = routerStore.hash.match(/(?:(^|#*\/*)*)(.*?)(?:\?|$)/) // gives just the path part of the has, not the #/ or the query params
     if (!matchResults) {
         return []
     }
