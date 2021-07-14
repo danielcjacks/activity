@@ -1,7 +1,7 @@
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 import { prisma } from '../server'
-import { generate_token } from './tokens'
+import { generate_token, extract_token } from './tokens'
 
 const login = async (req: Request, res: Response) => {
   const { username, password } = req.body
@@ -33,4 +33,26 @@ const signup = async (req: Request, res: Response) => {
   res.status(201).json(token)
 }
 
-export { login, signup }
+const authorize_token = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const auth_header = req.headers['authorization']
+  const token = auth_header && auth_header.split(' ')[1]
+  // Unauthorized response
+  if (!token) return res.status(401)
+  try {
+    const { username } = await extract_token(token)
+    // Save username to request,
+    // so we can access in other routes
+    // @ts-ignore
+    req.username = username
+    next()
+  } catch (e) {
+    // If invalid token
+    res.status(401).json()
+  }
+}
+
+export { login, signup, authorize_token }
