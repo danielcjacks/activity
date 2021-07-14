@@ -7,4 +7,8 @@ const generate_token = (username: string) => {
   return jwt.sign({ username }, JWT_SECRET)
 }
 
-export { generate_token }
+const extract_token = async (token: string) => {
+  return await jwt.verify(token, JWT_SECRET)
+}
+
+export { generate_token, extract_token }
