@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import { PrismaClient } from '@prisma/client'
 import dotenv from 'dotenv'
-import { login, signup } from './auth/auth_controllers'
+import { login, signup, authorize_token } from './auth/auth_controllers'
 
 dotenv.config()
 
@@ -24,6 +24,13 @@ app.get('/users', async (req, res) => {
 
 app.post('/login', login)
 app.post('/users', signup)
+
+app.use(authorize_token)
+
+app.get('/test', (req, res) => {
+  // @ts-ignore
+  res.send(req.username)
+})
 
 app.post('/prisma/:table_name/:method', async (req, res) => {
   try {
