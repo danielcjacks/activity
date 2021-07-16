@@ -27,9 +27,9 @@ app.post('/signup', signup)
 
 app.use(authorize_token)
 
-app.get('/test', (req, res) => {
+app.get('/login', (req, res) => {
   // @ts-ignore
-  res.send(req.username)
+  res.status(200).json()
 })
 
 app.post('/prisma/:table_name/:method', async (req, res) => {
