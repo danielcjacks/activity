@@ -1,5 +1,5 @@
 import { autorun, makeAutoObservable, toJS } from 'mobx'
-import { routerStore } from './router_store'
+import { router_store } from './router_store'
 
 
 export class SharedStore {
@@ -24,7 +24,7 @@ export class SharedStore {
         })
 
         autorun(() => {
-            const hash = routerStore.hash
+            const hash = router_store.hash
             if (!hash) {
                 window.location.hash = `#${window.location.pathname}`
                 window.location.pathname = ''
@@ -71,5 +71,5 @@ export class SharedStore {
     }
 }
 
-export const sharedStore = new SharedStore();
-(window as any).sharedStore = sharedStore;
+export const shared_store = new SharedStore();
+(window as any).shared_store = shared_store;
