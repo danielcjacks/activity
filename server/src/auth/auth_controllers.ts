@@ -53,7 +53,7 @@ const authorize_token = async (
     next()
   } catch (e) {
     // If invalid token
-    res.status(401).json()
+    res.status(401).json({ message: 'Invalid token' })
   }
 }
 
