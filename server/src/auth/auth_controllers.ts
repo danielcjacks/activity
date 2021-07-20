@@ -43,7 +43,7 @@ const authorize_token = async (
   const auth_header = req.headers['authorization']
   const token = auth_header && auth_header.split(' ')[1]
   // Unauthorized response
-  if (!token) return res.status(401)
+  if (!token) return res.status(401).json({ message: 'Invalid token' })
   try {
     const { username } = await extract_token(token)
     // Save username to request,
