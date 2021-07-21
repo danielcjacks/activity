@@ -20,7 +20,6 @@
     "web-vitals": "^1.0.1"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.15",
     "@types/lodash": "^4.14.171",
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
@@ -34,8 +33,7 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
     ]
   },
   "browserslist": {
