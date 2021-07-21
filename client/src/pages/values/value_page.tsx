@@ -10,7 +10,7 @@ import { value_store } from './value_store'
 
 const get_field_props = (path: (string | number)[]) => {
     return {
-        value: get(value_store.value, path),
+        value: get(value_store.value, path) ?? '',
         onChange: action(e => set(value_store.value, path, e.target.value))
     }
 }
@@ -22,7 +22,7 @@ export const ValuePage = observer(() => {
         <SaveButton
             can_save={true}
             is_loading={false}
-            on_save={() => {}}
+            on_save={value_store.save_changes}
         />
     </>
 })
