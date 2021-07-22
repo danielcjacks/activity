@@ -43,7 +43,9 @@ app.post('/prisma/:table_name/:method', async (req, res) => {
     res.status(201).json(result)
   } catch (error) {
     res.status(400).json({
-      error: error.toString()
+      error: {
+        message: error.toString()
+      }
     })
   }
 })

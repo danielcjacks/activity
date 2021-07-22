@@ -1,26 +1,28 @@
 import { autorun, makeAutoObservable, toJS } from 'mobx'
+import { ReactElement } from 'react-transition-group/node_modules/@types/react'
 import { router_store } from './router_store'
 
 
+type ToastSeverity = 'success' | 'error' | 'info' | 'warning'
 export class SharedStore {
     state = {}
 
-    localstorageProp = 'activity/shared'
+    local_storage_prop = 'activity/shared'
 
-    toastContent = ''
-    toastSeverity = 'info'
-    toastAutoHideDuration: number | null = null
-    toastIsOpen = false
+    toast_content: string | ReactElement = ''
+    toast_severity: ToastSeverity = 'info'
+    toast_auto_hide_duration: number | null = null
+    toast_is_open = false
 
 
     constructor() {
         makeAutoObservable(this)
 
-        this.loadState()
+        this.load_state()
 
         autorun(() => {
             toJS(this.state)
-            this.saveState()
+            this.save_state()
         })
 
         autorun(() => {
@@ -32,16 +34,16 @@ export class SharedStore {
         })
     }
 
-    saveState = () => {
-        localStorage.setItem(this.localstorageProp, JSON.stringify(this.state))
+    save_state = () => {
+        localStorage.setItem(this.local_storage_prop, JSON.stringify(this.state))
     }
 
-    loadState = () => {
-        if (!localStorage.getItem(this.localstorageProp)) {
-            this.saveState()
+    load_state = () => {
+        if (!localStorage.getItem(this.local_storage_prop)) {
+            this.save_state()
         }
 
-        const loaded_state = JSON.parse(localStorage.getItem(this.localstorageProp) as string) as Record<string, unknown>
+        const loaded_state = JSON.parse(localStorage.getItem(this.local_storage_prop) as string) as Record<string, unknown>
 
         if (loaded_state) {
             for (const prop in this.state) {
@@ -57,17 +59,17 @@ export class SharedStore {
     /**
      * Input a string like '/home'
      */
-    gotoPage = (route: string) => {
+    goto_page = (route: string) => {
         window.location.hash = `#${route}`
     }
 
-    setToastIsOpen = (is_open: boolean) => this.toastIsOpen = is_open
+    set_toast_is_open = (is_open: boolean) => this.toast_is_open = is_open
 
-    showToast = (variant: 'success' | 'error' | 'info' | 'warning', message: string, auto_hide_duration: number | null = null) => {
-        this.toastContent = message
-        this.toastSeverity = variant
-        this.toastAutoHideDuration = auto_hide_duration
-        this.setToastIsOpen(true)
+    show_toast = (severity: ToastSeverity, message: string | ReactElement, auto_hide_duration: number | null = null) => {
+        this.toast_content = message
+        this.toast_severity = severity
+        this.toast_auto_hide_duration = auto_hide_duration
+        this.set_toast_is_open(true)
     }
 }
 
