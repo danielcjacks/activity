@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx'
 import { router_store } from '../../router_store'
 import { server_post } from '../../server_connector'
+import { setup_async_loaders } from '../../utils/async_loaders'
 
 
 class ValueStore {
@@ -8,6 +9,7 @@ class ValueStore {
 
 
     constructor() {
+        setup_async_loaders(this)
         makeAutoObservable(this)
     }
 

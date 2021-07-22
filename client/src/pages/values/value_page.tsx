@@ -5,6 +5,7 @@ import { observer } from 'mobx-react-lite'
 import { DeleteButton } from '../../components/delete_button'
 import { SaveButton } from '../../components/save_button'
 import { router_store } from '../../router_store'
+import { get_loading } from '../../utils/async_loaders'
 import { value_store } from './value_store'
 
 
@@ -21,7 +22,7 @@ export const ValuePage = observer(() => {
         <ValueFields />
         <SaveButton
             can_save={true}
-            is_loading={false}
+            is_loading={get_loading(value_store, value_store.save_changes)}
             on_save={value_store.save_changes}
         />
     </>
