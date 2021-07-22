@@ -13,6 +13,6 @@
         "mocha": "^9.0.2"
     },
     "dependencies": {
-        "cors": "^2.8.5"
+
     }
 }
