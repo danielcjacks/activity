@@ -18,8 +18,9 @@ export const server_post = async (server_route, body) => {
     })
 
     const json_response = await response.json()
+    json_response.error = !response.ok    
 
-    if (!response.ok) {
+    if (json_response.error) {
       shared_store.show_toast(
         'error',
         <pre>Error: {json_response?.message}</pre>
