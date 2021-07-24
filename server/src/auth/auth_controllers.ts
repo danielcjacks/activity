@@ -13,7 +13,7 @@ const login = async (req: Request, res: Response) => {
     return res.status(400).json({ message: 'Incorrect password' })
   }
   const token = generate_token(username)
-  res.status(200).json(token)
+  res.status(200).json({ token, userId: user.id })
 }
 
 const signup = async (req: Request, res: Response) => {
@@ -32,7 +32,7 @@ const signup = async (req: Request, res: Response) => {
 
   const token = generate_token(new_user.username)
 
-  res.status(201).json(token)
+  res.status(200).json({ token, userId: new_user.id })
 }
 
 const authorize_token = async (
