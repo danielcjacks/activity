@@ -5,12 +5,13 @@ import { observer } from 'mobx-react-lite'
 import { DeleteButton } from '../../components/delete_button'
 import { SaveButton } from '../../components/save_button'
 import { router_store } from '../../router_store'
+import { get_loading } from '../../utils/async_loaders'
 import { value_store } from './value_store'
 
 
 const get_field_props = (path: (string | number)[]) => {
     return {
-        value: get(value_store.value, path),
+        value: get(value_store.value, path) ?? '',
         onChange: action(e => set(value_store.value, path, e.target.value))
     }
 }
@@ -21,8 +22,8 @@ export const ValuePage = observer(() => {
         <ValueFields />
         <SaveButton
             can_save={true}
-            is_loading={false}
-            on_save={() => {}}
+            is_loading={get_loading(value_store, value_store.save_changes)}
+            on_save={value_store.save_changes}
         />
     </>
 })

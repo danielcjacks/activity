@@ -1,5 +1,7 @@
 import express, { Request, Response } from 'express'
 import { PrismaClient } from '@prisma/client'
+
+import cors from 'cors'
 import dotenv from 'dotenv'
 import { login, signup, authorize_token } from './auth/auth_controllers'
 
@@ -12,6 +14,7 @@ const app = express()
 const port = 5000
 
 app.use(express.json())
+app.use(cors())
 
 app.get('/health', (req, res) => {
   res.status(200).json()
@@ -45,7 +48,11 @@ app.post('/prisma/:table_name/:method', async (req, res) => {
 
     res.status(201).json(result)
   } catch (error) {
-    res.status(400).send(error.toString())
+    res.status(400).json({
+      error: {
+        message: error.toString()
+      }
+    })
   }
 })
 
