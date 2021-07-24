@@ -38,9 +38,9 @@ export class SharedStore {
 
   is_auth = (): boolean => {
     // If a client has a token, they are authenticated
-    // If a request fails due to invalid token, 
+    // If a request fails due to invalid token,
     // we can remove the token field and this method will return false
-    return !!this.state.token;
+    return !!this.state.token
   }
 
   load_state = () => {
