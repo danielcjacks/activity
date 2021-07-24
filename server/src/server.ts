@@ -1,8 +1,14 @@
 import express, { Request, Response } from 'express'
 import { PrismaClient } from '@prisma/client'
-import cors from 'cors'
 
-const prisma = new PrismaClient()
+import cors from 'cors'
+import dotenv from 'dotenv'
+import { login, signup, authorize_token } from './auth/auth_controllers'
+
+dotenv.config()
+
+// So we can use the prisma client in other files
+export const prisma = new PrismaClient()
 const app = express()
 
 const port = 5000
@@ -19,14 +25,14 @@ app.get('/users', async (req, res) => {
   res.status(200).json(users)
 })
 
-app.post('/users', async (req, res) => {
-  const { username, password } = req.body
-  try {
-    const result = await prisma.user.create({ data: { username, password } })
-    res.status(201).json(result)
-  } catch (e) {
-    res.status(400).json()
-  }
+app.post('/login', login)
+app.post('/signup', signup)
+
+app.use(authorize_token)
+
+app.get('/login', (req, res) => {
+  // @ts-ignore
+  res.status(200).json()
 })
 
 app.post('/prisma/:table_name/:method', async (req, res) => {
