@@ -37,10 +37,11 @@ const LoginFields = observer(() => {
           value={login_store.username}
           onChange={(e: any) => (login_store.username = e.target.value)}
           variant="filled"
-          label={
+          label="Username"
+          helperText={
             login_store.invalid_username_error()
               ? login_store.error_message
-              : 'Username'
+              : ''
           }
           error={login_store.invalid_username_error()}
         />
@@ -51,10 +52,11 @@ const LoginFields = observer(() => {
           value={login_store.password}
           onChange={(e: any) => (login_store.password = e.target.value)}
           variant="filled"
-          label={
+          label="Password"
+          helperText={
             login_store.invalid_password_error()
               ? login_store.error_message
-              : 'Password'
+              : ''
           }
           error={login_store.invalid_password_error()}
         />
