@@ -20,6 +20,11 @@ export const server_post = async (server_route, body) => {
       body: JSON.stringify(body),
     })
 
+    if (response.status === 401) {
+      shared_store.state.token = null
+      shared_store.state.userId = null
+    }
+
     const json_response = await response.json()
 
     if (json_response.error) {
