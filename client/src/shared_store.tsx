@@ -4,7 +4,10 @@ import { router_store } from './router_store'
 
 type ToastSeverity = 'success' | 'error' | 'info' | 'warning'
 export class SharedStore {
-  state: Record<string, any> = {}
+  state: Record<string, any> = {
+    token: null,
+    userId: null,
+  }
 
   local_storage_prop = 'activity/shared'
 
@@ -19,7 +22,6 @@ export class SharedStore {
     this.load_state()
 
     autorun(() => {
-      toJS(this.state)
       this.save_state()
     })
 
