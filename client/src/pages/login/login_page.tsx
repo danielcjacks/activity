@@ -37,9 +37,12 @@ const LoginFields = observer(() => {
           value={login_store.username}
           onChange={(e: any) => (login_store.username = e.target.value)}
           variant="filled"
-          label={login_store.is_error() ? 'Error' : 'Username'}
-          error={login_store.is_error()}
-          helperText={login_store.error_message}
+          label={
+            login_store.invalid_username_error()
+              ? login_store.error_message
+              : 'Username'
+          }
+          error={login_store.invalid_username_error()}
         />
       </Grid>
       <Grid item xs>
@@ -48,7 +51,12 @@ const LoginFields = observer(() => {
           value={login_store.password}
           onChange={(e: any) => (login_store.password = e.target.value)}
           variant="filled"
-          label="Password"
+          label={
+            login_store.invalid_password_error()
+              ? login_store.error_message
+              : 'Password'
+          }
+          error={login_store.invalid_password_error()}
         />
       </Grid>
     </>

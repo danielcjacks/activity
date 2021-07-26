@@ -9,11 +9,13 @@ const login = async (req: Request, res: Response) => {
   if (!user)
     return res
       .status(400)
-      .json({ error: { message: 'Username does not exist' } })
+      .json({ error: { message: 'Username does not exist', errorCode: 1 } })
   // Shouldn't compare manually because it is vulnerable to timing attacks
   const password_correct = await bcrypt.compare(password, user.password)
   if (!password_correct) {
-    return res.status(400).json({ error: { message: 'Incorrect password' } })
+    return res
+      .status(400)
+      .json({ error: { message: 'Incorrect password', errorCode: 2 } })
   }
   const token = generate_token(username)
   res.status(200).json({ token, userId: user.id })
@@ -27,7 +29,7 @@ const signup = async (req: Request, res: Response) => {
   if (user)
     return res
       .status(400)
-      .json({ error: { message: 'Username already exists' } })
+      .json({ error: { message: 'Username already exists', errorCode: 3 } })
 
   // Hash password, with salt, over ten rounds
   const hashed_password = await bcrypt.hash(password, 10)
