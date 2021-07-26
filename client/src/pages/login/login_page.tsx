@@ -6,67 +6,10 @@ import {
   TextField,
   Button,
 } from '@material-ui/core'
-import { useState } from 'react'
-import { server_post } from '../../server_connector'
-import { shared_store } from '../../shared_store'
+import { observer } from 'mobx-react-lite'
+import { login_store } from './login_store'
 
-export const LoginPage = () => {
-  const [username, set_username] = useState<string>('')
-  const [password, set_password] = useState<string>('')
-  const [loading, set_loading] = useState(false)
-  const [error_message, set_error_message] = useState<string>('')
-  const is_error = error_message !== ''
-
-  const on_signup = async () => {
-    // Don't send request if loading
-    if (loading) return
-
-    set_loading(true)
-
-    const response = await server_post('/signup', {
-      username,
-      password,
-    })
-
-    set_loading(false)
-
-    if (!response.error) {
-      // If success, set token and userId, redirect to home, and popup toast
-      shared_store.state.token = response.token
-      shared_store.state.userId = response.userId
-      window.location.hash = '#/home'
-      shared_store.show_toast('success', 'Signed up successfully')
-    } else {
-      // If failuer, popup toast, and set error another error message in field
-      set_error_message(response.message)
-    }
-  }
-
-  const on_login = async () => {
-    // Don't send request if loading
-    if (loading) return
-
-    set_loading(true)
-
-    const response = await server_post('/login', {
-      username,
-      password,
-    })
-
-    set_loading(false)
-
-    if (!response.error) {
-      // If success, set token and userId, redirect to home, and popup toast
-      shared_store.state.token = response.token
-      shared_store.state.userId = response.userId
-      window.location.hash = '#/home'
-      shared_store.show_toast('success', 'Logged in successfully')
-    } else {
-      // If failuer, popup toast, and set error another error message in field
-      set_error_message(response.message)
-    }
-  }
-
+export const LoginPage = observer(() => {
   return (
     <>
       <Card>
@@ -75,19 +18,19 @@ export const LoginPage = () => {
       <Box m={2}>
         <Grid item xs={12} sm="auto">
           <TextField
-            value={username}
-            onChange={(e: any) => set_username(e.target.value)}
+            value={login_store.username}
+            onChange={(e: any) => (login_store.username = e.target.value)}
             variant="filled"
-            label={is_error ? 'Error' : 'Username'}
-            error={is_error}
-            helperText={error_message}
+            label={login_store.is_error() ? 'Error' : 'Username'}
+            error={login_store.is_error()}
+            helperText={login_store.error_message}
           />
         </Grid>
         <Grid item xs>
           <TextField
             type="password"
-            value={password}
-            onChange={(e: any) => set_password(e.target.value)}
+            value={login_store.password}
+            onChange={(e: any) => (login_store.password = e.target.value)}
             variant="filled"
             label="Password"
           />
@@ -96,8 +39,8 @@ export const LoginPage = () => {
           <Button
             color="primary"
             variant="contained"
-            onClick={on_login}
-            disabled={loading}
+            onClick={login_store.login}
+            disabled={login_store.loading}
           >
             Login
           </Button>
@@ -106,8 +49,8 @@ export const LoginPage = () => {
           <Button
             color="secondary"
             variant="contained"
-            onClick={on_signup}
-            disabled={loading}
+            onClick={login_store.signup}
+            disabled={login_store.loading}
           >
             Signup
           </Button>
@@ -115,4 +58,4 @@ export const LoginPage = () => {
       </Box>
     </>
   )
-}
+})
