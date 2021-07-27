@@ -73,7 +73,7 @@ const LoginButtons = observer(() => {
         <Button
           color="primary"
           variant="contained"
-          onClick={login_store.login}
+          onClick={() => login_store.login()}
           disabled={get_loading(login_store, login_store.login)}
         >
           Login
@@ -83,7 +83,7 @@ const LoginButtons = observer(() => {
         <Button
           color="secondary"
           variant="contained"
-          onClick={login_store.signup}
+          onClick={() => login_store.signup()}
           disabled={get_loading(login_store, login_store.signup)}
         >
           Signup
