@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx'
 import { server_post } from '../../server_connector'
 import { shared_store } from '../../shared_store'
+import { setup_async_loaders } from '../../utils/async_loaders'
 
 enum AuthError {
   INCORRECT_PASSWORD,
@@ -18,6 +19,7 @@ class LoginStore {
   loading: boolean = false
 
   constructor() {
+    setup_async_loaders(this)
     makeAutoObservable(this)
   }
 
@@ -80,12 +82,12 @@ class LoginStore {
   }
 
   login = () => {
-    this.auth_request('/login', 'Login Successful')
+    return this.auth_request('/login', 'Login Successful')
   }
 
   signup = () => {
-    this.auth_request('/signup', 'Signup Successful')
+    return this.auth_request('/signup', 'Signup Successful')
   }
 }
 
-export const login_store = ((window as any).value_store = new LoginStore())
+export const login_store = ((window as any).login_store = new LoginStore())
