@@ -65,20 +65,28 @@ export const setup_async_loaders = (class_instance) => {
 
                 if (did_return_promise) {
                     // now set loading to true and delete it once the promise resolves or fails
-                    const loader_key = get_loader_key(prop_name, args)
+                    try {
+                        const loader_key = get_loader_key(prop_name, args)
+                        class_instance._loaders[loader_key] = true
+                        return function_return.then(val => {
+                            runInAction(() => {
+                                delete class_instance._loaders[loader_key]
+                            })
+                            return val
+                        }).catch(err => {
+                            runInAction(() => {
+                                delete class_instance._loaders[loader_key]
+                            })
+                            return err
+                        })
+                    } catch (error) {
+                        console.error('There was a problem stringifying function args. Async loaders are disabled for this function.', {
+                            error,
+                            function_name: prop_name
+                        })
+                        return function_return
+                    }
 
-                    class_instance._loaders[loader_key] = true
-                    return function_return.then(val => {
-                        runInAction(() => {
-                            delete class_instance._loaders[loader_key]
-                        })
-                        return val
-                    }).catch(err => {
-                        runInAction(() => {
-                            delete class_instance._loaders[loader_key]
-                        })
-                        return err
-                    })
                 } else {
                     return function_return
                 }
