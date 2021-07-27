@@ -18,7 +18,9 @@ const login = async (req: Request, res: Response) => {
       .json({ error: { message: 'Incorrect password', errorCode: 2 } })
   }
   const token = generate_token(username)
-  res.status(200).json({ token, userId: user.id })
+  setTimeout(() => {
+    res.status(200).json({ token, userId: user.id })
+  }, 2000)
 }
 
 const signup = async (req: Request, res: Response) => {
