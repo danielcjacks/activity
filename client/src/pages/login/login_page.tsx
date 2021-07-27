@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core'
 import { observer } from 'mobx-react-lite'
 import { login_store } from './login_store'
+import { get_loading } from '../../utils/async_loaders'
 
 export const LoginPage = () => {
   return (
@@ -73,7 +74,7 @@ const LoginButtons = observer(() => {
           color="primary"
           variant="contained"
           onClick={login_store.login}
-          disabled={login_store.loading}
+          disabled={get_loading(login_store, login_store.login)}
         >
           Login
         </Button>
@@ -83,7 +84,7 @@ const LoginButtons = observer(() => {
           color="secondary"
           variant="contained"
           onClick={login_store.signup}
-          disabled={login_store.loading}
+          disabled={get_loading(login_store, login_store.signup)}
         >
           Signup
         </Button>
