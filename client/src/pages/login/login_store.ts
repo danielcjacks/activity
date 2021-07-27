@@ -36,6 +36,9 @@ class LoginStore {
 
     this.loading = false
 
+    // If network error
+    if (!response) return
+
     // If there is an error, set the error message, and break out of the function
     if (response.error) {
       this.error_message = response.error.message
