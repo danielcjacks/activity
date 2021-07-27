@@ -7,6 +7,7 @@ import {
   Button,
 } from '@material-ui/core'
 import { observer } from 'mobx-react-lite'
+import { action } from 'mobx'
 import { login_store } from './login_store'
 import { get_loading } from '../../utils/async_loaders'
 
@@ -36,7 +37,7 @@ const LoginFields = observer(() => {
       <Grid item xs={12} sm="auto">
         <TextField
           value={login_store.username}
-          onChange={(e: any) => (login_store.username = e.target.value)}
+          onChange={action((e: any) => (login_store.username = e.target.value))}
           variant="filled"
           label="Username"
           helperText={
@@ -51,7 +52,7 @@ const LoginFields = observer(() => {
         <TextField
           type="password"
           value={login_store.password}
-          onChange={(e: any) => (login_store.password = e.target.value)}
+          onChange={action((e: any) => (login_store.password = e.target.value))}
           variant="filled"
           label="Password"
           helperText={

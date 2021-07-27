@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx'
+import { makeAutoObservable, runInAction } from 'mobx'
 import { server_post } from '../../server_connector'
 import { shared_store } from '../../shared_store'
 import { setup_async_loaders } from '../../utils/async_loaders'
@@ -35,23 +35,24 @@ class LoginStore {
       username: this.username,
       password: this.password,
     })
+    runInAction(() => {
+      this.loading = false
 
-    this.loading = false
+      // If network error
+      if (!response) return
 
-    // If network error
-    if (!response) return
-
-    // If there is an error, set the error message, and break out of the function
-    if (response.error) {
-      this.error_message = response.error.message
-      this.setError(response.error.errorCode)
-    } else {
-      // If success, set token and userId, redirect to home, and popup toast
-      shared_store.state.token = response.token
-      shared_store.state.userId = response.userId
-      window.location.hash = '#/home'
-      shared_store.show_toast('success', success_message)
-    }
+      // If there is an error, set the error message, and break out of the function
+      if (response.error) {
+        this.error_message = response.error.message
+        this.setError(response.error.errorCode)
+      } else {
+        // If success, set token and userId, redirect to home, and popup toast
+        shared_store.state.token = response.token
+        shared_store.state.userId = response.userId
+        window.location.hash = '#/home'
+        shared_store.show_toast('success', success_message)
+      }
+    })
   }
 
   setError = (errorCode: number): void => {
