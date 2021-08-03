@@ -27,7 +27,7 @@ model Value {
   name         String
   description  String?
   // May be a better datatype for this
-  importanance Int?
+  importance Int?
   goals        Goal[]
 }
 
