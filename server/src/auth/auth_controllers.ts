@@ -7,15 +7,15 @@ const login = async (req: Request, res: Response) => {
   const { username, password } = req.body
   const user = await prisma.user.findUnique({ where: { username } })
   if (!user)
-    return res
-      .status(400)
-      .json({ error: { message: 'Username does not exist', errorCode: 1 } })
+    return res.status(400).json({
+      error: { message: 'Username does not exist', error_path: ['username'] },
+    })
   // Shouldn't compare manually because it is vulnerable to timing attacks
   const password_correct = await bcrypt.compare(password, user.password)
   if (!password_correct) {
-    return res
-      .status(400)
-      .json({ error: { message: 'Incorrect password', errorCode: 2 } })
+    return res.status(400).json({
+      error: { message: 'Incorrect password', error_path: ['password'] },
+    })
   }
   const token = generate_token(username)
   setTimeout(() => {
@@ -29,9 +29,9 @@ const signup = async (req: Request, res: Response) => {
 
   // If username already exists, send bad response
   if (user)
-    return res
-      .status(400)
-      .json({ error: { message: 'Username already exists', errorCode: 3 } })
+    return res.status(400).json({
+      error: { message: 'Username already exists', error_path: ['username'] },
+    })
 
   // Hash password, with salt, over ten rounds
   const hashed_password = await bcrypt.hash(password, 10)

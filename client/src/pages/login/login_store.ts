@@ -3,16 +3,11 @@ import { server_post } from '../../server_connector'
 import { shared_store } from '../../shared_store'
 import { setup_async_loaders } from '../../utils/async_loaders'
 
-enum AuthError {
-  INCORRECT_PASSWORD,
-  USERNAME_DOES_NOT_EXIST,
-  USERNAME_ALREADY_EXISTS,
-}
 class LoginStore {
   username: string = ''
   password: string = ''
   error_message: string = ''
-  error: AuthError | null = null
+  error_path: string[] = []
 
   // Couldn't get async loading stuff to work,
   // but keeping track of this loading variable is super simple
@@ -44,7 +39,8 @@ class LoginStore {
       // If there is an error, set the error message, and break out of the function
       if (response.error) {
         this.error_message = response.error.message
-        this.setError(response.error.errorCode)
+        this.error_path = response.error.error_path
+        console.log(response)
       } else {
         // If success, set token and userId, redirect to home, and popup toast
         shared_store.state.token = response.token
@@ -55,31 +51,12 @@ class LoginStore {
     })
   }
 
-  setError = (errorCode: number): void => {
-    switch (errorCode) {
-      case 1:
-        this.error = AuthError.USERNAME_DOES_NOT_EXIST
-        break
-      case 2:
-        this.error = AuthError.INCORRECT_PASSWORD
-        break
-      case 3:
-        this.error = AuthError.USERNAME_ALREADY_EXISTS
-        break
-      default:
-        this.error = null
-    }
-  }
-
   invalid_username_error = () => {
-    return (
-      this.error === AuthError.USERNAME_ALREADY_EXISTS ||
-      this.error === AuthError.USERNAME_DOES_NOT_EXIST
-    )
+    return this.error_path[0] === 'username'
   }
 
   invalid_password_error = () => {
-    return this.error === AuthError.INCORRECT_PASSWORD
+    return this.error_path[0] === 'password'
   }
 
   login = () => {
