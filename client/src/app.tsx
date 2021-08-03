@@ -45,10 +45,8 @@ const Toasts = observer(() => {
 
 export const App = observer(() => {
     const classes = useStyles();
-  	const [value, setValue] = React.useState('#/home');
 
   	const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
-    	setValue(newValue);
 		window.location.hash = newValue;
   	};
 	
