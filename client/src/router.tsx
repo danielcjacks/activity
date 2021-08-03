@@ -14,10 +14,10 @@ export const Router = observer(() => {
     // If a client does not have token, redirect to login
     if (!shared_store.is_auth()) window.location.hash = '#/login'
 
-    return (isEqual(path, ['home']) || isEqual(path, [])) ? <HomePage />
+    return (isEqual(path, ['home'])) ? <HomePage />
         : isEqual(path, ['login']) ? < LoginPage />
         : isEqual(path, ['values']) ? < ValuesPage />
         : isEqual(path, ['values', 'create']) ? < ValuePage />
-        : <> Page {path.join('/')} Not found </>
+        : <> {window.location.hash = '#/home'} Page {path.join('/')} Not found </>)
 })
 
