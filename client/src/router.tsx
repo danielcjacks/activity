@@ -11,10 +11,10 @@ export const Router = observer(() => {
 
     const path = get_url_location_path()
 
-    return (isEqual(path, ['home']) || isEqual(path, [])) ? <HomePage />
+    return (isEqual(path, ['home']) ? <HomePage />
         : isEqual(path, ['login']) ? < LoginPage />
         : isEqual(path, ['values']) ? < ValuesPage />
         : isEqual(path, ['values', 'create']) ? < ValuePage />
-        : <> Page {path.join('/')} Not found </>
+        : <> {window.location.hash = '#/home'} Page {path.join('/')} Not found </>)
 })
 
