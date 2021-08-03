@@ -3,6 +3,23 @@ import { Alert } from '@material-ui/lab'
 import { observer } from 'mobx-react-lite'
 import { Router } from './router'
 import { shared_store } from './shared_store'
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import FolderIcon from '@material-ui/icons/Folder';
+import RestoreIcon from '@material-ui/icons/Restore';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
+import { router_store } from './router_store'
+
+const useStyles = makeStyles({
+	root: {
+	  position: 'fixed',
+	  width: '100%',
+	  bottom: '0px',
+	},
+  });
 
 const Toasts = observer(() => {
 	return (
@@ -27,8 +44,22 @@ const Toasts = observer(() => {
 })
 
 export const App = () => {
-    return <>
-        <Router />
+    const classes = useStyles();
+  	const [value, setValue] = React.useState('#/home');
+
+  	const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
+    	setValue(newValue);
+		router_store.hash = newValue;
+  	};
+	
+	return <>
+    	<Router />
+		<BottomNavigation value={router_store.hash} onChange={handleChange} className={classes.root} showLabels={true}>
+      		<BottomNavigationAction label="Home" value="#/home" icon={<RestoreIcon />} />
+      		<BottomNavigationAction label="Values" value="#/values" icon={<FavoriteIcon />} />
+      		<BottomNavigationAction label="Nearby" value="nearby" icon={<LocationOnIcon />} />
+      		<BottomNavigationAction label="Folder" value="folder" icon={<FolderIcon />} />
+    	</BottomNavigation>
         <Toasts />
     </>
 }
