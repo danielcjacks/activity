@@ -43,13 +43,13 @@ const Toasts = observer(() => {
 	)
 })
 
-export const App = () => {
+export const App = observer(() => {
     const classes = useStyles();
   	const [value, setValue] = React.useState('#/home');
 
   	const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
     	setValue(newValue);
-		router_store.hash = newValue;
+		window.location.hash = newValue;
   	};
 	
 	return <>
@@ -62,4 +62,4 @@ export const App = () => {
     	</BottomNavigation>
         <Toasts />
     </>
-}
+})
