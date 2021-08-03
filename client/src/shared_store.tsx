@@ -24,14 +24,6 @@ export class SharedStore {
             toJS(this.state)
             this.save_state()
         })
-
-        autorun(() => {
-            const hash = router_store.hash
-            if (!hash) {
-                window.location.hash = `#${window.location.pathname}`
-                window.location.pathname = ''
-            }
-        })
     }
 
     save_state = () => {
