@@ -6,7 +6,8 @@
         "start-client": "cd ./client && npm run start",
         "test": "mocha --package package.json",
         "nt": "nodemon --exec nyc --reporter html npm run test",
-        "coverage-watch": "live-server coverage"
+        "coverage-watch": "live-server coverage",
+        "q": "taskkill /f /im node.exe"
     },
     "devDependencies": {
         "@types/chai": "^4.2.21",
@@ -26,7 +27,21 @@
         "require": [
             "sucrase/register/ts"
         ],
-        "spec": "**/*.test.ts",
+        "spec": "server/**/*.test.ts",
         "timeout": 0
-    }
+    },
+    "nodemonConfig": {
+		"verbose": true,
+		"legacyWatch": true,
+		"ignore": [
+			"node_modules",
+			"coverage",
+            "public"
+		],
+		"watch": [
+			"./"
+		],
+		"exec": "npm run mocha",
+		"ext": "ts, js, jsx, tsx"
+	}
 }
