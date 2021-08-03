@@ -18,6 +18,10 @@ export const Router = observer(() => {
         : isEqual(path, ['login']) ? < LoginPage />
         : isEqual(path, ['values']) ? < ValuesPage />
         : isEqual(path, ['values', 'create']) ? < ValuePage />
+<<<<<<< HEAD
         : <> {window.location.hash = '#/home'} Page {path.join('/')} Not found </>
+=======
+        : <> {window.location.hash = '#/home'} Page {path.join('/')} Not found </>)
+>>>>>>> b5c726cbbd56aff0c44976a7f9d276ecaac4f86b
 })
 

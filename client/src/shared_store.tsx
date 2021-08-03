@@ -3,7 +3,9 @@ import { ReactElement } from 'react-transition-group/node_modules/@types/react'
 import { router_store } from './router_store'
 
 type ToastSeverity = 'success' | 'error' | 'info' | 'warning'
+
 export class SharedStore {
+
   state: Record<string, any> = {
     token: null,
     userId: null,
