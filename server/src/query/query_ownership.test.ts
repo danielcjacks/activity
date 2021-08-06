@@ -1,10 +1,10 @@
 import { expect } from 'chai'
 import { describe, test } from 'mocha'
-import { add_ownership_clauses, OwnershipPaths, is_table_name, combine_wheres } from './query'
+import { add_query_ownership_clauses, OwnershipPaths, is_table_name, combine_wheres, get_ownership_path } from './query_ownership'
 
 
 describe('query', () => {
-    describe(add_ownership_clauses.name, () => {
+    describe(add_query_ownership_clauses.name, () => {
         const ownership_paths: OwnershipPaths = {
             grandparent: [],
             parent: ['grandparent'],
@@ -14,7 +14,7 @@ describe('query', () => {
             const prisma_query = {
                 select: { column1: true }
             }
-            const result = add_ownership_clauses('child', ownership_paths, 'id', [1, 2], prisma_query)
+            const result = add_query_ownership_clauses('child', ownership_paths, 'id', [1, 2], prisma_query)
 
             expect(result).to.deep.equal({
                 select: { column1: true },
@@ -40,7 +40,7 @@ describe('query', () => {
                 }
             }
 
-            const result = add_ownership_clauses('child', ownership_paths, 'id', [1, 2], prisma_query)
+            const result = add_query_ownership_clauses('child', ownership_paths, 'id', [1, 2], prisma_query)
 
             expect(result).to.deep.equal({
                 select: {
@@ -78,7 +78,7 @@ describe('query', () => {
                 }
             }
 
-            const result = add_ownership_clauses('child', ownership_paths, 'id', [1, 2], prisma_query)
+            const result = add_query_ownership_clauses('child', ownership_paths, 'id', [1, 2], prisma_query)
 
             expect(result).to.deep.equal({
                 select: {
@@ -117,7 +117,7 @@ describe('query', () => {
                 }
             }
 
-            const result = add_ownership_clauses('grandparent', ownership_paths, 'id', [1, 2], prisma_query)
+            const result = add_query_ownership_clauses('grandparent', ownership_paths, 'id', [1, 2], prisma_query)
 
             expect(result).to.deep.equal({
                 select: {
@@ -141,7 +141,7 @@ describe('query', () => {
                 }
             }
 
-            const result = add_ownership_clauses('parent', ownership_paths, 'id', [1, 2], prisma_query)
+            const result = add_query_ownership_clauses('parent', ownership_paths, 'id', [1, 2], prisma_query)
 
             expect(result).to.deep.equal({
                 select: {
@@ -176,7 +176,7 @@ describe('query', () => {
                 }
             }
 
-            const result = add_ownership_clauses('parent', ownership_paths, 'id', [1, 2], prisma_query)
+            const result = add_query_ownership_clauses('parent', ownership_paths, 'id', [1, 2], prisma_query)
 
             expect(result).to.deep.equal({
                 where: {
@@ -202,6 +202,13 @@ describe('query', () => {
             const result = combine_wheres([undefined], 'AND')
 
             expect(result).to.equal(undefined)
+        })
+    })
+    describe(get_ownership_path.name, () => {
+        test('throws on unfound ownership path', () => {
+            const ownerhips_paths: OwnershipPaths = {}
+
+            expect(() => get_ownership_path(ownerhips_paths, 'test')).to.throw()
         })
     })
 })

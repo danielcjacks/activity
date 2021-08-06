@@ -8,7 +8,7 @@ export type OwnershipPaths = {
 
 export type Path = (string | number)[]
 
-export const add_ownership_clauses = (root_table: string, ownership_paths: OwnershipPaths, owner_column: string, owner_values: any[], prisma_query: Record<string, unknown>) => {
+export const add_query_ownership_clauses = (root_table: string, ownership_paths: OwnershipPaths, owner_column: string, owner_values: any[], prisma_query: Record<string, unknown>) => {
 
     const mapped_prisma_query = deep_map(prisma_query, (value, path) => {
         const table_name = last(path)?.toString()
@@ -16,7 +16,7 @@ export const add_ownership_clauses = (root_table: string, ownership_paths: Owner
             return value
         }
 
-        const ownership_path = ownership_paths[table_name]
+        const ownership_path = get_ownership_path(ownership_paths, table_name)
         const parent_table = first(ownership_path)
         const higher_table = findLast(
             dropRight(path, 1), // exclude current table, otherwise higher_table will always equal the current table
@@ -41,7 +41,7 @@ export const add_ownership_clauses = (root_table: string, ownership_paths: Owner
             : { where: combined_where }
     })
 
-    const root_ownership_path = ownership_paths[root_table]
+    const root_ownership_path = get_ownership_path(ownership_paths, root_table)
     const root_where = generate_ownership_where(root_ownership_path, owner_column, owner_values)
     const combined_root_where = combine_wheres([root_where, prisma_query.where], 'AND')
 
@@ -49,6 +49,14 @@ export const add_ownership_clauses = (root_table: string, ownership_paths: Owner
         ...mapped_prisma_query,
         where: combined_root_where
     }
+}
+
+export const get_ownership_path = (ownership_paths: OwnershipPaths, table_name: string) => {
+    if (ownership_paths[table_name]) {
+        return ownership_paths[table_name]
+    }
+
+    throw new Error(`Could not find ownership path for table ${table_name}.`)
 }
 
 export const combine_wheres = (wheres: any[], connective: 'AND' | 'OR') => {
