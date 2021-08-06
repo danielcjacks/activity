@@ -1,17 +1,165 @@
+/**
+ * Query ownership uses a simple parent/child ownerhship model.
+ * 
+ * 
+ *                                  Terminology
+ * 
+ * We can image the database as a graph, with each table being a vertex and each foreign key relationship being an
+ * edge. Given two connected tables, we call the referencing table the child and the referenced table the parent.
+ * For example, if we have
+ * 
+ * User : { id }
+ * Goal : { user_id references id }
+ * 
+ * then User is the parent and Goal is the child.
+ * 
+ * 
+ * We can then image a prisma query as a subtree of the database graph. It is a subgraph because it can only have existing
+ * tables, and they can only be nested when they are connected. It is a tree because JSON objects dont allow cycles. Given two
+ * connected tables in the JSON tree, the one which is higher in the JSON is the higher table and the lower one is the lower table.
+ * For example, given the query 
+ * 
+ * prisma.goals.findMany({
+ *   include: {
+ *     User: true
+ *   }
+ * })
+ * 
+ * goals is the higher table and User is the lower table.
+ * 
+ * 
+ *                                  Ownership model
+ * 
+ * In theory:
+ * 
+ * To figure out ownership of any table row, apply these rules (recursively).
+ * 
+ * Given a user id x (username works too since it is unique)
+ * 1. If the table is User, x owns the row if user id == x
+ * 2. Otherwise, x owns the row if x owns one of the rows parents
+ * 
+ * For example, user x owns a specific BehaviourEvent if they own the parent Behaviour (rule 2)
+ * They own the Behaviour if they own the parent Goal (rule 2)
+ * They own the Goal if they own the parent User (rule 2)
+ * They own the User if the User id is x (rule 1)
+ * 
+ * 
+ * 
+ * 
+ * In practice:
+ * 
+ * We can add a where clause to a query which ensures any returned rows are a descendant of the given user id.
+ * For example, if we can a user id x and we are searching behaviours
+ * 
+ * prisma.behaviours.findMany({
+ *   select: {
+ *     id: true
+ *   }
+ * })
+ * 
+ * we would add this where clause
+ * 
+ * prisma.behaviours.findMany({
+ *   select: {
+ *     id: true
+ *   },
+ *   where: {
+ *     Goal: {
+ *       is: {
+ *         User: {
+ *           is: {
+ *             id: { in: [x]}
+ *           }
+ *         }
+ *       }
+ *     }
+ *   }
+ * })
+ * 
+ * we add similar where clauses recursively for any nested elements in the query.
+ * 
+ * 
+ * 
+ * Optimization:
+ * 
+ * If a lower table is also the child of the higher table, we dont need to add the where clause to the lower table.
+ * This is because the higher table is already restricted to be a descendant of the correct User (we are assuming it has
+ * the extra where clause). Also, by the nature of prisma queries, anything in the lower table must be connected (parent or child)
+ * to the higher table. Since in this case the lower table is a child of the higher table, that means it must also be a descendant
+ * of the correct user. So we dont need to add an extra where clause on the user.
+ * 
+ * For example:
+ * 
+ * prisma.goals.findMany({
+ *   select: {
+ *     goalBehaviours: {
+ *       // <-- goalBehaviours doesnt need an ownership where clause, since prisma guarantees that it is a child of a selected goal, 
+ *       // and all selected goals are owned by the user (since goals has the ownership where clause)
+ *     }
+ *   }
+ *   // <-- goals needs an ownership where clause
+ * })
+ * 
+ * @module
+ */
+
+
 import { dropRight, findLast, first, last } from 'lodash'
 import { deep_map } from '../utils/utils'
 
 
+/*
+Why do we need this?
+
+Ideally, these would be auto-generated from the database schema. Unfortunately, prisma decided to use a proprietary, 
+non-parsable (as in there are no utilities that I know of to parse it) format to store their database schema, 
+instead of using an accepted standard such as JSON, YAML or XML. So these need to be hand-written and maintained alongside of
+the database schema.
+
+
+Why are there lots of similar keys?
+
+Different keys are used in different situations. For example, goals gets multiple goals, Goal is to get one goal 
+(unless we change the capital in the schema definition) and goal is used in the url params (since it is prisma.goal)
+
+
+How does this work?
+
+Each ownership path should be a list of acnestors (as in each item is a foreign key reference of the previous item), with the
+last item being 'User' (unless its the Users table as a key, then the path is empty)
+
+*/
 export type OwnershipPaths = {
     [table_name: string]: string[]
 }
 
+/*
+A path refers to a location in an object. For example 
+
+path = ['a', 0, 'b']
+object = {
+    a: [{
+        b: 'test'
+    }]
+}
+
+the path in object refers to the string 'test'.
+
+*/
 export type Path = (string | number)[]
 
+/**
+ * Recursively adds ownership clauses to the given prisma query, as discussed in the module comment.
+ * @param root_table Prisma root table, for example prisma.users has root table 'users'
+ * @param ownership_paths ownership paths as discussed here {@link OwnershipPaths}
+ * @param owner_column the column in the owner table which we are checking ownership against. For example, 'username'
+ * @param owner_values the owner values we want to restrict results to. For example 'john@gmail.com'
+ * @returns A copy of the prisma query with ownership clauses
+ */
 export const add_query_ownership_clauses = (root_table: string, ownership_paths: OwnershipPaths, owner_column: string, owner_values: any[], prisma_query: Record<string, unknown>) => {
-
     const mapped_prisma_query = deep_map(prisma_query, (value, path) => {
         const table_name = last(path)?.toString()
+        // deep map will be called on keys that are not tables, for example 'select' or 'where'. For these keys, do nothing
         if (!is_table_name(table_name, ownership_paths)) {
             return value
         }
@@ -21,9 +169,9 @@ export const add_query_ownership_clauses = (root_table: string, ownership_paths:
         const higher_table = findLast(
             dropRight(path, 1), // exclude current table, otherwise higher_table will always equal the current table
             el => is_table_name(el, ownership_paths) // only look for keys in the path that are table names. E.g. exclude 'where' or 'select'
-        ) ?? root_table // if nothing is found, that means we are the child of the root table, so use that
+        ) ?? root_table // if nothing is found, that means we are the child of the root table, so use that as the higher table
 
-        // if the higher table is the parent table, we dont need to do extra filtering. This is because prisma will already filter
+        // (optimization) if the higher table is the parent table, we dont need to do extra filtering. This is because prisma will already filter
         // this to be a child of the higher table, so we only need to put the extra where clause on the higher table
         if (parent_table === higher_table) {
             return value
@@ -41,6 +189,8 @@ export const add_query_ownership_clauses = (root_table: string, ownership_paths:
             : { where: combined_where }
     })
 
+    // prisma syntax treats the root table differently than all other tables (as in it is a method name, and not a property of
+    // 'select' or 'includes' like other nested tables), so we need to handle it separetely. But the logic is exactly the same.
     const root_ownership_path = get_ownership_path(ownership_paths, root_table)
     const root_where = generate_ownership_where(root_ownership_path, owner_column, owner_values)
     const combined_root_where = combine_wheres([root_where, prisma_query.where], 'AND')
@@ -51,6 +201,10 @@ export const add_query_ownership_clauses = (root_table: string, ownership_paths:
     }
 }
 
+/**
+ * Gets the ownership path for a given table. Throws an error if it is not found (For security reasons, we need to ensure
+ * no one forgot to make an ownership route)
+ */
 export const get_ownership_path = (ownership_paths: OwnershipPaths, table_name: string) => {
     if (ownership_paths[table_name]) {
         return ownership_paths[table_name]
@@ -59,6 +213,10 @@ export const get_ownership_path = (ownership_paths: OwnershipPaths, table_name: 
     throw new Error(`Could not find ownership path for table ${table_name}.`)
 }
 
+/**
+ * Takes a list of where clauses and combines them with a connective. Handles cases where there are none, 
+ * one, or multiple where clauses
+ */
 export const combine_wheres = (wheres: any[], connective: 'AND' | 'OR') => {
     const valid_wheres = wheres.filter(el => !!el)
 
@@ -69,10 +227,16 @@ export const combine_wheres = (wheres: any[], connective: 'AND' | 'OR') => {
     return combined_where
 }
 
+/**
+ * Returns true if the table_name is a key of the ownership_paths
+ */
 export const is_table_name = (table_name: string | number, ownership_paths: OwnershipPaths) => {
     return Object.keys(ownership_paths).includes(table_name?.toString())
 }
 
+/**
+ * Generates a single ownership where clause
+ */
 const generate_ownership_where = (ownership_path: string[], owner_column: string, owner_values: any[]) => {
     const inner_where = {
         [owner_column]: {
