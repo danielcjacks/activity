@@ -14,7 +14,7 @@ class GraphStore {
       name: 'Run 5k',
     }, {
       id: 'g2',
-      name: 'Do 25 pushups'
+      name: 'Do 25 pushups asdasdasdasdadasdasdasdasdasd'
     }, {
       id: 'g3',
       name: 'Lose 10 kg'
