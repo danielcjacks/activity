@@ -13,8 +13,6 @@ class GoalStore {
   constructor() {
     setup_async_loaders(this)
     makeAutoObservable(this)
-
-    this.get_user_values()
   }
 
   get_user_values = async () => {
