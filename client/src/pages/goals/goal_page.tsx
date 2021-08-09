@@ -14,7 +14,7 @@ import AddIcon from '@material-ui/icons/Add'
 import RemoveIcon from '@material-ui/icons/Remove'
 import { action } from 'mobx'
 import { observer } from 'mobx-react-lite'
-import { useEffect } from 'react-transition-group/node_modules/@types/react'
+import { useEffect } from 'react'
 import { router_store } from '../../router_store'
 import { goal_store } from './goal_store'
 
