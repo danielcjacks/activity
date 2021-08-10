@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx'
+import { makeAutoObservable, runInAction } from 'mobx'
 import { router_store } from '../../router_store'
 import { server_post } from '../../server_connector'
 import { shared_store } from '../../shared_store'
@@ -7,7 +7,7 @@ import { setup_async_loaders } from '../../utils/async_loaders'
 class GoalStore {
   name: string = ''
   description: string = ''
-  value_ids: string[] = []
+  value_ids_added: string[] = []
   available_values: any[] = []
 
   constructor() {
@@ -21,14 +21,17 @@ class GoalStore {
       where: { userId: shared_store.state.userId },
     })
 
-    // Set an `added` property to each value, initially to false,
-    // and to true if the value reflects the goal being created / updated
-    // TODO: Fetch the goal being updated, and autofill (also needs to be done for value updating)
-    values.forEach((value) => {
-      value.added = false
-    })
-
     this.available_values = values
+  }
+
+  get_values_added_without_duplicates = () => {
+    const non_duplicates: string[] = []
+    this.value_ids_added.forEach((value_id) => {
+      if (!non_duplicates.includes(value_id) && value_id !== '') {
+        non_duplicates.push(value_id)
+      }
+    })
+    return non_duplicates
   }
 
   save_changes = () => {
@@ -39,12 +42,29 @@ class GoalStore {
       data: {
         name: this.name,
         description: this.description,
-        values: this.value_ids,
+        values: {
+          create: this.get_values_added_without_duplicates().map((value_id) => {
+            return {
+              value: {
+                connect: {
+                  id: +value_id,
+                },
+              },
+            }
+          }),
+        },
         userId: shared_store.state.userId,
       },
     }
 
-    server_post(`/prisma/goal/${prisma_method}`, prisma_body)
+    return server_post(`/prisma/goal/${prisma_method}`, prisma_body)
+      .then((response) => {
+        window.location.hash = '#/home'
+        shared_store.show_toast('success', 'Goal Added')
+      })
+      .catch((e) => {
+        shared_store.show_toast('error', 'Something went wrong')
+      })
   }
 }
 
