@@ -6,9 +6,11 @@ import {
   TextField,
   List,
   ListItem,
-  ListItemText,
+  FormControl,
   ListItemIcon,
   Box,
+  InputLabel,
+  Select,
 } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import RemoveIcon from '@material-ui/icons/Remove'
@@ -17,6 +19,8 @@ import { observer } from 'mobx-react-lite'
 import { useEffect } from 'react'
 import { router_store } from '../../router_store'
 import { goal_store } from './goal_store'
+import { SaveButton } from '../../components/save_button'
+import { get_loading } from '../../utils/async_loaders'
 
 export const GoalPage = () => {
   return (
@@ -25,6 +29,11 @@ export const GoalPage = () => {
       <Box m={2}>
         <GoalFields />
         <GoalValuesAdder />
+        <SaveButton
+          can_save={true}
+          is_loading={get_loading(goal_store, goal_store.save_changes)}
+          on_save={() => goal_store.save_changes()}
+        />
       </Box>
     </>
   )
@@ -38,32 +47,72 @@ const GoalValuesAdder = observer(() => {
     <Grid item xs={12} sm="auto">
       <Typography>Values</Typography>
       <List>
-        {goal_store.available_values.map((value) => {
+        {goal_store.value_ids_added.map((_, value_index) => {
           return (
-            <ListItem>
-              <ListItemText>{value.name}</ListItemText>
-              <ListItemIcon>
-                {!value.added ? (
-                  <AddIcon
-                    onClick={action(() => {
-                      value.added = true
-                    })}
-                  />
-                ) : (
-                  <RemoveIcon
-                    onClick={action(() => {
-                      value.added = false
-                    })}
-                  />
-                )}
-              </ListItemIcon>
+            <ListItem key={value_index}>
+              <ValueSelect value_index={value_index} />
+              <RemoveIcon
+                onClick={action(() => {
+                  goal_store.value_ids_added =
+                    goal_store.value_ids_added.filter((_, i) => {
+                      return i !== value_index
+                    })
+                })}
+              />
             </ListItem>
           )
         })}
+
+        <ListItem>
+          <ListItemIcon>
+            <AddIcon
+              onClick={action(() => {
+                goal_store.value_ids_added = [...goal_store.value_ids_added, '']
+              })}
+            />
+          </ListItemIcon>
+        </ListItem>
       </List>
     </Grid>
   )
 })
+
+interface ValueSelectPropTypes {
+  value_index: number
+}
+
+const ValueSelect: React.FC<ValueSelectPropTypes> = observer(
+  ({ value_index }) => {
+    return (
+      <FormControl>
+        <InputLabel htmlFor="age-native-simple">
+          Value {value_index + 1}
+        </InputLabel>
+        <Select
+          native
+          value={goal_store.value_ids_added[value_index]}
+          onChange={action(
+            (e: any) =>
+              (goal_store.value_ids_added[value_index] = e.target.value)
+          )}
+          inputProps={{
+            name: 'age',
+            id: 'age-native-simple',
+          }}
+        >
+          <option aria-label="None" value="" />
+          {goal_store.available_values.map((value) => {
+            return (
+              <option key={value.id} value={value.id}>
+                {value.name}
+              </option>
+            )
+          })}
+        </Select>
+      </FormControl>
+    )
+  }
+)
 
 const GoalFields = observer(() => {
   return (
