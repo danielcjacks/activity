@@ -95,10 +95,6 @@ const ValueSelect: React.FC<ValueSelectPropTypes> = observer(
             (e: any) =>
               (goal_store.value_ids_added[value_index] = e.target.value)
           )}
-          inputProps={{
-            name: 'age',
-            id: 'age-native-simple',
-          }}
         >
           <option aria-label="None" value="" />
           {goal_store.available_values.map((value) => {
