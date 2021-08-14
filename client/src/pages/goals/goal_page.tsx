@@ -42,6 +42,7 @@ export const GoalPage = () => {
 const GoalValuesAdder = observer(() => {
   useEffect(() => {
     goal_store.get_user_values()
+    goal_store.load_goal()
   }, [])
   return (
     <Grid item xs={12} sm="auto">
@@ -52,12 +53,7 @@ const GoalValuesAdder = observer(() => {
             <ListItem key={value_index}>
               <ValueSelect value_index={value_index} />
               <RemoveIcon
-                onClick={action(() => {
-                  goal_store.value_ids_added =
-                    goal_store.value_ids_added.filter((_, i) => {
-                      return i !== value_index
-                    })
-                })}
+                onClick={action(() => goal_store.remove_value(value_index))}
               />
             </ListItem>
           )
@@ -65,11 +61,7 @@ const GoalValuesAdder = observer(() => {
 
         <ListItem>
           <ListItemIcon>
-            <AddIcon
-              onClick={action(() => {
-                goal_store.value_ids_added = [...goal_store.value_ids_added, '']
-              })}
-            />
+            <AddIcon onClick={action(() => goal_store.add_value())} />
           </ListItemIcon>
         </ListItem>
       </List>
@@ -91,9 +83,8 @@ const ValueSelect: React.FC<ValueSelectPropTypes> = observer(
         <Select
           native
           value={goal_store.value_ids_added[value_index]}
-          onChange={action(
-            (e: any) =>
-              (goal_store.value_ids_added[value_index] = e.target.value)
+          onChange={action((e: any) =>
+            goal_store.select_value(value_index, e.target.value)
           )}
         >
           <option aria-label="None" value="" />
