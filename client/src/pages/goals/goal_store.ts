@@ -96,6 +96,8 @@ class GoalStore {
   }
 
   get_value_connectors = () => {
+    // This generates a list of connect objects for prisma to connect values to goals,
+    // via the joining table
     const value_connectors = this.filter_values().map((value_id) => {
       return {
         value: {
@@ -108,24 +110,10 @@ class GoalStore {
     return value_connectors
   }
 
-  get_value_disconnectors = () => {
-    const goal_id = router_store.query.goal_id
-    const value_disconnectors = this.filter_tombstone().map((value_id) => {
-      return {
-        goalId_valueId: {
-          valueId: +value_id,
-          goalId: +goal_id,
-        },
-      }
-    })
-
-    return value_disconnectors
-  }
-
   get_update_body = () => {
+    // This function creates the prisma body for updating the goal object
+    // Does not delete tombstoned values, but does add new values
     const goal_id = router_store.query.goal_id
-
-    this.disconnect_values()
 
     const body = {
       data: {
@@ -144,6 +132,7 @@ class GoalStore {
   }
 
   get_create_body = () => {
+    // This function generates the prisma body for creating a goal object
     const body = {
       data: {
         name: this.name,
@@ -154,13 +143,16 @@ class GoalStore {
         userId: shared_store.state.userId,
       },
     }
-
     return body
   }
 
   disconnect_values = () => {
+    // I could not find a clear way to delete multiple many to many relationships
+    // E.g. Removing 'fitness' 'mental health' values from 'run 5k' goal
+    // Welcome to try to find a way, but I have spent way too much time trying to find the solution,
+    // so I eneded up just deleting the rows in the connecting table.
+    // Not ideal for performance, but it works
     const prisma_method = 'deleteMany'
-    // TODO: find table name
     const prisma_table = 'goalValues'
     const prisma_body = {
       where: {
@@ -172,6 +164,7 @@ class GoalStore {
   }
 
   save_changes = () => {
+    // This is called when the save button is pressed
     const goal_id = router_store.query.goal_id
     const is_update = !!goal_id
     const prisma_method = is_update ? 'update' : 'create' // delete is done from the values table page
@@ -186,6 +179,7 @@ class GoalStore {
 
     if (is_update) promises.push(this.disconnect_values())
 
+    // Wait for both promises at the same time
     return Promise.all(promises)
       .then((response) => {
         window.location.hash = '#/home'
