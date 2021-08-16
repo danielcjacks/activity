@@ -41,8 +41,7 @@ export const GoalPage = () => {
 
 const GoalValuesAdder = observer(() => {
   useEffect(() => {
-    goal_store.get_user_values()
-    goal_store.load_goal()
+    goal_store.on_component_load()
   }, [])
   return (
     <Grid item xs={12} sm="auto">

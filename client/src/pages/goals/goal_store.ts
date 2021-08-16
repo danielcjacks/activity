@@ -23,6 +23,33 @@ class GoalStore {
     makeAutoObservable(this)
   }
 
+  is_update = () => {
+    const path = router_store.hash.split('/')
+    return path[path.length - 1] === 'update'
+  }
+
+  on_component_load = () => {
+    const goal_id = router_store.query.goal_id
+
+    // If on update path, with no goal specified, redirect to create
+    if (this.is_update() && !goal_id) {
+      window.location.hash = '#/goals/create'
+    }
+
+    // If on create path, with goal specified, redirect to update
+    if (!this.is_update() && !!goal_id) {
+      window.location.hash = `#/goals/update?goal_id=${goal_id}`
+    }
+
+    // If on update path, load the goal
+    if (this.is_update()) {
+      this.load_goal()
+    }
+
+    // Always load the values
+    this.get_user_values()
+  }
+
   load_goal = async () => {
     const goal_id = router_store.query.goal_id
 
