@@ -18,41 +18,41 @@ import { action } from 'mobx'
 import { observer } from 'mobx-react-lite'
 import { useEffect } from 'react'
 import { router_store } from '../../router_store'
-import { goal_store } from './goal_store'
+import { behaviour_store } from './behaviour_store'
 import { SaveButton } from '../../components/save_button'
 import { get_loading } from '../../utils/async_loaders'
 
-export const GoalPage = observer(() => {
+export const BehaviourPage = observer(() => {
   return (
     <>
-      <GoalTitle />
+      <BehaviourTitle />
       <Box m={2}>
-        <GoalFields />
-        <GoalValuesAdder />
-        {goal_store.is_update() ? <GoalsRemoved /> : null}
+        <BehaviourFields />
+        <BehaviourValuesAdder />
+        {behaviour_store.is_update() ? <BehavioursRemoved /> : null}
         <SaveButton
           can_save={true}
-          is_loading={get_loading(goal_store, goal_store.save_changes)}
-          on_save={() => goal_store.save_changes()}
+          is_loading={get_loading(behaviour_store, behaviour_store.save_changes)}
+          on_save={() => behaviour_store.save_changes()}
         />
       </Box>
     </>
   )
 })
 
-const GoalsRemoved = observer(() => {
-  if (goal_store.tombstoned_ids.size === 0) return null
+const BehavioursRemoved = observer(() => {
+  if (behaviour_store.tombstoned_ids.size === 0) return null
 
   return (
     <Grid item xs={12} sm="auto">
       <Typography>Values Removed</Typography>
       <List>
-        {goal_store.filter_tombstone().map((value_id) => {
+        {behaviour_store.filter_tombstone().map((value_id) => {
           return (
             <ListItem key={value_id}>
               <Typography color="error">
                 {
-                  goal_store.available_values.find((value) => {
+                  behaviour_store.available_values.find((value) => {
                     return value.id === +value_id
                   }).name
                 }
@@ -65,20 +65,20 @@ const GoalsRemoved = observer(() => {
   )
 })
 
-const GoalValuesAdder = observer(() => {
+const BehaviourValuesAdder = observer(() => {
   useEffect(() => {
-    goal_store.on_component_load()
+    behaviour_store.on_component_load()
   }, [])
   return (
     <Grid item xs={12} sm="auto">
       <Typography>Values</Typography>
       <List>
-        {goal_store.value_ids_added.map((_, value_index) => {
+        {behaviour_store.value_ids_added.map((_, value_index) => {
           return (
             <ListItem key={value_index}>
               <ValueSelect value_index={value_index} />
               <RemoveIcon
-                onClick={action(() => goal_store.remove_value(value_index))}
+                onClick={action(() => behaviour_store.remove_value(value_index))}
               />
             </ListItem>
           )
@@ -86,7 +86,7 @@ const GoalValuesAdder = observer(() => {
 
         <ListItem>
           <ListItemIcon>
-            <AddIcon onClick={action(() => goal_store.add_value())} />
+            <AddIcon onClick={action(() => behaviour_store.add_value())} />
           </ListItemIcon>
         </ListItem>
       </List>
@@ -107,13 +107,13 @@ const ValueSelect: React.FC<ValueSelectPropTypes> = observer(
         </InputLabel>
         <Select
           native
-          value={goal_store.value_ids_added[value_index]}
+          value={behaviour_store.value_ids_added[value_index]}
           onChange={action((e: any) =>
-            goal_store.select_value(value_index, e.target.value)
+            behaviour_store.select_value(value_index, e.target.value)
           )}
         >
           <option aria-label="None" value="" />
-          {goal_store.available_values.map((value) => {
+          {behaviour_store.available_values.map((value) => {
             return (
               <option key={value.id} value={value.id}>
                 {value.name}
@@ -126,22 +126,22 @@ const ValueSelect: React.FC<ValueSelectPropTypes> = observer(
   }
 )
 
-const GoalFields = observer(() => {
+const BehaviourFields = observer(() => {
   return (
     <>
       <Grid item xs={12} sm="auto">
         <TextField
           variant="filled"
           label="Name"
-          value={goal_store.name}
-          onChange={action((e: any) => (goal_store.name = e.target.value))}
+          value={behaviour_store.name}
+          onChange={action((e: any) => (behaviour_store.name = e.target.value))}
         />
       </Grid>
       <Grid item xs={12} sm="auto">
         <TextField
-          value={goal_store.description}
+          value={behaviour_store.description}
           onChange={action(
-            (e: any) => (goal_store.description = e.target.value)
+            (e: any) => (behaviour_store.description = e.target.value)
           )}
           variant="filled"
           multiline={true}
@@ -153,7 +153,7 @@ const GoalFields = observer(() => {
   )
 })
 
-const GoalTitle = () => {
+const BehaviourTitle = () => {
   return (
     <Card>
       <CardHeader

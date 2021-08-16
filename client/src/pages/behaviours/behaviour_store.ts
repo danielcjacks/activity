@@ -4,17 +4,17 @@ import { router_store } from '../../router_store'
 import { server_post } from '../../server_connector'
 import { shared_store } from '../../shared_store'
 
-class GoalStore {
+class BehaviourStore {
   name: string = ''
   description: string = ''
   // List of all available values to add
   available_values: any[] = []
-  // List of the ids of values currently added to the goal
+  // List of the ids of values currently added to the behaviour
   // Empty string represents a value has not been selected
   value_ids_added: string[] = []
   // Values that need to be deleted if in update mode
   tombstoned_ids: Set<number> = new Set()
-  // The values that the goal had before (only for updating)
+  // The values that the behaviour had before (only for updating)
   previous_value_ids: string[] = []
 
   constructor() {
@@ -38,29 +38,29 @@ class GoalStore {
 
   on_component_load = () => {
     this.reset_state()
-    // If on update path, load the goal
+    // If on update path, load the behaviour
     if (this.is_update()) {
-      // If in update mode, but no goal_id, redirect home
-      if (!router_store.query.goal_id) {
+      // If in update mode, but no behaviour_id, redirect home
+      if (!router_store.query.behaviour_id) {
         window.location.hash = '#/home'
       }
-      this.load_goal()
+      this.load_behaviour()
     }
 
     // Always load the values
     this.get_user_values()
   }
 
-  load_goal = async () => {
-    const goal_id = router_store.query.goal_id
+  load_behaviour = async () => {
+    const behaviour_id = router_store.query.behaviour_id
 
-    // If not updating a goal, we do not need to load a goal
-    if (!goal_id) return
+    // If not updating a behaviour, we do not need to load a behaviour
+    if (!behaviour_id) return
 
-    // Find goal
-    const goal = await server_post('/prisma/goal/findUnique', {
+    // Find behaviour
+    const behaviour = await server_post('/prisma/behaviour/findUnique', {
       where: {
-        id: +goal_id,
+        id: +behaviour_id,
       },
       include: {
         values: true,
@@ -68,9 +68,9 @@ class GoalStore {
     })
 
     runInAction(() => {
-      this.name = goal.name
-      this.description = goal.description
-      this.value_ids_added = goal.values.map((value) => value.valueId)
+      this.name = behaviour.name
+      this.description = behaviour.description
+      this.value_ids_added = behaviour.values.map((value) => value.valueId)
     })
   }
 
@@ -122,7 +122,7 @@ class GoalStore {
 
   filter_tombstone = () => {
     const tombstone_array = Array.from(this.tombstoned_ids)
-    // Only delete ids that the goal had before (only for updating)
+    // Only delete ids that the behaviour had before (only for updating)
     const only_previous = tombstone_array.filter(
       (item) => !this.previous_value_ids.includes(String(item))
     )
@@ -131,7 +131,7 @@ class GoalStore {
   }
 
   get_value_connectors = () => {
-    // This generates a list of connect objects for prisma to connect values to goals,
+    // This generates a list of connect objects for prisma to connect values to behaviour,
     // via the joining table
     const value_connectors = this.filter_values().map((value_id) => {
       return {
@@ -146,11 +146,11 @@ class GoalStore {
   }
 
   get_value_disconnectors = () => {
-    const goal_id = router_store.query.goal_id
+    const behaviour_id = router_store.query.behaviour_id
     const value_disconnectors = this.filter_tombstone().map((value_id) => {
       return {
-        goalId_valueId: {
-          goalId: +goal_id,
+        behaviourId_valueId: {
+          behaviourId: +behaviour_id,
           valueId: +value_id,
         },
       }
@@ -159,9 +159,9 @@ class GoalStore {
   }
 
   get_update_body = () => {
-    // This function creates the prisma body for updating the goal object
+    // This function creates the prisma body for updating the behaviour object
     // Does not delete tombstoned values, but does add new values
-    const goal_id = router_store.query.goal_id
+    const behaviour_id = router_store.query.behaviour_id
 
     const body = {
       data: {
@@ -173,7 +173,7 @@ class GoalStore {
         },
       },
       where: {
-        id: +goal_id,
+        id: +behaviour_id,
       },
     }
 
@@ -181,7 +181,7 @@ class GoalStore {
   }
 
   get_create_body = () => {
-    // This function generates the prisma body for creating a goal object
+    // This function generates the prisma body for creating a behaviour object
     const body = {
       data: {
         name: this.name,
@@ -197,15 +197,15 @@ class GoalStore {
 
   save_changes = () => {
     // This is called when the save button is pressed
-    const goal_id = router_store.query.goal_id
-    const is_update = !!goal_id
+    const behaviour_id = router_store.query.behaviour_id
+    const is_update = !!behaviour_id
     const prisma_method = this.is_update() ? 'update' : 'create'
 
     const prisma_body = is_update
       ? this.get_update_body()
       : this.get_create_body()
 
-    return server_post(`/prisma/goal/${prisma_method}`, prisma_body)
+    return server_post(`/prisma/behaviour/${prisma_method}`, prisma_body)
       .then((response) => {
         if (response.error) {
           shared_store.show_toast('error', response.error.message)
@@ -215,7 +215,7 @@ class GoalStore {
         window.location.hash = '#/home'
         shared_store.show_toast(
           'success',
-          `Goal ${is_update ? 'updated' : 'saved'}`
+          `Behaviour ${is_update ? 'updated' : 'saved'}`
         )
       })
       .catch((e) => {
@@ -224,4 +224,5 @@ class GoalStore {
   }
 }
 
-export const goal_store = ((window as any).goal_store = new GoalStore())
+export const behaviour_store = ((window as any).behaviour_store =
+  new BehaviourStore())
