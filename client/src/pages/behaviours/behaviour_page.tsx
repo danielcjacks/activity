@@ -32,7 +32,10 @@ export const BehaviourPage = observer(() => {
         {behaviour_store.is_update() ? <BehavioursRemoved /> : null}
         <SaveButton
           can_save={true}
-          is_loading={get_loading(behaviour_store, behaviour_store.save_changes)}
+          is_loading={get_loading(
+            behaviour_store,
+            behaviour_store.save_changes
+          )}
           on_save={() => behaviour_store.save_changes()}
         />
       </Box>
@@ -78,7 +81,9 @@ const BehaviourValuesAdder = observer(() => {
             <ListItem key={value_index}>
               <ValueSelect value_index={value_index} />
               <RemoveIcon
-                onClick={action(() => behaviour_store.remove_value(value_index))}
+                onClick={action(() =>
+                  behaviour_store.remove_value(value_index)
+                )}
               />
             </ListItem>
           )
@@ -160,7 +165,7 @@ const BehaviourTitle = () => {
         title={
           router_store.query.value_id
             ? `Value ${router_store.query.value_id}`
-            : `New Goal`
+            : `New Behaviour`
         }
       />
     </Card>
