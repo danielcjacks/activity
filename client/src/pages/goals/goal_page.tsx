@@ -22,13 +22,14 @@ import { goal_store } from './goal_store'
 import { SaveButton } from '../../components/save_button'
 import { get_loading } from '../../utils/async_loaders'
 
-export const GoalPage = () => {
+export const GoalPage = observer(() => {
   return (
     <>
       <GoalTitle />
       <Box m={2}>
         <GoalFields />
         <GoalValuesAdder />
+        {goal_store.is_update() ? <GoalsRemoved /> : null}
         <SaveButton
           can_save={true}
           is_loading={get_loading(goal_store, goal_store.save_changes)}
@@ -37,7 +38,34 @@ export const GoalPage = () => {
       </Box>
     </>
   )
-}
+})
+
+const GoalsRemoved = observer(() => {
+  if (goal_store.tombstoned_ids.size === 0) return null
+
+  console.log(goal_store.filter_tombstone())
+
+  return (
+    <Grid item xs={12} sm="auto">
+      <Typography>Values Removed</Typography>
+      <List>
+        {goal_store.filter_tombstone().map((value_id) => {
+          return (
+            <ListItem key={value_id}>
+              <Typography color="error">
+                {
+                  goal_store.available_values.find((value) => {
+                    return value.id === +value_id
+                  }).name
+                }
+              </Typography>
+            </ListItem>
+          )
+        })}
+      </List>
+    </Grid>
+  )
+})
 
 const GoalValuesAdder = observer(() => {
   useEffect(() => {

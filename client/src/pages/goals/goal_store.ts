@@ -13,7 +13,7 @@ class GoalStore {
   // Empty string represents a value has not been selected
   value_ids_added: string[] = []
   // Values that need to be deleted if in update mode
-  tombstoned_ids: Set<string> = new Set()
+  tombstoned_ids: Set<number> = new Set()
   // The values that the goal had before (only for updating)
   previous_value_ids: string[] = []
 
@@ -37,6 +37,7 @@ class GoalStore {
   }
 
   on_component_load = () => {
+    this.reset_state()
     // If on update path, load the goal
     if (this.is_update()) {
       // If in update mode, but no goal_id, redirect home
@@ -88,13 +89,21 @@ class GoalStore {
   }
 
   select_value = (value_index, value_id) => {
+    const previous_id = this.value_ids_added[value_index]
+
+    // Add value id to tombstone list if not default empty value
+    if (previous_id !== '') this.tombstoned_ids.add(+previous_id)
+
+    // Remove new value id from tombstoned
+    this.tombstoned_ids.delete(+value_id)
+
     this.value_ids_added[value_index] = value_id
   }
 
   remove_value = (value_index) => {
     const value_id = this.value_ids_added[value_index]
     // Add value id to tombstone list if not default empty value
-    if (value_id !== '') this.tombstoned_ids.add(value_id)
+    if (value_id !== '') this.tombstoned_ids.add(+value_id)
 
     // Remove value from value list
     this.value_ids_added = this.value_ids_added.filter(
@@ -114,8 +123,8 @@ class GoalStore {
   filter_tombstone = () => {
     const tombstone_array = Array.from(this.tombstoned_ids)
     // Only delete ids that the goal had before (only for updating)
-    const only_previous = tombstone_array.filter((item) =>
-      this.previous_value_ids.includes(item)
+    const only_previous = tombstone_array.filter(
+      (item) => !this.previous_value_ids.includes(String(item))
     )
     // Do not have to filter out '', as we never add '' to the set
     return only_previous
@@ -140,7 +149,7 @@ class GoalStore {
     const goal_id = router_store.query.goal_id
     const value_disconnectors = this.filter_tombstone().map((value_id) => {
       return {
-        goalId_value_Id: {
+        goalId_valueId: {
           goalId: +goal_id,
           valueId: +value_id,
         },
