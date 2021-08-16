@@ -43,8 +43,6 @@ export const GoalPage = observer(() => {
 const GoalsRemoved = observer(() => {
   if (goal_store.tombstoned_ids.size === 0) return null
 
-  console.log(goal_store.filter_tombstone())
-
   return (
     <Grid item xs={12} sm="auto">
       <Typography>Values Removed</Typography>
