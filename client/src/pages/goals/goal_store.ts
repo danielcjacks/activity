@@ -29,20 +29,12 @@ class GoalStore {
   }
 
   on_component_load = () => {
-    const goal_id = router_store.query.goal_id
-
-    // If on update path, with no goal specified, redirect to create
-    if (this.is_update() && !goal_id) {
-      window.location.hash = '#/goals/create'
-    }
-
-    // If on create path, with goal specified, redirect to update
-    if (!this.is_update() && !!goal_id) {
-      window.location.hash = `#/goals/update?goal_id=${goal_id}`
-    }
-
     // If on update path, load the goal
     if (this.is_update()) {
+      // If in update mode, but no goal_id, redirect home
+      if (!router_store.query.goal_id) {
+        window.location.hash = '#/home'
+      }
       this.load_goal()
     }
 
@@ -141,7 +133,7 @@ class GoalStore {
     const goal_id = router_store.query.goal_id
     const value_disconnectors = this.filter_tombstone().map((value_id) => {
       return {
-        goalId_valueId: {
+        goalId_value_Id: {
           goalId: +goal_id,
           valueId: +value_id,
         },
@@ -191,7 +183,7 @@ class GoalStore {
     // This is called when the save button is pressed
     const goal_id = router_store.query.goal_id
     const is_update = !!goal_id
-    const prisma_method = is_update ? 'update' : 'create' // delete is done from the values table page
+    const prisma_method = this.is_update() ? 'update' : 'create'
 
     const prisma_body = is_update
       ? this.get_update_body()
@@ -199,6 +191,11 @@ class GoalStore {
 
     return server_post(`/prisma/goal/${prisma_method}`, prisma_body)
       .then((response) => {
+        if (response.error) {
+          shared_store.show_toast('error', response.error.message)
+          return
+        }
+
         window.location.hash = '#/home'
         shared_store.show_toast(
           'success',
