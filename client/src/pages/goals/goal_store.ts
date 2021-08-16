@@ -23,6 +23,14 @@ class GoalStore {
     makeAutoObservable(this)
   }
 
+  reset_state = () => {
+    this.name = ''
+    this.description = ''
+    this.value_ids_added = []
+    this.tombstoned_ids = new Set()
+    this.previous_value_ids = []
+  }
+
   is_update = () => {
     const path = router_store.hash.split('/')
     return path[path.length - 1].split('?')[0] === 'update'
@@ -62,7 +70,6 @@ class GoalStore {
       this.name = goal.name
       this.description = goal.description
       this.value_ids_added = goal.values.map((value) => value.valueId)
-      this.previous_value_ids = [...this.value_ids_added]
     })
   }
 
@@ -195,7 +202,7 @@ class GoalStore {
           shared_store.show_toast('error', response.error.message)
           return
         }
-
+        this.reset_state()
         window.location.hash = '#/home'
         shared_store.show_toast(
           'success',
