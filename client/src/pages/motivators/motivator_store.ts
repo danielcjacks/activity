@@ -4,25 +4,25 @@ import { server_post } from '../../server_connector'
 import { shared_store } from '../../shared_store'
 import { setup_async_loaders } from '../../utils/async_loaders'
 
-class ValueStore {
-  value: Record<string, any> = {}
+class MotivatorStore {
+  motivator: Record<string, any> = {}
 
   constructor() {
     setup_async_loaders(this)
     makeAutoObservable(this)
   }
 
-  get value_id() {
-    return router_store.query.value_id
+  get motivator_id() {
+    return router_store.query.motivator_id
   }
 
   save_changes = () => {
-    const is_update = !!this.value_id
+    const is_update = !!this.motivator_id
     const prisma_method = is_update ? 'update' : 'create' // delete is done from the values table page
 
     const prisma_body = {
       data: {
-        ...this.value,
+        ...this.motivator,
         userId: shared_store.state.userId,
       },
     }
@@ -31,4 +31,4 @@ class ValueStore {
   }
 }
 
-export const value_store = ((window as any).value_store = new ValueStore())
+export const motivator_store = ((window as any).motivator_store = new MotivatorStore())

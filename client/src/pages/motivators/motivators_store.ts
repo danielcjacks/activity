@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx'
 
 
-class ValuesStore {
+class MotivatorsStore {
     values = []
 
 
@@ -11,4 +11,4 @@ class ValuesStore {
 }
 
 
-export const values_store = (window as any).values_store = new ValuesStore()
+export const motivators_store = (window as any).motivators_store = new MotivatorsStore()

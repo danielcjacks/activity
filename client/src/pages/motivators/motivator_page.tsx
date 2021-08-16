@@ -6,37 +6,37 @@ import { DeleteButton } from '../../components/delete_button'
 import { SaveButton } from '../../components/save_button'
 import { router_store } from '../../router_store'
 import { get_loading } from '../../utils/async_loaders'
-import { value_store } from './value_store'
+import { motivator_store } from './motivator_store'
 
 
 const get_field_props = (path: (string | number)[]) => {
     return {
-        value: get(value_store.value, path) ?? '',
-        onChange: action(e => set(value_store.value, path, e.target.value))
+        value: get(motivator_store.motivator, path) ?? '',
+        onChange: action(e => set(motivator_store.motivator, path, e.target.value))
     }
 }
 
-export const ValuePage = observer(() => {
+export const MotivatorPage = observer(() => {
     return <>
-        <ValueTitle />
-        <ValueFields />
+        <MotivatorTitle />
+        <MotivatorFields />
         <SaveButton
             can_save={true}
-            is_loading={get_loading(value_store, value_store.save_changes)}
-            on_save={value_store.save_changes}
+            is_loading={get_loading(motivator_store, motivator_store.save_changes)}
+            on_save={motivator_store.save_changes}
         />
     </>
 })
 
-const ValueTitle = observer(() => {
+const MotivatorTitle = observer(() => {
     return <Card>
-        <CardHeader title={router_store.query.value_id ? `Value ${router_store.query.value_id}` : `New value`}
+        <CardHeader title={router_store.query.motivator_id ? `Motivator ${router_store.query.motivator_id}` : `New motivator`}
             action={<DeleteButton is_deleted={false} on_delete={() => { }} on_restore={() => { }} />}
         />
     </Card>
 })
 
-const ValueFields = observer(() => {
+const MotivatorFields = observer(() => {
     return <Grid container spacing={1}>
         <Grid item xs={12} sm='auto'>
             <TextField
@@ -62,8 +62,8 @@ const ValueFields = observer(() => {
         <Grid item xs={12}>
             <Slider
                 style={{ maxWidth: '500px' }}
-                value={value_store.value?.importance ?? 0}
-                onChange={action((e, new_value) => value_store.value.importance = new_value)}
+                value={motivator_store.motivator?.importance ?? 0}
+                onChange={action((e, new_value) => motivator_store.motivator.importance = new_value)}
                 defaultValue={0}
                 valueLabelDisplay='auto'
                 step={1}
