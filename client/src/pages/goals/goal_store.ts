@@ -25,7 +25,7 @@ class GoalStore {
 
   is_update = () => {
     const path = router_store.hash.split('/')
-    return path[path.length - 1] === 'update'
+    return path[path.length - 1].split('?')[0] === 'update'
   }
 
   on_component_load = () => {
@@ -137,6 +137,19 @@ class GoalStore {
     return value_connectors
   }
 
+  get_value_disconnectors = () => {
+    const goal_id = router_store.query.goal_id
+    const value_disconnectors = this.filter_tombstone().map((value_id) => {
+      return {
+        goalId_valueId: {
+          goalId: +goal_id,
+          valueId: +value_id,
+        },
+      }
+    })
+    return value_disconnectors
+  }
+
   get_update_body = () => {
     // This function creates the prisma body for updating the goal object
     // Does not delete tombstoned values, but does add new values
@@ -148,6 +161,7 @@ class GoalStore {
         description: this.description,
         values: {
           create: this.get_value_connectors(),
+          delete: this.get_value_disconnectors(),
         },
       },
       where: {
@@ -173,23 +187,6 @@ class GoalStore {
     return body
   }
 
-  disconnect_values = () => {
-    // I could not find a clear way to delete multiple many to many relationships
-    // E.g. Removing 'fitness' 'mental health' values from 'run 5k' goal
-    // Welcome to try to find a way, but I have spent way too much time trying to find the solution,
-    // so I eneded up just deleting the rows in the connecting table.
-    // Not ideal for performance, but it works
-    const prisma_method = 'deleteMany'
-    const prisma_table = 'goalValues'
-    const prisma_body = {
-      where: {
-        valueId: { in: this.filter_tombstone() },
-      },
-    }
-
-    return server_post(`/prisma/${prisma_table}/${prisma_method}`, prisma_body)
-  }
-
   save_changes = () => {
     // This is called when the save button is pressed
     const goal_id = router_store.query.goal_id
@@ -200,14 +197,7 @@ class GoalStore {
       ? this.get_update_body()
       : this.get_create_body()
 
-    const promises: Promise<any>[] = []
-
-    promises.push(server_post(`/prisma/goal/${prisma_method}`, prisma_body))
-
-    if (is_update) promises.push(this.disconnect_values())
-
-    // Wait for both promises at the same time
-    return Promise.all(promises)
+    return server_post(`/prisma/goal/${prisma_method}`, prisma_body)
       .then((response) => {
         window.location.hash = '#/home'
         shared_store.show_toast(
