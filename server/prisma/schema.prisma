@@ -19,32 +19,37 @@ model User {
 }
 
 model Value {
-  id           Int     @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   // Link a user, joining via the userId in the Value model,
   // and the id in the User model
-  User         User    @relation(fields: [userId], references: [id])
-  userId       Int
-  name         String
-  description  String?
+  User        User         @relation(fields: [userId], references: [id])
+  userId      Int
+  name        String
+  description String?
   // May be a better datatype for this
-  importance Int?
-  goals        Goal[]
+  importance  Int?
+  goals       GoalValues[]
 }
 
-// Implicit many to many between Value and Goal
-// Prisma automatically creates a joining table
+model GoalValues {
+  goal    Goal  @relation(fields: [goalId], references: [id])
+  goalId  Int
+  value   Value @relation(fields: [valueId], references: [id])
+  valueId Int
+
+  @@id([goalId, valueId])
+}
 
 model Goal {
-  id          Int         @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   name        String
   description String?
   // Link a user, joining via the userId in the Goal model,
   // and the id in the User model
-  User        User        @relation(fields: [userId], references: [id])
+  User        User         @relation(fields: [userId], references: [id])
   userId      Int
   behaviours  Behaviour[]
-  values      Value[]
-  valueId     Int?
+  values      GoalValues[]
 }
 
 model Behaviour {
