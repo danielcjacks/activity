@@ -6,12 +6,6 @@ class GraphStore {
   data = {
     motivators: [
       {
-        id: 'v1',
-        name: 'fitness',
-        description: 'Stay healthy and active',
-        importance: 4,
-      },
-      {
         id: 'v3',
         name: 'lose weight',
         importance: -2,
@@ -22,6 +16,13 @@ class GraphStore {
         description: '',
         importance: 1,
       },
+      {
+        id: 'v1',
+        name: 'fitness',
+        description: 'Stay healthy and active',
+        importance: 4,
+      },
+
     ],
     // goals: [{
     //   id: 'g1',
