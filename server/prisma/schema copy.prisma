@@ -11,17 +11,18 @@ generator client {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  username String  @unique
-  password String
-  values   Value[]
-  goals    Goal[]
+  id         Int         @id @default(autoincrement())
+  username   String      @unique
+  password   String
+  motivators Motivator[]
+  goals      Goal[]
+  Behaviour  Behaviour[]
 }
 
 // This a feeling that someone has that **motivates** different behaviours
 model Motivator {
-  id          Int                   @id @default(autoincrement())
-  User        User                  @relation(fields: [userId], references: [id])
+  id          Int                  @id @default(autoincrement())
+  User        User                 @relation(fields: [userId], references: [id])
   userId      Int
   name        String
   description String?
@@ -30,11 +31,11 @@ model Motivator {
   // E.g. For Family, positivity would equal around ten
   positivity  Int
   // These are the behaviours that this motivator motivates
-  behaviours  BehaviourMotivators[]
+  behaviours  BehaviourMotivator[]
 }
 
 // Joining table that links the Motivator table and the Behaviour table
-model BehaviourMotivators {
+model BehaviourMotivator {
   behaviour   Behaviour @relation(fields: [behaviourId], references: [id])
   behaviourId Int
   motivator   Motivator @relation(fields: [motivatorId], references: [id])
@@ -49,13 +50,14 @@ model BehaviourMotivators {
 // Can be grouped into goals that can remind users to do something (go for a run)
 // or not do something (don't watch TV)
 model Behaviour {
-  id          Int                   @id @default(autoincrement())
-  name        String
-  description String?
-  User        User                  @relation(fields: [userId], references: [id])
-  userId      Int
-  goal        Goal[]
-  motivators  BehaviourMotivators[]
+  id             Int                  @id @default(autoincrement())
+  name           String
+  description    String?
+  User           User                 @relation(fields: [userId], references: [id])
+  userId         Int
+  goal           Goal[]
+  motivators     BehaviourMotivator[]
+  BehaviourEvent BehaviourEvent[]
 }
 
 // This is goal that the user can set that will send reminders on a regular basis
@@ -64,21 +66,23 @@ model Behaviour {
 //      - Multiple behaviours, one behaviour, no behaviours
 
 model Goal {
-  id              Int              @id @default(autoincrement())
-  behaviour       Behaviour        @relation(fields: [goalId], references: [id])
-  behaviourId     Int
-  name            String
-  description     String?
+  id          Int       @id @default(autoincrement())
+  behaviour   Behaviour @relation(fields: [behaviourId], references: [id])
+  behaviourId Int
+  name        String
+  description String?
   // This field will be however we store the sheduling
   // e.g. Stringified JSON object
-  shedule         String
+  schedule    String
   // May be a better datatype for this
-  difficulty      Int?
-  behaviourEvents BehaviourEvent[]
+  difficulty  Int?
+  User        User      @relation(fields: [userId], references: [id])
+  userId      Int
 }
 
 // This allows users to log when they perform a behaviour
 // These records will be used to help visualise which behaviours a user performs most frequently
+// TODO: does this store the goal
 model BehaviourEvent {
   id          Int       @id @default(autoincrement())
   Behaviour   Behaviour @relation(fields: [behaviourId], references: [id])
