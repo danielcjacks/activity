@@ -26,8 +26,8 @@ model Motivator {
   name                 String
   description          String?
   // This represents how positive the motivator is
-  // E.g. For Jealously, positivity would equal negative ten
-  // E.g. For Family, positivity would equal around ten
+  // E.g. For Jealously, positivity would equal negative five
+  // E.g. For Family, positivity would equal around five
   positivity           Int
   // These are the behaviours that this motivator motivates
   behaviour_motivators BehaviourMotivator[]
