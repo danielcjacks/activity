@@ -37,7 +37,15 @@ app.get('/login', (req, res) => {
   res.status(200).json()
 })
 
-const prisma_query_methods = ['findUnique', 'findFirst', 'findMany', 'count', 'count', 'aggregate', 'groupBy']
+const prisma_query_methods = [
+  'findUnique',
+  'findFirst',
+  'findMany',
+  'count',
+  'count',
+  'aggregate',
+  'groupBy',
+]
 
 app.post('/prisma/:table_name/:method', async (req, res) => {
   try {
@@ -45,23 +53,24 @@ app.post('/prisma/:table_name/:method', async (req, res) => {
       throw new Error('Body must be an object')
     }
 
-    let mapped_query
-    if (prisma_query_methods.includes(req.params.method)) {
-      // @ts-ignore
-      mapped_query = get_prisma_query(req.body, req.params.table_name, req.username)
-    }
+    // let mapped_query
+    // if (prisma_query_methods.includes(req.params.method)) {
+    //   // @ts-ignore
+    //   mapped_query = get_prisma_query(req.body, req.params.table_name, req.username)
+    // }
 
     // @ts-ignore
     const result = await prisma[req.params.table_name][req.params.method](
-      mapped_query
+      // mapped_query
+      req.body
     )
 
     res.status(201).json(result)
   } catch (error) {
     res.status(400).json({
       error: {
-        message: error.toString()
-      }
+        message: error.toString(),
+      },
     })
   }
 })
