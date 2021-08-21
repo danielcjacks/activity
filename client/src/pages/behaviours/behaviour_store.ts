@@ -7,15 +7,15 @@ import { shared_store } from '../../shared_store'
 class BehaviourStore {
   name: string = ''
   description: string = ''
-  // List of all available values to add
-  available_values: any[] = []
-  // List of the ids of values currently added to the behaviour
-  // Empty string represents a value has not been selected
-  value_ids_added: string[] = []
-  // Values that need to be deleted if in update mode
+  // List of all available motivators to add
+  available_motivators: any[] = []
+  // List of the ids of motivators currently added to the behaviour
+  // Empty string represents a motivator has not been selected
+  motivator_ids_added: string[] = []
+  // motivators that need to be deleted if in update mode
   tombstoned_ids: Set<number> = new Set()
-  // The values that the behaviour had before (only for updating)
-  previous_value_ids: string[] = []
+  // The motivators that the behaviour had before (only for updating)
+  previous_motivator_ids: string[] = []
 
   constructor() {
     // MobX setup
@@ -26,9 +26,9 @@ class BehaviourStore {
   reset_state = () => {
     this.name = ''
     this.description = ''
-    this.value_ids_added = []
+    this.motivator_ids_added = []
     this.tombstoned_ids = new Set()
-    this.previous_value_ids = []
+    this.previous_motivator_ids = []
   }
 
   is_update = () => {
@@ -47,8 +47,8 @@ class BehaviourStore {
       this.load_behaviour()
     }
 
-    // Always load the values
-    this.get_user_values()
+    // Always load the motivators
+    this.get_user_motivators()
   }
 
   load_behaviour = async () => {
@@ -63,59 +63,62 @@ class BehaviourStore {
         id: +behaviour_id,
       },
       include: {
-        values: true,
+        behaviour_motivators: true,
       },
     })
 
     runInAction(() => {
       this.name = behaviour.name
       this.description = behaviour.description
-      this.value_ids_added = behaviour.values.map((value) => value.valueId)
+      this.motivator_ids_added = behaviour.behaviour_motivators.map(
+        (behaviour_motivators) => behaviour_motivators.motivator_id
+      )
     })
   }
 
-  get_user_values = async () => {
+  get_user_motivators = async () => {
     const prisma_method = 'findMany'
-    const values = await server_post(`/prisma/value/${prisma_method}`, {
-      where: { userId: shared_store.state.userId },
+    const motivators = await server_post(`/prisma/motivator/${prisma_method}`, {
+      where: { user_id: shared_store.state.userId },
     })
 
-    this.available_values = values
+    this.available_motivators = motivators
   }
 
-  add_value = () => {
-    // Add a value that can be selected
-    this.value_ids_added.push('')
+  add_motivator = () => {
+    // Add a motivator that can be selected
+    this.motivator_ids_added.push('')
   }
 
-  select_value = (value_index, value_id) => {
-    const previous_id = this.value_ids_added[value_index]
+  select_motivator = (motivator_index, motivator_id) => {
+    const previous_id = this.motivator_ids_added[motivator_index]
 
-    // Add value id to tombstone list if not default empty value
+    // Add motivator id to tombstone list if not default empty motivator
     if (previous_id !== '') this.tombstoned_ids.add(+previous_id)
 
-    // Remove new value id from tombstoned
-    this.tombstoned_ids.delete(+value_id)
+    // Remove new motivator id from tombstoned
+    this.tombstoned_ids.delete(+motivator_id)
 
-    this.value_ids_added[value_index] = value_id
+    this.motivator_ids_added[motivator_index] = motivator_id
   }
 
-  remove_value = (value_index) => {
-    const value_id = this.value_ids_added[value_index]
-    // Add value id to tombstone list if not default empty value
-    if (value_id !== '') this.tombstoned_ids.add(+value_id)
+  remove_motivator = (motivator_index) => {
+    const motivator_id = this.motivator_ids_added[motivator_index]
+    // Add motivator id to tombstone list if not default empty motivator
+    if (motivator_id !== '') this.tombstoned_ids.add(+motivator_id)
 
-    // Remove value from value list
-    this.value_ids_added = this.value_ids_added.filter(
-      (_, index) => index !== value_index
+    // Remove motivator from motivator list
+    this.motivator_ids_added = this.motivator_ids_added.filter(
+      (_, index) => index !== motivator_index
     )
   }
 
-  filter_values = () => {
-    const unique = Array.from(new Set(this.value_ids_added))
+  filter_motivators = () => {
+    const unique = Array.from(new Set(this.motivator_ids_added))
+
     const no_empty = unique.filter((item) => item !== '')
     const no_previous = no_empty.filter(
-      (item) => !this.previous_value_ids.includes(item)
+      (item) => !this.previous_motivator_ids.includes(item)
     )
     return no_previous
   }
@@ -124,52 +127,57 @@ class BehaviourStore {
     const tombstone_array = Array.from(this.tombstoned_ids)
     // Only delete ids that the behaviour had before (only for updating)
     const only_previous = tombstone_array.filter(
-      (item) => !this.previous_value_ids.includes(String(item))
+      (item) => !this.previous_motivator_ids.includes(String(item))
     )
     // Do not have to filter out '', as we never add '' to the set
     return only_previous
   }
 
-  get_value_connectors = () => {
-    // This generates a list of connect objects for prisma to connect values to behaviour,
+  get_motivator_connectors = () => {
+    // This generates a list of connect objects for prisma to connect motivators to behaviour,
     // via the joining table
-    const value_connectors = this.filter_values().map((value_id) => {
-      return {
-        value: {
-          connect: {
-            id: +value_id,
+
+    const motivator_connectors = this.filter_motivators().map(
+      (motivator_id) => {
+        return {
+          motivator: {
+            connect: {
+              id: +motivator_id,
+            },
           },
-        },
+        }
       }
-    })
-    return value_connectors
+    )
+    return motivator_connectors
   }
 
-  get_value_disconnectors = () => {
+  get_motivator_disconnectors = () => {
     const behaviour_id = router_store.query.behaviour_id
-    const value_disconnectors = this.filter_tombstone().map((value_id) => {
-      return {
-        behaviourId_valueId: {
-          behaviourId: +behaviour_id,
-          valueId: +value_id,
-        },
+    const motivator_disconnectors = this.filter_tombstone().map(
+      (motivator_id) => {
+        return {
+          behaviour_id_motivator_id: {
+            behaviour_id: +behaviour_id,
+            motivator_id: +motivator_id,
+          },
+        }
       }
-    })
-    return value_disconnectors
+    )
+    return motivator_disconnectors
   }
 
   get_update_body = () => {
     // This function creates the prisma body for updating the behaviour object
-    // Does not delete tombstoned values, but does add new values
+    // Does not delete tombstoned motivators, but does add new motivators
     const behaviour_id = router_store.query.behaviour_id
 
     const body = {
       data: {
         name: this.name,
         description: this.description,
-        values: {
-          create: this.get_value_connectors(),
-          delete: this.get_value_disconnectors(),
+        behaviour_motivators: {
+          create: this.get_motivator_connectors(),
+          delete: this.get_motivator_disconnectors(),
         },
       },
       where: {
@@ -186,10 +194,10 @@ class BehaviourStore {
       data: {
         name: this.name,
         description: this.description,
-        values: {
-          create: this.get_value_connectors(),
+        behaviour_motivators: {
+          create: this.get_motivator_connectors(),
         },
-        userId: shared_store.state.userId,
+        user_id: shared_store.state.userId,
       },
     }
     return body

@@ -28,7 +28,7 @@ export const BehaviourPage = observer(() => {
       <BehaviourTitle />
       <Box m={2}>
         <BehaviourFields />
-        <BehaviourValuesAdder />
+        <BehaviourMotivatorsAdder />
         {behaviour_store.is_update() ? <BehavioursRemoved /> : null}
         <SaveButton
           can_save={true}
@@ -48,15 +48,15 @@ const BehavioursRemoved = observer(() => {
 
   return (
     <Grid item xs={12} sm="auto">
-      <Typography>Values Removed</Typography>
+      <Typography>Motivators Removed</Typography>
       <List>
-        {behaviour_store.filter_tombstone().map((value_id) => {
+        {behaviour_store.filter_tombstone().map((motivator_id) => {
           return (
-            <ListItem key={value_id}>
+            <ListItem key={motivator_id}>
               <Typography color="error">
                 {
-                  behaviour_store.available_values.find((value) => {
-                    return value.id === +value_id
+                  behaviour_store.available_motivators.find((motivator) => {
+                    return motivator.id === +motivator_id
                   }).name
                 }
               </Typography>
@@ -68,21 +68,21 @@ const BehavioursRemoved = observer(() => {
   )
 })
 
-const BehaviourValuesAdder = observer(() => {
+const BehaviourMotivatorsAdder = observer(() => {
   useEffect(() => {
     behaviour_store.on_component_load()
   }, [])
   return (
     <Grid item xs={12} sm="auto">
-      <Typography>Values</Typography>
+      <Typography>Motivators</Typography>
       <List>
-        {behaviour_store.value_ids_added.map((_, value_index) => {
+        {behaviour_store.motivator_ids_added.map((_, motivator_index) => {
           return (
-            <ListItem key={value_index}>
-              <ValueSelect value_index={value_index} />
+            <ListItem key={motivator_index}>
+              <MotivatorSelect motivator_index={motivator_index} />
               <RemoveIcon
                 onClick={action(() =>
-                  behaviour_store.remove_value(value_index)
+                  behaviour_store.remove_motivator(motivator_index)
                 )}
               />
             </ListItem>
@@ -91,7 +91,7 @@ const BehaviourValuesAdder = observer(() => {
 
         <ListItem>
           <ListItemIcon>
-            <AddIcon onClick={action(() => behaviour_store.add_value())} />
+            <AddIcon onClick={action(() => behaviour_store.add_motivator())} />
           </ListItemIcon>
         </ListItem>
       </List>
@@ -99,29 +99,29 @@ const BehaviourValuesAdder = observer(() => {
   )
 })
 
-interface ValueSelectPropTypes {
-  value_index: number
+interface MotivatorSelectPropTypes {
+  motivator_index: number
 }
 
-const ValueSelect: React.FC<ValueSelectPropTypes> = observer(
-  ({ value_index }) => {
+const MotivatorSelect: React.FC<MotivatorSelectPropTypes> = observer(
+  ({ motivator_index }) => {
     return (
       <FormControl>
         <InputLabel htmlFor="age-native-simple">
-          Value {value_index + 1}
+          Motivator {motivator_index + 1}
         </InputLabel>
         <Select
           native
-          value={behaviour_store.value_ids_added[value_index]}
+          value={behaviour_store.motivator_ids_added[motivator_index]}
           onChange={action((e: any) =>
-            behaviour_store.select_value(value_index, e.target.value)
+            behaviour_store.select_motivator(motivator_index, e.target.value)
           )}
         >
           <option aria-label="None" value="" />
-          {behaviour_store.available_values.map((value) => {
+          {behaviour_store.available_motivators.map((motivator) => {
             return (
-              <option key={value.id} value={value.id}>
-                {value.name}
+              <option key={motivator.id} value={motivator.id}>
+                {motivator.name}
               </option>
             )
           })}
@@ -163,8 +163,8 @@ const BehaviourTitle = () => {
     <Card>
       <CardHeader
         title={
-          router_store.query.value_id
-            ? `Value ${router_store.query.value_id}`
+          router_store.query.motivator_id
+            ? `motivator ${router_store.query.motivator_id}`
             : `New Behaviour`
         }
       />
