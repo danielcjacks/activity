@@ -23,12 +23,29 @@ class MotivatorStore {
     const prisma_body = {
       data: {
         ...this.motivator,
-        userId: shared_store.state.userId,
+        user_id: shared_store.state.userId,
       },
     }
 
-    server_post(`/prisma/value/${prisma_method}`, prisma_body)
+    console.log(prisma_body)
+
+    server_post(`/prisma/motivator/${prisma_method}`, prisma_body)
+      .then((response) => {
+        if (response.error) {
+          shared_store.show_toast('error', response.error.message)
+          return
+        }
+        window.location.hash = '#/home'
+        shared_store.show_toast(
+          'success',
+          `Motivator ${is_update ? 'updated' : 'saved'}`
+        )
+      })
+      .catch((e) => {
+        shared_store.show_toast('error', 'Something went wrong')
+      })
   }
 }
 
-export const motivator_store = ((window as any).motivator_store = new MotivatorStore())
+export const motivator_store = ((window as any).motivator_store =
+  new MotivatorStore())
