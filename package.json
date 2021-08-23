@@ -8,6 +8,7 @@
         "nt": "nodemon --exec nyc --reporter html npm run test",
         "coverage-watch": "live-server coverage",
         "q": "taskkill /f /im node.exe"
+        
     },
     "devDependencies": {
         "@types/chai": "^4.2.21",
