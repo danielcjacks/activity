@@ -1,10 +1,12 @@
 import { isEqual } from 'lodash'
 import { observer } from 'mobx-react-lite'
 import { GraphPage } from './pages/graph/graph_page'
+import { BehavioursPage } from './pages/behaviours/behaviours_page'
+import { BehaviourPage } from './pages/behaviours/behaviour_page'
 import { HomePage } from './pages/home/home_page'
 import { LoginPage } from './pages/login/login_page'
-import { ValuesPage } from './pages/values/values_page'
-import { ValuePage } from './pages/values/value_page'
+import { MotivatorsPage } from './pages/motivators/motivators_page'
+import { MotivatorPage } from './pages/motivators/motivator_page'
 import { get_url_location_path } from './router_store'
 import { shared_store } from './shared_store'
 
@@ -17,9 +19,12 @@ export const Router = observer(() => {
 
     return (isEqual(path, ['home'])) ? <HomePage />
         : isEqual(path, ['login']) ? < LoginPage />
-        : isEqual(path, ['values']) ? < ValuesPage />
-        : isEqual(path, ['values', 'create']) ? < ValuePage />
         : isEqual(path, ['graph']) ? < GraphPage />
+        : isEqual(path, ['motivators']) ? < MotivatorsPage />
+        : isEqual(path, ['motivators', 'create']) ? < MotivatorPage />
+        : isEqual(path, ['behaviours']) ? < BehavioursPage />
+        : isEqual(path, ['behaviours', 'create']) ? <BehaviourPage />
+        : isEqual(path, ['behaviours', 'update']) ? <BehaviourPage />
         : <> {window.location.hash = '#/home'} Page {path.join('/')} Not found </>
 })
 

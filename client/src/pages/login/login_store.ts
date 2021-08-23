@@ -40,7 +40,6 @@ class LoginStore {
       if (response.error) {
         this.error_message = response.error.message
         this.error_path = response.error.error_path
-        console.log(response)
       } else {
         // If success, set token and userId, redirect to home, and popup toast
         shared_store.state.token = response.token

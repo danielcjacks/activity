@@ -3,3 +3,5 @@ node_modules/
 data/
 migrations/
 .vscode/settings.json
+.nyc_output/
+coverage/
