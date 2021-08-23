@@ -39,11 +39,7 @@ const ValuesTable = observer(() => {
                 return(
                     <><TableRow>
                         <TableCell>{value.name}</TableCell>
-                    </TableRow>
-                    <TableRow>
                         <TableCell>{value.description}</TableCell>
-                    </TableRow>
-                    <TableRow>
                         <TableCell>{value.importance}</TableCell>
                     </TableRow></>
                 )
