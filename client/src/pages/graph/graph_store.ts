@@ -6,23 +6,43 @@ class GraphStore {
   data = {
     motivators: [
       {
-        id: 'v3',
-        name: 'lose weight',
-        importance: -2,
+        id: 'v7',
+        name: 'Withdrawal sickness',
+        importance: -5,
       },
       {
-        id: 'v2',
-        name: 'master a skill',
-        description: '',
-        importance: 1,
+        id: 'v6',
+        name: 'Pain',
+        importance: -3,
+      },
+      {
+        id: 'v5',
+        name: 'Personal well-being',
+        importance: 2,
       },
       {
         id: 'v1',
-        name: 'fitness',
-        description: 'Stay healthy and active',
-        importance: 4,
+        name: 'Being active',
+        description: '',
+        importance: 2,
       },
-
+      {
+        id: 'v2',
+        name: 'Being productive',
+        description: '',
+        importance: 3,
+      },
+      {
+        id: 'v3',
+        name: 'Being creative',
+        description: '',
+        importance: 3,
+      },
+      {
+        id: 'v4',
+        name: 'Family',
+        importance: 5,
+      },
     ],
     // goals: [{
     //   id: 'g1',
@@ -34,18 +54,10 @@ class GraphStore {
     //   id: 'g3',
     //   name: 'Lose 10 kg'
     // }],
-    behaviour_motivators: [
-      { motivator_id: 'v1', behaviour_id: 'b1' },
-      { motivator_id: 'v1', behaviour_id: 'b2' },
-      { motivator_id: 'v1', behaviour_id: 'b3' },
-      { motivator_id: 'v2', behaviour_id: 'b4' },
-      { motivator_id: 'v3', behaviour_id: 'b1' },
-      // { motivator_id: 'v3', behaviour_id: 'b3' },
-    ],
     behaviours: [
       {
         id: 'b1',
-        name: 'Go running',
+        name: 'Paint',
         description: '',
         behaviourEvents: [
           {
@@ -57,11 +69,14 @@ class GraphStore {
           {
             timestamp: '2021-05-07T21:05:22Z',
           },
+          {
+            timestamp: '2021-05-07T21:05:22Z',
+          },
         ],
       },
       {
         id: 'b2',
-        name: 'Do a warmup',
+        name: 'Visit my father',
         behaviourEvents: [
           {
             timestamp: '2021-07-07T21:05:22Z',
@@ -70,18 +85,70 @@ class GraphStore {
       },
       {
         id: 'b3',
-        name: 'Practice pushups',
+        name: 'Go to excercise class',
       },
       {
         id: 'b4',
-        name: 'Practice guitar',
+        name: 'At home on the couch',
         behaviourEvents: [
           {
             timestamp: '2021-07-07T21:05:22Z',
           },
         ],
       },
+      {
+        id: 'b5',
+        name: 'Watch TV',
+        behaviourEvents: [
+          {
+            timestamp: '2021-07-07T21:05:22Z',
+          },
+          {
+            timestamp: '2021-07-07T21:05:22Z',
+          },
+        ],
+      },
+      {
+        id: 'b6',
+        name: 'Take opiod medication',
+        behaviourEvents: [
+          {
+            timestamp: '2021-07-07T21:05:22Z',
+          },
+          {
+            timestamp: '2021-07-07T21:05:22Z',
+          },
+          {
+            timestamp: '2021-07-07T21:05:22Z',
+          },
+          {
+            timestamp: '2021-07-07T21:05:22Z',
+          },
+          {
+            timestamp: '2021-07-07T21:05:22Z',
+          },
+          {
+            timestamp: '2021-07-07T21:05:22Z',
+          },
+          {
+            timestamp: '2021-07-07T21:05:22Z',
+          },
+        ],
+      },
     ],
+    behaviour_motivators: [
+      { motivator_id: 'v1', behaviour_id: 'b3' },
+      { motivator_id: 'v2', behaviour_id: 'b1' },
+      { motivator_id: 'v3', behaviour_id: 'b1' },
+      { motivator_id: 'v4', behaviour_id: 'b2' },
+      { motivator_id: 'v5', behaviour_id: 'b1' },
+      { motivator_id: 'v5', behaviour_id: 'b3' },
+      { motivator_id: 'v6', behaviour_id: 'b4' },
+      { motivator_id: 'v6', behaviour_id: 'b5' },
+      { motivator_id: 'v7', behaviour_id: 'b6' },
+      // { motivator_id: 'v3', behaviour_id: 'b3' },
+    ],
+
   }
 
   constructor() {

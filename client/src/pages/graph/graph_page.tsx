@@ -101,7 +101,7 @@ const get_stylesheet = () => [
 const Graph2 = observer(() => {
   return (
     <CytoscapeComponent
-      style={{ width: '600px', height: '600px', backgroundColor: 'grey' }}
+      style={{ width: '1500px', height: '1200px', backgroundColor: 'grey' }}
       elements={graph_store.get_cytoscape_elements()}
       layout={{
         name: 'dagre',
