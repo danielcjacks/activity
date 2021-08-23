@@ -2,12 +2,12 @@ import { Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/c
 import { observer } from 'mobx-react-lite'
 
 
-export const ValuesPage = observer(() => {
-    return <> Values table
+export const MotivatorsPage = observer(() => {
+    return <> Motivator table
     </>
 })
 
-const ValuesTable = observer(() => {
+const MotivatorsTable = observer(() => {
     return <Table>
         <TableHead>
             <TableRow>

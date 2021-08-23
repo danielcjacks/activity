@@ -11,65 +11,61 @@ generator client {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  username String  @unique
-  password String
-  values   Value[]
-  goals    Goal[]
+  id         Int         @id @default(autoincrement())
+  username   String      @unique
+  password   String
+  motivators Motivator[]
+  behaviours Behaviour[]
 }
 
-model Value {
-  id          Int          @id @default(autoincrement())
-  // Link a user, joining via the userId in the Value model,
-  // and the id in the User model
-  User        User         @relation(fields: [userId], references: [id])
-  userId      Int
-  name        String
-  description String?
-  // May be a better datatype for this
-  importance  Int?
-  goals       GoalValues[]
+// This a feeling that someone has that **motivates** different behaviours
+model Motivator {
+  id                   Int                  @id @default(autoincrement())
+  user                 User                 @relation(fields: [user_id], references: [id])
+  user_id              Int
+  name                 String
+  description          String?
+  // This represents how positive the motivator is
+  // E.g. For Jealously, positivity would equal negative five
+  // E.g. For Family, positivity would equal around five
+  positivity           Int
+  // These are the behaviours that this motivator motivates
+  behaviour_motivators BehaviourMotivator[]
 }
 
-model GoalValues {
-  goal    Goal  @relation(fields: [goalId], references: [id])
-  goalId  Int
-  value   Value @relation(fields: [valueId], references: [id])
-  valueId Int
+// Joining table that links the Motivator table and the Behaviour table
+model BehaviourMotivator {
+  behaviour    Behaviour @relation(fields: [behaviour_id], references: [id])
+  behaviour_id Int
+  motivator    Motivator @relation(fields: [motivator_id], references: [id])
+  motivator_id Int
 
-  @@id([goalId, valueId])
+  // Explicit state many-to-many relatioship
+  @@id([behaviour_id, motivator_id])
 }
 
-model Goal {
-  id          Int          @id @default(autoincrement())
-  name        String
-  description String?
-  // Link a user, joining via the userId in the Goal model,
-  // and the id in the User model
-  User        User         @relation(fields: [userId], references: [id])
-  userId      Int
-  behaviours  Behaviour[]
-  values      GoalValues[]
-}
-
+// This is an action that a user does regularly
+// They are motivated by motivators
+// Can be grouped into goals that can remind users to do something (go for a run)
+// or not do something (don't watch TV)
 model Behaviour {
-  id              Int              @id @default(autoincrement())
-  Goal            Goal             @relation(fields: [goalId], references: [id])
-  goalId          Int
-  name            String
-  description     String?
-  // This field will be however we store the sheduling
-  // e.g. Stringified JSON object
-  shedule         String
-  // May be a better datatype for this
-  difficulty      Int?
-  behaviourEvents BehaviourEvent[]
+  id                   Int                  @id @default(autoincrement())
+  name                 String
+  description          String?
+  user                 User                 @relation(fields: [user_id], references: [id])
+  user_id              Int
+  behaviour_motivators BehaviourMotivator[]
+  behaviour_events     BehaviourEvent[]
+  // schedule             String
 }
 
+// This allows users to log when they perform a behaviour
+// These records will be used to help visualise which behaviours a user performs most frequently
+// TODO: does this store the goal
 model BehaviourEvent {
-  id          Int       @id @default(autoincrement())
-  Behaviour   Behaviour @relation(fields: [behaviourId], references: [id])
-  behaviourId Int
-  comment     String?
-  timeStamp   DateTime  @default(now())
+  id           Int       @id @default(autoincrement())
+  behaviour    Behaviour @relation(fields: [behaviour_id], references: [id])
+  behaviour_id Int
+  comment      String?
+  time_stamp   DateTime  @default(now())
 }
