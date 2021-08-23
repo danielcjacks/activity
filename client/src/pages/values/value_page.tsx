@@ -7,9 +7,6 @@ import { SaveButton } from '../../components/save_button'
 import { router_store } from '../../router_store'
 import { get_loading } from '../../utils/async_loaders'
 import { value_store } from './value_store'
-import { useState, useEffect } from 'react-transition-group/node_modules/@types/react'
-import { server_post } from '../../server_connector'
-import { shared_store } from '../../shared_store'
 
 const get_field_props = (path: (string | number)[]) => {
     return {
@@ -18,23 +15,7 @@ const get_field_props = (path: (string | number)[]) => {
     }
 }
 
-export const ValuePage = observer(() => {
-    const [values, setValues] =  useState<any[]>([])
-    
-    useEffect(() => {        
-        //the `/prisma` route is hooked up on the backend.
-        //the `where: {userId: shared_store.state.userId}` means that only select the values of the current logged in user, 
-        //similar to a `SELECT * WHERE` in SQL
-        server_post(`/prisma/value/findMany`, { 
-            where: {userId: shared_store.state.user_id}})
-            .then((respond) => {
-                setValues(respond)
-            })
-            .catch((error) =>{
-                console.log(error)
-            })
-    }, []);
-    
+export const ValuePage = observer(() => {  
     return <>
         <ValueTitle />
         <ValueFields />

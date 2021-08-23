@@ -31,17 +31,17 @@
         "timeout": 0
     },
     "nodemonConfig": {
-		"verbose": true,
-		"legacyWatch": true,
-		"ignore": [
-			"node_modules",
-			"coverage",
+        "verbose": true,
+        "legacyWatch": true,
+        "ignore": [
+            "node_modules",
+            "coverage",
             "public"
-		],
-		"watch": [
-			"./"
-		],
-		"exec": "npm run mocha",
-		"ext": "ts, js, jsx, tsx"
-	}
+        ],
+        "watch": [
+            "./"
+        ],
+        "exec": "npm run mocha",
+        "ext": "ts, js, jsx, tsx"
+    }
 }
