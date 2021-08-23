@@ -41,10 +41,10 @@ const ValuesTable = observer(() => {
                         <TableCell>{value.name}</TableCell>
                     </TableRow>
                     <TableRow>
-                        <TableCell>{value.name}</TableCell>
+                        <TableCell>{value.description}</TableCell>
                     </TableRow>
                     <TableRow>
-                        <TableCell>{value.name}</TableCell>
+                        <TableCell>{value.importance}</TableCell>
                     </TableRow></>
                 )
             })}
