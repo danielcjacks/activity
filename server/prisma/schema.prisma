@@ -7,7 +7,8 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialActions"]
 }
 
 model User {
@@ -35,9 +36,9 @@ model Motivator {
 
 // Joining table that links the Motivator table and the Behaviour table
 model BehaviourMotivator {
-  behaviour    Behaviour @relation(fields: [behaviour_id], references: [id])
+  behaviour    Behaviour @relation(fields: [behaviour_id], references: [id], onDelete: Cascade)
   behaviour_id Int
-  motivator    Motivator @relation(fields: [motivator_id], references: [id])
+  motivator    Motivator @relation(fields: [motivator_id], references: [id], onDelete: Cascade)
   motivator_id Int
 
   // Explicit state many-to-many relatioship
