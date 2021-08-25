@@ -65,28 +65,30 @@ const MotivatorsTable = observer(() => {
                 </IconButton>
               </TableCell>
               <TableCell>{motivator.positivity}</TableCell>
-              <TableCell
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-evenly',
-                  alignItems: 'center',
-                }}
-              >
-                <IconButton
-                  onClick={() => {
-                    // This route is not implemented yet
-                    window.location.hash = `#/motivators/update?motivator_id=${motivator.id}`
+              <TableCell>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-evenly',
+                    alignItems: 'center',
                   }}
                 >
-                  <EditIcon />
-                </IconButton>
-                <IconButton
-                  onClick={() => {
-                    motivators_store.select_motivator_for_delete(motivator.id)
-                  }}
-                >
-                  <RemoveIcon />
-                </IconButton>
+                  <IconButton
+                    onClick={() => {
+                      // This route is not implemented yet
+                      window.location.hash = `#/motivators/update?motivator_id=${motivator.id}`
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={() => {
+                      motivators_store.select_motivator_for_delete(motivator.id)
+                    }}
+                  >
+                    <RemoveIcon />
+                  </IconButton>
+                </div>
               </TableCell>
             </TableRow>
           )
