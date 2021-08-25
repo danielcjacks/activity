@@ -11,6 +11,7 @@ import {
   Box,
   InputLabel,
   Select,
+  IconButton,
 } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import RemoveIcon from '@material-ui/icons/Remove'
@@ -80,18 +81,22 @@ const BehaviourMotivatorsAdder = observer(() => {
           return (
             <ListItem key={motivator_index}>
               <MotivatorSelect motivator_index={motivator_index} />
-              <RemoveIcon
+              <IconButton
                 onClick={action(() =>
                   behaviour_store.remove_motivator(motivator_index)
                 )}
-              />
+              >
+                <RemoveIcon />
+              </IconButton>
             </ListItem>
           )
         })}
 
         <ListItem>
           <ListItemIcon>
-            <AddIcon onClick={action(() => behaviour_store.add_motivator())} />
+            <IconButton onClick={action(() => behaviour_store.add_motivator())}>
+              <AddIcon />
+            </IconButton>
           </ListItemIcon>
         </ListItem>
       </List>
