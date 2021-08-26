@@ -6,40 +6,38 @@ import {
   TableRow,
   Card,
   CardHeader,
+  Dialog,
+  DialogTitle,
+  IconButton,
+  Typography,
+  Button,
 } from '@material-ui/core'
+import AddIcon from '@material-ui/icons/Add'
+import RemoveIcon from '@material-ui/icons/Remove'
+import EditIcon from '@material-ui/icons/Edit'
+import CloseIcon from '@material-ui/icons/Close'
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import { observer } from 'mobx-react-lite'
-import { useState, useEffect } from 'react'
-import { server_post } from '../../server_connector'
-import { shared_store } from '../../shared_store'
+import { useEffect } from 'react'
+import { motivators_store } from './motivators_store'
 
 export const MotivatorsPage = observer(() => {
+  useEffect(() => {
+    motivators_store.component_load()
+  }, [])
   return (
     <>
       <Card>
         <CardHeader title={'Motivators'} />
       </Card>
       <MotivatorsTable />
+      <DeleteModal />
+      <DescriptionModal />
     </>
   )
 })
 
 const MotivatorsTable = observer(() => {
-  const [motivators, set_motivators] = useState<any[]>([])
-
-  useEffect(() => {
-    //the `/prisma` route is hooked up on the backend.
-    //the `where: {userId: shared_store.state.userId}` means that only select the values of the current logged in user,
-    //similar to a `SELECT * WHERE` in SQL
-    server_post(`/prisma/motivator/findMany`, {
-      where: { user_id: shared_store.state.user_id },
-    })
-      .then((respond) => {
-        set_motivators(respond)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  }, [])
   return (
     <Table>
       <TableHead>
@@ -47,21 +45,142 @@ const MotivatorsTable = observer(() => {
           <TableCell>Name</TableCell>
           <TableCell>Description</TableCell>
           <TableCell>Positivity</TableCell>
+          <TableCell>Edit</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
-        {motivators.map((motivators) => {
+        {motivators_store.motivators.map((motivator) => {
           return (
-            <>
-              <TableRow>
-                <TableCell>{motivators.name}</TableCell>
-                <TableCell>{motivators.description}</TableCell>
-                <TableCell>{motivators.positivity}</TableCell>
-              </TableRow>
-            </>
+            <TableRow key={motivator.id}>
+              <TableCell>{motivator.name}</TableCell>
+              <TableCell>
+                <IconButton
+                  onClick={() => {
+                    motivators_store.select_motivator_for_description(
+                      motivator.id
+                    )
+                  }}
+                >
+                  <MoreHorizIcon />
+                </IconButton>
+              </TableCell>
+              <TableCell>{motivator.positivity}</TableCell>
+              <TableCell>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-evenly',
+                    alignItems: 'center',
+                  }}
+                >
+                  <IconButton
+                    onClick={() => {
+                      // This route is not implemented yet
+                      window.location.hash = `#/motivators/update?motivator_id=${motivator.id}`
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={() => {
+                      motivators_store.select_motivator_for_delete(motivator.id)
+                    }}
+                  >
+                    <RemoveIcon />
+                  </IconButton>
+                </div>
+              </TableCell>
+            </TableRow>
           )
         })}
+        <TableRow>
+          <IconButton
+            onClick={() => {
+              window.location.hash = '#/motivators/create'
+            }}
+          >
+            <AddIcon />
+          </IconButton>
+        </TableRow>
       </TableBody>
     </Table>
+  )
+})
+
+const DescriptionModal = observer(() => {
+  return (
+    <Dialog
+      open={motivators_store.description_modal_open}
+      onClose={motivators_store.toggle_description_modal}
+    >
+      <DialogTitle>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Typography variant="h6">
+            {motivators_store.get_motivator_name()} Description
+          </Typography>
+          <IconButton onClick={motivators_store.toggle_description_modal}>
+            <CloseIcon />
+          </IconButton>
+        </div>
+        <Typography>{motivators_store.get_motivator_description()}</Typography>
+      </DialogTitle>
+    </Dialog>
+  )
+})
+
+const DeleteModal = observer(() => {
+  return (
+    <Dialog
+      open={motivators_store.delete_modal_open}
+      onClose={motivators_store.toggle_delete_modal}
+    >
+      <DialogTitle>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Typography variant="h6">Motivator Delete</Typography>
+          <IconButton onClick={motivators_store.toggle_delete_modal}>
+            <CloseIcon />
+          </IconButton>
+        </div>
+        <Typography>
+          Are you sure you want to delete this motivator. It cannot be
+          recovered.
+        </Typography>
+
+        <div
+          style={{
+            marginTop: '1em',
+            display: 'flex',
+            justifyContent: 'space-evenly',
+          }}
+        >
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={motivators_store.delete_motivator}
+          >
+            Confirm
+          </Button>
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={motivators_store.toggle_delete_modal}
+          >
+            Cancel
+          </Button>
+        </div>
+      </DialogTitle>
+    </Dialog>
   )
 })
