@@ -121,7 +121,9 @@ const DescriptionModal = observer(() => {
             alignItems: 'center',
           }}
         >
-          <Typography variant="h6">Description</Typography>
+          <Typography variant="h6">
+            {motivators_store.get_motivator_name()} Description
+          </Typography>
           <IconButton onClick={motivators_store.toggle_description_modal}>
             <CloseIcon />
           </IconButton>

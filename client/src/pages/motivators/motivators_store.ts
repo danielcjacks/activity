@@ -60,6 +60,15 @@ class MotivatorsStore {
       })
   }
 
+  get_motivator_name = () => {
+    const motivator = this.motivators.find(
+      (motivator) => motivator.id === this.selected_motivator_id
+    )
+
+    if (!motivator) return ''
+    return motivator.name
+  }
+
   get_motivator_description = () => {
     const motivator = this.motivators.find(
       (motivator) => motivator.id === this.selected_motivator_id
