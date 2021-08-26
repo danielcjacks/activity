@@ -1,5 +1,6 @@
 import { prisma } from '../src/server'
 import fs from 'fs'
+import sqlstring from 'sqlstring'
 
 
 /**
@@ -84,11 +85,7 @@ const generate_insert_statements = (records: Record<string, unknown>[], table_na
   })
 
   const key_names = [...insert_keys]
-  const sql_values = values.map(els => 
-    `(${els.map(e => 
-      typeof e === 'string' ? `"${e}"` : e
-    )})`
-  )
+  const sql_values = sqlstring.escape(values) // escape function puts () and ,
 
   const sql = `INSERT INTO "${table_name}"(${key_names}) VALUES ${sql_values}`
   return sql
