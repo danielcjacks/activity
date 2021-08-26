@@ -1,9 +1,51 @@
 [
     {
-        "id": 1,
-        "user_id": 1,
-        "name": "Fitness",
-        "description": null,
+        "id": 6,
+        "user_id": 4,
+        "name": "Family",
+        "description": "Spending time with family",
+        "positivity": 5
+    },
+    {
+        "id": 7,
+        "user_id": 4,
+        "name": "Productivity",
+        "description": "Being productive",
         "positivity": 3
+    },
+    {
+        "id": 8,
+        "user_id": 4,
+        "name": "Creativity",
+        "description": "Being creative",
+        "positivity": 3
+    },
+    {
+        "id": 9,
+        "user_id": 4,
+        "name": "Being active",
+        "description": "",
+        "positivity": 2
+    },
+    {
+        "id": 10,
+        "user_id": 4,
+        "name": "Well-being",
+        "description": "Personal well being",
+        "positivity": 2
+    },
+    {
+        "id": 11,
+        "user_id": 4,
+        "name": "Pain",
+        "description": "",
+        "positivity": -3
+    },
+    {
+        "id": 12,
+        "user_id": 4,
+        "name": "Withdrawal sickness",
+        "description": "",
+        "positivity": -5
     }
 ]
