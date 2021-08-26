@@ -13,6 +13,8 @@ const json_schema = {
   behaviourEvent: ['id', 'behaviour_id', 'comment', 'time_stamp']
 }
 
+const insert_tables = Object.keys(json_schema).map(table_name => table_name[0].toUpperCase() + table_name.slice(1, Infinity))
+
 export const dehydrate = async () => {
   const table_names = Object.keys(json_schema)
 
@@ -25,20 +27,71 @@ export const dehydrate = async () => {
     return { select }
   })
 
-  const table_results = await Promise.all(table_names.map((table_name, i) => 
+  const table_results = await Promise.all(table_names.map((table_name, i) =>
     prisma[table_name].findMany(queries[i])
   ))
 
   table_names.forEach((table_name, i) => {
     const rows = table_results[i]
 
-    const filename = `${table_name}_hydration.ts`
-    const file_contents = `export const rows = ${JSON.stringify(rows, undefined, 4)}`
+    const directory = get_hydration_file_directory(table_name)
+    const file_contents = `${JSON.stringify(rows, undefined, 4)}`
 
-    fs.writeFileSync(`${__dirname}/../hydration/${filename}`, file_contents)
+    fs.writeFileSync(directory, file_contents, { encoding: 'utf8' })
   })
 }
 
-export const hydrate = () => {
+export const hydrate = async () => {
+  const table_names = insert_tables
 
+  const results = table_names.map(table_name => {
+    const directory = get_hydration_file_directory(table_name)
+    const rows = fs.existsSync(directory)
+      ? JSON.parse(fs.readFileSync(directory, { encoding: 'utf8' }))
+      : []
+    return rows
+  })
+
+  // disable foreign key constraints so we dont have to delete/insert in the right order
+  const disable_triggers = table_names.map(table_name => `ALTER TABLE "${table_name}" DISABLE TRIGGER ALL`)
+  const delete_statements = table_names.map(table_name => `TRUNCATE "${table_name}" CASCADE`)
+  const insert_statements = table_names.map((table_name, i) => results[i].length > 0 
+    ? generate_insert_statements(results[i], table_name)
+    : null
+  )
+  const enable_triggers = table_names.map(table_name => `ALTER TABLE "${table_name}" ENABLE TRIGGER ALL`)
+
+  // not using a transaction, but its just hydration so thats fine
+  await Promise.all(disable_triggers.map(s => prisma.$executeRaw(s)))
+  await Promise.all(delete_statements.map(s => prisma.$executeRaw(s)))
+  await Promise.all(insert_statements.map(s => s ? prisma.$executeRaw(s) : null))
+  await Promise.all(enable_triggers.map(s => prisma.$executeRaw(s)))
 }
+
+const generate_insert_statements = (records: Record<string, unknown>[], table_name: string) => {
+  // get insert keys by combining the keys from all records
+  const insert_keys = records.reduce((acc, record, i) => {
+
+    const keys_to_insert = Object.keys(record)
+    keys_to_insert.forEach(key => acc.add(key))
+
+    return acc
+  }, new Set() as Set<string>)
+
+  const values = records.map(record => {
+    const record_values = [...insert_keys].map(key => record[key] ?? null)
+    return record_values
+  })
+
+  const key_names = [...insert_keys]
+  const sql_values = values.map(els => 
+    `(${els.map(e => 
+      typeof e === 'string' ? `"${e}"` : e
+    )})`
+  )
+
+  const sql = `INSERT INTO "${table_name}"(${key_names}) VALUES ${sql_values}`
+  return sql
+}
+
+const get_hydration_file_directory = (table_name: string) => `${__dirname}/../hydration/${table_name}_hydration.json`

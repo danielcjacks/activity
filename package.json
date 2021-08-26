@@ -7,7 +7,9 @@
         "test": "mocha --package package.json",
         "nt": "nodemon --exec nyc --reporter html npm run test",
         "coverage-watch": "live-server coverage",
-        "q": "taskkill /f /im node.exe"
+        "q": "taskkill /f /im node.exe",
+        "hy": "cd ./server && npm run hy",
+        "dehy": "cd ./server && npm run dehy"
         
     },
     "devDependencies": {

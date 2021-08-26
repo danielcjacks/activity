@@ -5,7 +5,8 @@
   "main": "/src/server.ts",
   "scripts": {
     "start": "ts-node-dev ./src/start_server.ts",
-    "dehy": "ts-node -e \" require('./scripts/hydration').dehydrate().then(() => {console.log('Done'); process.exit(0) }) \""
+    "dehy": "ts-node -e \" require('./scripts/hydration').dehydrate().then(() => { process.exit(0) }) \"",
+    "hy": "ts-node -e \" require('./scripts/hydration').hydrate().then(() => { process.exit(0) }) \""
   },
   "author": "",
   "license": "ISC",
