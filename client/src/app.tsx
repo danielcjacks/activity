@@ -56,8 +56,8 @@ export const App = observer(() => {
 		<BottomNavigation value={router_store.hash} onChange={handleChange} className={classes.root} showLabels={false}>
       		<BottomNavigationAction label="Home" value="#/home" icon={<HomeIcon />} />
       		<BottomNavigationAction label="Motivators" value="#/motivators" icon={<FavoriteIcon />} />
-      		<BottomNavigationAction label="Nearby" value="#/behaviours/create" icon={<DirectionsRunIcon />} />
-      		<BottomNavigationAction label="Folder" value="folder" icon={<AssessmentIcon />} />
+      		<BottomNavigationAction label="Behaviours" value="#/behaviours/create" icon={<DirectionsRunIcon />} />
+      		<BottomNavigationAction label="Graph" value="#/graph" icon={<AssessmentIcon />} />
     	</BottomNavigation>
         <Toasts />
     </>
