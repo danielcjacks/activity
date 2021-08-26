@@ -7,10 +7,10 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import FolderIcon from '@material-ui/icons/Folder';
-import RestoreIcon from '@material-ui/icons/Restore';
+import AssessmentIcon from '@material-ui/icons/Assessment';
+import HomeIcon from '@material-ui/icons/Home';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
+import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
 import { router_store } from './router_store'
 
 const useStyles = makeStyles({
@@ -49,14 +49,15 @@ export const App = observer(() => {
   	const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
 		window.location.hash = newValue;
   	};
+
 	
 	return <>
     	<Router />
 		<BottomNavigation value={router_store.hash} onChange={handleChange} className={classes.root} showLabels={false}>
-      		<BottomNavigationAction label="Home" value="#/home" icon={<RestoreIcon />} />
+      		<BottomNavigationAction label="Home" value="#/home" icon={<HomeIcon />} />
       		<BottomNavigationAction label="Values" value="#/values" icon={<FavoriteIcon />} />
-      		<BottomNavigationAction label="Nearby" value="nearby" icon={<LocationOnIcon />} />
-      		<BottomNavigationAction label="Folder" value="folder" icon={<FolderIcon />} />
+      		<BottomNavigationAction label="Nearby" value="nearby" icon={<DirectionsRunIcon />} />
+      		<BottomNavigationAction label="Folder" value="folder" icon={<AssessmentIcon />} />
     	</BottomNavigation>
         <Toasts />
     </>
