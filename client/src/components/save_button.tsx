@@ -15,7 +15,7 @@ export const SaveButton = observer(({ can_save, is_loading, on_save}: SaveButton
 
     return (
         <Tooltip title={can_save ? 'Save changes' : 'No changes to save'}>
-            <Box position='fixed' bottom={15} right={15}>
+            <Box position='fixed' bottom={70} right={15}>
                 <Fab
                     color='primary'
                     style={{ backgroundColor: theme.palette.success.main }}
