@@ -13,9 +13,9 @@ cytoscape.use(dagre)
 export const GraphPage = observer(() => {
   return (
     <Grid container spacing={2}>
-      <Grid item>
+      {/* <Grid item>
         <Graph1 />
-      </Grid>
+      </Grid> */}
       <Grid item>
         <Graph2 />
       </Grid>
