@@ -7,15 +7,30 @@ import dagre from 'cytoscape-dagre'
 import cytoscape from 'cytoscape'
 import { invlerp, lerp } from '../../utils/math_utils'
 import chroma from 'chroma-js'
+import { useEffect } from 'react'
 
 cytoscape.use(dagre)
 
 export const GraphPage = observer(() => {
+  useEffect(() => {
+    graph_store.fetch_data().then(() => {
+      // it seems like this is an error with the cytoscape-js component, but it does not refresh the layout when new data is loaded
+      // (maybe because we are using mobx?). So we rerun the layout manually whenever new data is fetched.
+      if (graph_store.cy) {
+        graph_store.cy.layout({
+          name: 'dagre',
+          nodeDimensionsIncludeLabels: true,
+          rankDir: 'LR'
+        }).run()
+      }
+    })
+  }, [])
+
   return (
     <Grid container spacing={2}>
-      <Grid item>
+      {/* <Grid item>
         <Graph1 />
-      </Grid>
+      </Grid> */}
       <Grid item>
         <Graph2 />
       </Grid>
@@ -24,6 +39,8 @@ export const GraphPage = observer(() => {
 })
 
 const Graph1 = observer(() => {
+
+
   return (
     <CytoscapeComponent
       style={{ width: '600px', height: '600px', backgroundColor: 'grey' }}
@@ -52,15 +69,12 @@ const get_stylesheet = () => [
     selector: 'node[_table_name = "motivators"]',
     style: {
       shape: 'rectangle',
-      backgroundColor: ele => get_motivator_color(ele.data('importance') ?? 0, -5, 5),
+      backgroundColor: (ele) => {
+        console.log(ele, ele.data())
+        return get_motivator_color(ele.data()?.positivity || 0, -5, 5)
+      }
     },
   },
-  // {
-  //   selector: 'node[_table_name = "goals"]',
-  //   style: {
-  //     shape: 'ellipse',
-  //   },
-  // },
   {
     selector: 'node[_table_name = "behaviours"]',
     style: {
@@ -70,17 +84,21 @@ const get_stylesheet = () => [
       'border-color': '#666',
       'background-opacity': 0,
       height: (ele) => {
-        const behaviour_events_count =
-          ele.data('behaviourEvents')?.length ?? 0
+        const behaviour_events_count = ele.data()?.behaviour_events?.length ?? 0
         const max_behaviour_events = graph_store.max_behaviour_events
-        const size_multiplier = get_behaviour_size(behaviour_events_count, max_behaviour_events)
+        const size_multiplier = get_behaviour_size(
+          behaviour_events_count,
+          max_behaviour_events
+        )
         return `${size_multiplier * 150}px`
       },
       width: (ele) => {
-        const behaviour_events_count =
-          ele.data('behaviourEvents')?.length ?? 0
+        const behaviour_events_count = ele.data()?.behaviour_events?.length ?? 0
         const max_behaviour_events = graph_store.max_behaviour_events
-        const size_multiplier = get_behaviour_size(behaviour_events_count, max_behaviour_events)
+        const size_multiplier = get_behaviour_size(
+          behaviour_events_count,
+          max_behaviour_events
+        )
         return `${size_multiplier * 150}px`
       },
     },
@@ -101,22 +119,24 @@ const get_stylesheet = () => [
 const Graph2 = observer(() => {
   return (
     <CytoscapeComponent
-      style={{ width: '1500px', height: '1200px', backgroundColor: 'grey' }}
+      cy={cy => graph_store.cy = cy}
+      style={{ width: '100%', position: 'absolute', top: '0px', bottom: '56px', backgroundColor: 'grey' }}
       elements={graph_store.get_cytoscape_elements()}
-      layout={{
-        name: 'dagre',
-        nodeDimensionsIncludeLabels: true,
-      }}
       stylesheet={get_stylesheet()}
+      wheelSensitivity={0.1}
     />
   )
 })
 
-const get_motivator_color = (importance, min_importance: number, max_importance: number) => {
+const get_motivator_color = (
+  positivity,
+  min_positivity: number,
+  max_positivity: number
+) => {
   const scale = chroma.bezier(['indianred', '#666', '#477951']).scale()
-  const percent = invlerp(min_importance, max_importance, importance)
+  const percent = invlerp(min_positivity, max_positivity, positivity)
   const color = scale(percent).hex()
-  console.log('color', importance, percent, color)
+  console.log('color', positivity, percent, color)
   return color
 }
 
@@ -130,6 +150,6 @@ const get_behaviour_size = (behaviour_events_count, max_behaviour_events) => {
   // there is a lot of variation between them).
   // The *1.313 is just a normalizing constant. Basically it makes the range of the function (0, 1) instaed of (0, 0.762)
   // without changing the overall shape.
-  const size = Math.tanh(behaviour_events_count / max_behaviour_events) * 1.313 
+  const size = Math.tanh(behaviour_events_count / max_behaviour_events) * 1.313
   return size
 }
