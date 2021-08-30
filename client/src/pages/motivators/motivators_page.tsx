@@ -27,8 +27,18 @@ export const MotivatorsPage = observer(() => {
   }, [])
   return (
     <>
-      <Card>
+      <Card style={{ display: 'flex', justifyContent: 'space-between' }}>
         <CardHeader title={'Motivators'} />
+        <IconButton
+          style={{
+            marginRight: '0.5em',
+          }}
+          onClick={() => {
+            window.location.hash = '#/motivators/create'
+          }}
+        >
+          <AddIcon />
+        </IconButton>
       </Card>
       <MotivatorsTable />
       <DeleteModal />
@@ -45,7 +55,7 @@ const MotivatorsTable = observer(() => {
           <TableCell>Name</TableCell>
           <TableCell>Description</TableCell>
           <TableCell>Positivity</TableCell>
-          <TableCell>Edit</TableCell>
+          <TableCell>Actions</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -93,15 +103,6 @@ const MotivatorsTable = observer(() => {
             </TableRow>
           )
         })}
-        <TableRow>
-          <IconButton
-            onClick={() => {
-              window.location.hash = '#/motivators/create'
-            }}
-          >
-            <AddIcon />
-          </IconButton>
-        </TableRow>
       </TableBody>
     </Table>
   )
