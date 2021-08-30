@@ -13,7 +13,6 @@ import {
   Button,
 } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
-import RemoveIcon from '@material-ui/icons/Remove'
 import EditIcon from '@material-ui/icons/Edit'
 import CloseIcon from '@material-ui/icons/Close'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
@@ -96,7 +95,7 @@ const MotivatorsTable = observer(() => {
                       motivators_store.select_motivator_for_delete(motivator.id)
                     }}
                   >
-                    <RemoveIcon />
+                    <CloseIcon color="error" />
                   </IconButton>
                 </div>
               </TableCell>
