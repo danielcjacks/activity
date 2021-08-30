@@ -51,18 +51,23 @@ const MotivatorsTable = observer(() => {
     <Table>
       <TableHead>
         <TableRow>
-          <TableCell>Name</TableCell>
-          <TableCell>Description</TableCell>
-          <TableCell>Positivity</TableCell>
-          <TableCell>Actions</TableCell>
+          {['Name', 'Description', 'Positivity', 'Actions'].map((col_name) => {
+            return (
+              <TableCell style={{ maxWidth: '25%' }}>
+                <Typography variant="caption">{col_name}</Typography>
+              </TableCell>
+            )
+          })}
         </TableRow>
       </TableHead>
       <TableBody>
         {motivators_store.motivators.map((motivator) => {
           return (
             <TableRow key={motivator.id}>
-              <TableCell>{motivator.name}</TableCell>
-              <TableCell>
+              <TableCell style={{ maxWidth: '25%' }}>
+                <Typography variant="caption">{motivator.name}</Typography>
+              </TableCell>
+              <TableCell style={{ maxWidth: '25%' }}>
                 <IconButton
                   onClick={() => {
                     motivators_store.select_motivator_for_description(
@@ -73,8 +78,10 @@ const MotivatorsTable = observer(() => {
                   <MoreHorizIcon />
                 </IconButton>
               </TableCell>
-              <TableCell>{motivator.positivity}</TableCell>
-              <TableCell>
+              <TableCell style={{ maxWidth: '25%' }}>
+                {motivator.positivity}
+              </TableCell>
+              <TableCell style={{ maxWidth: '25%', paddingLeft: '0' }}>
                 <div
                   style={{
                     display: 'flex',
