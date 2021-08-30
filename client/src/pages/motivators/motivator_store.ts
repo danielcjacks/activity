@@ -35,7 +35,7 @@ class MotivatorStore {
           shared_store.show_toast('error', response.error.message)
           return
         }
-        window.location.hash = '#/home'
+        window.location.hash = '#/motivators'
         shared_store.show_toast(
           'success',
           `Motivator ${is_update ? 'updated' : 'saved'}`
