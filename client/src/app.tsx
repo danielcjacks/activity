@@ -58,7 +58,7 @@ export const App = observer(() => {
       	<BottomNavigationAction label="Home" value="#/home" icon={<HomeIcon />} />
       	<BottomNavigationAction label="Motivators" value="#/motivators" icon={<FavoriteIcon />} />
       	<BottomNavigationAction label="Behaviours" value="#/behaviours" icon={<DirectionsRunIcon />} />
-				<BottomNavigationAction label="Behaviour Events" value="#/events" icon={<AddAlarmIcon />} />
+				<BottomNavigationAction label="Events" value="#/events" icon={<AddAlarmIcon />} />
       	<BottomNavigationAction label="Visualise" value="#/graph" icon={<AssessmentIcon />} />
     	</BottomNavigation>
       <Toasts />
