@@ -4,26 +4,15 @@ import {
   Typography,
   Grid,
   TextField,
-  List,
-  ListItem,
-  FormControl,
-  ListItemIcon,
-  Box,
-  InputLabel,
   Select,
-  IconButton,
   MenuItem,
 } from '@material-ui/core'
-import AddIcon from '@material-ui/icons/Add'
-import RemoveIcon from '@material-ui/icons/Remove'
 import { action } from 'mobx'
 import { observer } from 'mobx-react-lite'
 import { useEffect } from 'react'
-import { router_store } from '../../router_store'
 import { event_store } from './behaviour_event_store'
 import { SaveButton } from '../../components/save_button'
 import { get_loading } from '../../utils/async_loaders'
-import { behaviour_store } from '../behaviours/behaviour_store'
 
 export const BehaviourEventPage = () => {
   useEffect(() => {
@@ -57,7 +46,7 @@ const Fields = observer(() => {
           onChange={event_store.handle_select}
         >
           {event_store.behaviours.map((behaviour) => {
-            return <MenuItem value={behaviour.id}>{behaviour.name}</MenuItem>
+            return <MenuItem key={behaviour.id} value={behaviour.id}>{behaviour.name}</MenuItem>
           })}
         </Select>
       </Grid>
