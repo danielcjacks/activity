@@ -49,7 +49,7 @@ export const BehaviourEventsPage = observer(() => {
 const EventsTable = observer(() => {
   return (
     <Table>
-      <TableHead>
+      {/* <TableHead>
         <TableRow>
           {['Behaviour', 'Comment', 'Time Stamp', 'Actions'].map((col_name) => {
             return (
@@ -59,7 +59,7 @@ const EventsTable = observer(() => {
             )
           })}
         </TableRow>
-      </TableHead>
+      </TableHead> */}
       <TableBody>
         {events_store.events.map((event) => {
           return (
