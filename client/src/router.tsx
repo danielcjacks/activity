@@ -27,6 +27,7 @@ export const Router = observer(() => {
         : isEqual(path, ['behaviours', 'update']) ? <BehaviourPage />
         : isEqual(path, ['events']) ? <BehaviourEventsPage />
         : isEqual(path, ['events', 'create']) ? <BehaviourEventPage />
+        : isEqual(path, ['events', 'update']) ? <BehaviourEventPage />
         : <> {window.location.hash = '#/home'} Page {path.join('/')} Not found </>
 })
 
