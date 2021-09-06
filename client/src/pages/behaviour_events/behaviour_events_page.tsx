@@ -92,7 +92,7 @@ const EventsTable = observer(() => {
                   <IconButton
                     onClick={() => {
                       // This route is not implemented yet
-                      window.location.hash = `#/motivators/update?event_id=${event.id}`
+                      window.location.hash = `#/events/update?event_id=${event.id}`
                     }}
                   >
                     <EditIcon />
