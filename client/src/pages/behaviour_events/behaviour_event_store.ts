@@ -9,6 +9,11 @@ class EventStore {
   behaviours: any[] = []
   comment: string = ''
 
+  constructor() {
+    makeAutoObservable(this)
+    setup_async_loaders(this)
+  }
+
   reset_state = () => {
     this.behaviour_id = null
     this.behaviours = []
@@ -22,6 +27,7 @@ class EventStore {
     return path[path.length - 1].split('?')[0] === 'update'
   }
 
+  // Loads the event when upating
   load_event = async () => {
     const event_id = router_store.query.event_id
     if (!event_id) return
@@ -38,6 +44,7 @@ class EventStore {
     })
   }
 
+  // Runs every time the component is loaded, even re-loads
   on_component_load = () => {
     this.reset_state()
     if (this.is_update()) {
@@ -61,10 +68,12 @@ class EventStore {
       })
   }
 
+  // When a user selects a behaviour
   handle_select = (e: any) => {
     this.behaviour_id = e.target.value
   }
 
+  // When a user clicks save
   save = () => {
     const is_update = this.is_update()
     const event_id = router_store.query.event_id
@@ -102,13 +111,6 @@ class EventStore {
       .catch((e) => {
         shared_store.show_toast('error', 'Something went wrong')
       })
-  }
-
-  update = () => {}
-
-  constructor() {
-    makeAutoObservable(this)
-    setup_async_loaders(this)
   }
 }
 
