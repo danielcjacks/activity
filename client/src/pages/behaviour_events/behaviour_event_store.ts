@@ -54,6 +54,13 @@ class EventStore {
       }
       this.load_event()
     }
+
+    // If query param set, auto load the behaviour
+    const behaviour_id = router_store.query.behaviour_id
+    if (behaviour_id || !isNaN(+behaviour_id)) {
+      this.behaviour_id = +behaviour_id
+    }
+
     server_post('/prisma/behaviour/findMany', {
       where: { user_id: shared_store.state.userId },
     })
