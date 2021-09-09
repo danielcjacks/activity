@@ -14,7 +14,10 @@ const json_schema = {
   behaviourEvent: ['id', 'behaviour_id', 'comment', 'time_stamp']
 }
 
-const insert_tables = Object.keys(json_schema).map(table_name => table_name[0].toUpperCase() + table_name.slice(1, Infinity))
+const get_insert_table_name = table_name => table_name[0].toUpperCase() + table_name.slice(1, Infinity)
+
+const insert_tables = Object.keys(json_schema).map(table_name => get_insert_table_name(table_name))
+
 
 export const dehydrate = async () => {
   const table_names = Object.keys(json_schema)
@@ -43,30 +46,43 @@ export const dehydrate = async () => {
 }
 
 export const hydrate = async () => {
-  const table_names = insert_tables
+  try {
 
-  const results = table_names.map(table_name => {
-    const directory = get_hydration_file_directory(table_name)
-    const rows = fs.existsSync(directory)
-      ? JSON.parse(fs.readFileSync(directory, { encoding: 'utf8' }))
-      : []
-    return rows
-  })
+    const table_names = insert_tables
 
-  // disable foreign key constraints so we dont have to delete/insert in the right order
-  const disable_triggers = table_names.map(table_name => `ALTER TABLE "${table_name}" DISABLE TRIGGER ALL`)
-  const delete_statements = table_names.map(table_name => `TRUNCATE "${table_name}" CASCADE`)
-  const insert_statements = table_names.map((table_name, i) => results[i].length > 0 
-    ? generate_insert_statements(results[i], table_name)
-    : null
-  )
-  const enable_triggers = table_names.map(table_name => `ALTER TABLE "${table_name}" ENABLE TRIGGER ALL`)
+    const results = table_names.map(table_name => {
+      const directory = get_hydration_file_directory(table_name)
+      const rows = fs.existsSync(directory)
+        ? JSON.parse(fs.readFileSync(directory, { encoding: 'utf8' }))
+        : []
+      return rows
+    })
 
-  // not using a transaction, but its just hydration so thats fine
-  await Promise.all(disable_triggers.map(s => prisma.$executeRaw(s)))
-  await Promise.all(delete_statements.map(s => prisma.$executeRaw(s)))
-  await Promise.all(insert_statements.map(s => s ? prisma.$executeRaw(s) : null))
-  await Promise.all(enable_triggers.map(s => prisma.$executeRaw(s)))
+    // disable foreign key constraints so we dont have to delete/insert in the right order
+    const disable_triggers = table_names.map(table_name => `ALTER TABLE "${table_name}" DISABLE TRIGGER ALL`)
+    const delete_statements = table_names.map(table_name => `TRUNCATE "${table_name}" CASCADE`)
+    const insert_statements = table_names.map((table_name, i) => results[i].length > 0
+      ? generate_insert_statements(results[i], table_name)
+      : null
+    )
+    const enable_triggers = table_names.map(table_name => `ALTER TABLE "${table_name}" ENABLE TRIGGER ALL`)
+    // reset id sequences so that postgres autogenerating ids works properly
+    const reset_id_sequences = Object.keys(json_schema)
+      .filter(table_name => json_schema[table_name].includes('id'))
+      .map(table_name =>
+        `SELECT setval(pg_get_serial_sequence('"${get_insert_table_name(table_name)}"', 'id'), coalesce(max(id)+1, 1), false) FROM "${get_insert_table_name(table_name)}"`
+      )
+
+    // not using a transaction, but its just hydration so thats fine
+    await Promise.all(disable_triggers.map(s => prisma.$executeRaw(s)))
+    await Promise.all(delete_statements.map(s => prisma.$executeRaw(s)))
+    await Promise.all(insert_statements.map(s => s ? prisma.$executeRaw(s) : null))
+    await Promise.all(enable_triggers.map(s => prisma.$executeRaw(s)))
+    await Promise.all(reset_id_sequences.map(s => prisma.$executeRaw(s)))
+  }
+  catch (error) {
+    debugger
+  }
 }
 
 const generate_insert_statements = (records: Record<string, unknown>[], table_name: string) => {
