@@ -22,7 +22,9 @@ class MotivatorsStore {
       where: { user_id: shared_store.state.user_id },
     })
       .then((response) => {
-        this.motivators = response
+        if (response) {
+          this.motivators = response
+        }
       })
       .catch((error) => {
         console.log(error)

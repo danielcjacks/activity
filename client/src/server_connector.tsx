@@ -3,7 +3,7 @@ import { shared_store } from './shared_store'
 /**
  * @param server_route a server route like '/login'
  */
-export const server_post = async (server_route, body) => {
+export const server_post = async (server_route, body?) => {
   const jwt = shared_store.is_auth() ? shared_store.state.token : ''
 
   try {
@@ -17,7 +17,7 @@ export const server_post = async (server_route, body) => {
         Authorization: `Bearer ${jwt}`,
       },
       referrerPolicy: 'no-referrer',
-      body: JSON.stringify(body),
+      body: body ? JSON.stringify(body) : undefined,
     })
 
     if (response.status === 401) {

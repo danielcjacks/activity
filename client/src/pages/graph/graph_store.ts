@@ -40,12 +40,19 @@ class GraphStore {
     ])
 
     runInAction(() => {
-      motivators.sort((a, b) => (b.positivity || 0) - (a.positivity || 0))
+      if (motivators) {
+        motivators.sort((a, b) => (b.positivity || 0) - (a.positivity || 0))
+  
+        this.data.motivators = motivators
+      }
 
-      this.data.motivators = motivators
-      this.data.behaviours = behaviours
-      // this.data.behaviour_motivators = [{ motivator_id: this.data.motivators[0].id, behaviour_id: this.data.behaviours[0].id}]
-      this.data.behaviour_motivators = behaviour_motivators
+      if (behaviours) {
+        this.data.behaviours = behaviours
+      }
+
+      if (behaviour_motivators) { 
+        this.data.behaviour_motivators = behaviour_motivators
+      }      
     })
   }
 

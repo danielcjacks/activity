@@ -68,11 +68,13 @@ class BehaviourStore {
     })
 
     runInAction(() => {
-      this.name = behaviour.name
-      this.description = behaviour.description
-      this.motivator_ids_added = behaviour.behaviour_motivators.map(
-        (behaviour_motivators) => behaviour_motivators.motivator_id
-      )
+      if (behaviour) {
+        this.name = behaviour.name
+        this.description = behaviour.description
+        this.motivator_ids_added = behaviour.behaviour_motivators.map(
+          (behaviour_motivators) => behaviour_motivators.motivator_id
+        )
+      }
     })
   }
 
