@@ -10,7 +10,6 @@
         "q": "taskkill /f /im node.exe",
         "hy": "cd ./server && npm run hy",
         "dehy": "cd ./server && npm run dehy"
-        
     },
     "devDependencies": {
         "@types/chai": "^4.2.21",
@@ -34,17 +33,17 @@
         "timeout": 0
     },
     "nodemonConfig": {
-		"verbose": true,
-		"legacyWatch": true,
-		"ignore": [
-			"node_modules",
-			"coverage",
+        "verbose": true,
+        "legacyWatch": true,
+        "ignore": [
+            "node_modules",
+            "coverage",
             "public"
-		],
-		"watch": [
-			"./"
-		],
-		"exec": "npm run mocha",
-		"ext": "ts, js, jsx, tsx"
-	}
+        ],
+        "watch": [
+            "./"
+        ],
+        "exec": "npm run mocha",
+        "ext": "ts, js, jsx, tsx"
+    }
 }

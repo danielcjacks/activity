@@ -13,14 +13,18 @@ import { Refresh } from '@material-ui/icons'
 cytoscape.use(dagre)
 
 const reset_layout = () => {
-  graph_store?.cy
-    ?.layout({
-      name: 'dagre', // @ts-ignore
-      nodeDimensionsIncludeLabels: true, //@ts-ignore
-      rankDir: 'LR',
-      fit: true,
+  if (graph_store.cy) {
+    graph_store.cy.ready(() => {
+      graph_store?.cy
+        ?.layout({
+          name: 'dagre', // @ts-ignore
+          nodeDimensionsIncludeLabels: true, //@ts-ignore
+          rankDir: 'LR',
+          fit: true,
+        })
+        ?.run()
     })
-    ?.run()
+  }
 }
 
 export const GraphPage = observer(() => {
@@ -49,11 +53,7 @@ const RecenterButton = observer(() => {
   return (
     <Tooltip title={'Reset graph'}>
       <Box position="fixed" bottom={70} right={15}>
-        <Fab
-          color="default"
-          style={{}}
-          onClick={() => reset_layout()}
-        >
+        <Fab color="default" style={{}} onClick={() => reset_layout()}>
           <Refresh fontSize="large" />
         </Fab>
       </Box>
@@ -93,7 +93,6 @@ const get_stylesheet = () => [
     style: {
       shape: 'rectangle',
       backgroundColor: (ele) => {
-        console.log(ele, ele.data())
         return get_motivator_color(ele.data()?.positivity || 0, -5, 5)
       },
     },
