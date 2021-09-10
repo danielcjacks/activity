@@ -40,6 +40,8 @@ export const BehavioursPage = () => {
         </IconButton>
   </Card>
   <BehavioursTable/>
+  <DescriptionModal/>
+  <DeleteModal/>
   </>
 }
 const BehavioursTable = observer(() => {
@@ -118,5 +120,83 @@ const BehavioursTable = observer(() => {
         })}
       </TableBody>
     </Table> 
+  )
+})
+
+const DescriptionModal = observer(() => {
+  return (
+    <Dialog
+      open={behaviours_store.description_modal_open}
+      onClose={behaviours_store.toggle_description_modal}
+    >
+      <DialogTitle>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Typography variant="h6">
+            {behaviours_store.get_behaviour_name()} Description
+          </Typography>
+          <IconButton onClick={behaviours_store.toggle_description_modal}>
+            <CloseIcon />
+          </IconButton>
+        </div>
+        <Typography>{behaviours_store.get_behaviour_description()}</Typography>
+      </DialogTitle>
+    </Dialog>
+  )
+})
+
+const DeleteModal = observer(() => {
+  return (
+    <Dialog
+      open={behaviours_store.delete_modal_open}
+      onClose={behaviours_store.toggle_delete_modal}
+    >
+      <DialogTitle>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Typography variant="h6">Behaviour Delete</Typography>
+          <IconButton onClick={behaviours_store.toggle_delete_modal}>
+            <CloseIcon />
+          </IconButton>
+        </div>
+        <Typography>
+          Are you sure you want to delete this behaviour. It cannot be
+          recovered.
+        </Typography>
+
+        <div
+          style={{
+            marginTop: '1em',
+            display: 'flex',
+            justifyContent: 'space-evenly',
+          }}
+        >
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={behaviours_store.delete_behaviour}
+          >
+            Confirm
+          </Button>
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={behaviours_store.toggle_delete_modal}
+          >
+            Cancel
+          </Button>
+        </div>
+      </DialogTitle>
+    </Dialog>
   )
 })
