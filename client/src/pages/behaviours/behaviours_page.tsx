@@ -15,14 +15,15 @@ import {
 import AddIcon from '@material-ui/icons/Add'
 import EditIcon from '@material-ui/icons/Edit'
 import CloseIcon from '@material-ui/icons/Close'
+import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import { observer } from 'mobx-react-lite'
 import { useEffect } from 'react'
 import { behaviours_store } from './behaviours_store'
 
 export const BehavioursPage = () => {
-  useEffect(() => {behaviours_store.component_load()
-
+  useEffect(() => {
+    behaviours_store.component_load()
   }, []); 
   return <>
   <Card style = {{ display: 'flex', justifyContent: 'space-between' }}>
@@ -93,7 +94,7 @@ const BehavioursTable = observer(() => {
                       window.location.hash = `#/events/create?behaviour_id=${behaviour.id}`
                     }}
                   >
-                    <EditIcon />
+                    <PlaylistAddIcon />
                   </IconButton>
                   <IconButton
                     onClick={() => {
