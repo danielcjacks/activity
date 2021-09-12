@@ -46,7 +46,11 @@ const Fields = observer(() => {
           onChange={event_store.handle_select}
         >
           {event_store.behaviours.map((behaviour) => {
-            return <MenuItem key={behaviour.id} value={behaviour.id}>{behaviour.name}</MenuItem>
+            return (
+              <MenuItem key={behaviour.id} value={behaviour.id}>
+                {behaviour.name}
+              </MenuItem>
+            )
           })}
         </Select>
       </Grid>
@@ -63,6 +67,14 @@ const Fields = observer(() => {
             fullWidth
           />
         </Grid>
+      </Grid>
+      <Grid item xs={12}>
+        <TextField
+          value={event_store.get_date_time()}
+          onChange={(e: any) => event_store.set_date_time(e.target.value)}
+          style={{ color: 'white' }}
+          type="datetime-local"
+        />
       </Grid>
     </>
   )

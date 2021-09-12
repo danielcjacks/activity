@@ -8,6 +8,7 @@ class EventStore {
   behaviour_id: number | null = null
   behaviours: any[] = []
   comment: string = ''
+  timestamp: Date = new Date()
 
   constructor() {
     makeAutoObservable(this)
@@ -18,6 +19,20 @@ class EventStore {
     this.behaviour_id = null
     this.behaviours = []
     this.comment = ''
+    this.timestamp = new Date()
+  }
+
+  get_date_time = () => {
+    const year = this.timestamp.getFullYear()
+    const month = String(this.timestamp.getMonth()).padStart(2, '0')
+    const date = String(this.timestamp.getDate()).padStart(2, '0')
+    const hours = String(this.timestamp.getHours()).padStart(2, '0')
+    const minutes = String(this.timestamp.getMinutes()).padStart(2, '0')
+    return `${year}-${month}-${date}T${hours}:${minutes}`
+  }
+
+  set_date_time = (date_string: string) => {
+    this.timestamp = new Date(date_string)
   }
 
   is_update = () => {
@@ -41,6 +56,7 @@ class EventStore {
     runInAction(() => {
       this.comment = event.comment
       this.behaviour_id = event.behaviour_id
+      this.timestamp = new Date(event.time_stamp)
     })
   }
 
@@ -89,6 +105,7 @@ class EventStore {
           data: {
             comment: this.comment,
             behaviour_id: this.behaviour_id,
+            time_stamp: this.timestamp,
           },
           where: { id: +event_id },
         }
@@ -96,6 +113,7 @@ class EventStore {
           data: {
             behaviour_id: this.behaviour_id,
             comment: this.comment,
+            time_stamp: this.timestamp,
           },
         }
 
