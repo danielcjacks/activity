@@ -2,5 +2,6 @@ node_modules/
 .env
 data/
 migrations/
+.vscode/settings.json
 .nyc_output/
 coverage/

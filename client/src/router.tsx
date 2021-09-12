@@ -1,5 +1,6 @@
 import { isEqual } from 'lodash'
 import { observer } from 'mobx-react-lite'
+import { GraphPage } from './pages/graph/graph_page'
 import { BehavioursPage } from './pages/behaviours/behaviours_page'
 import { BehaviourPage } from './pages/behaviours/behaviour_page'
 import { HomePage } from './pages/home/home_page'
@@ -20,6 +21,7 @@ export const Router = observer(() => {
 
     return (isEqual(path, ['home'])) ? <HomePage />
         : isEqual(path, ['login']) ? < LoginPage />
+        : isEqual(path, ['graph']) ? < GraphPage />
         : isEqual(path, ['motivators']) ? < MotivatorsPage />
         : isEqual(path, ['motivators', 'create']) ? < MotivatorPage />
         : isEqual(path, ['behaviours']) ? < BehavioursPage />
