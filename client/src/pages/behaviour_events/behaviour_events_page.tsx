@@ -79,7 +79,10 @@ const EventsTable = observer(() => {
                 </IconButton>
               </TableCell>
               <TableCell style={{ maxWidth: '25%' }}>
-                <Typography variant="caption">{events_store.timestamp_to_date(event.time_stamp)} {events_store.timestamp_to_time(event.time_stamp)}</Typography>
+                <Typography variant="caption">
+                  {events_store.timestamp_to_date(event.time_stamp)}{' '}
+                  {events_store.timestamp_to_time(event.time_stamp)}
+                </Typography>
               </TableCell>
               <TableCell style={{ maxWidth: '25%' }}>
                 <div
@@ -129,7 +132,7 @@ const CommentModal = observer(() => {
           }}
         >
           <Typography variant="h6">
-            {events_store.get_selected_event_behaviour()} Comment
+            {events_store.get_selected_event_behaviour()}
           </Typography>
           <IconButton onClick={events_store.toggle_comment_modal}>
             <CloseIcon />
@@ -161,8 +164,7 @@ const DeleteModal = observer(() => {
           </IconButton>
         </div>
         <Typography>
-          Are you sure you want to delete this event. It cannot be
-          recovered.
+          Are you sure you want to delete this event. It cannot be recovered.
         </Typography>
 
         <div
