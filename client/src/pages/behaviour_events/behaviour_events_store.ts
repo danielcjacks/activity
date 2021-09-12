@@ -38,9 +38,7 @@ class EventsStore {
     const event = this.events.find(
       (event) => event.id === this.selected_event_id
     )
-    return !event || !event.comment
-      ? 'This event log contains no comment'
-      : event.comment
+    return !event || !event.comment ? null : event.comment
   }
 
   timestamp_to_date = (timestamp) => {

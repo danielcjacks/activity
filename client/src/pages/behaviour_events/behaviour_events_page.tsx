@@ -12,6 +12,7 @@ import {
   IconButton,
   Typography,
   Button,
+  Box,
 } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import EditIcon from '@material-ui/icons/Edit'
@@ -138,7 +139,13 @@ const CommentModal = observer(() => {
             <CloseIcon />
           </IconButton>
         </div>
-        <Typography>{events_store.get_selected_event_comment()}</Typography>
+        {!!events_store.get_selected_event_comment() ? (
+          <Typography>{events_store.get_selected_event_comment()}</Typography>
+        ) : (
+          <Box fontStyle="italic">
+            <Typography>This event has no comment</Typography>
+          </Box>
+        )}
       </DialogTitle>
     </Dialog>
   )
