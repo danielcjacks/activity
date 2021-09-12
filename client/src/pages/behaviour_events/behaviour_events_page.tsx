@@ -32,6 +32,8 @@ export const BehaviourEventsPage = observer(() => {
         <IconButton
           style={{
             marginRight: '0.5em',
+            height: 'min-content',
+            alignSelf: 'center',
           }}
           onClick={() => {
             window.location.hash = '#/events/create'
