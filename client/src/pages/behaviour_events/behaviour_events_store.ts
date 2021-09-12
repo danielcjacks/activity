@@ -74,10 +74,16 @@ class EventsStore {
       .then((response) => {
         this.events = response
         // Sort from most recent to least
-        this.events.sort(
-          (a, b) =>
-            new Date(b.time_stamp).getTime() - new Date(a.time_stamp).getTime()
-        )
+        this.events
+          .sort((a, b) => {
+            return a.id - b.id
+          })
+          .sort((a, b) => {
+            return (
+              new Date(b.time_stamp).getTime() -
+              new Date(a.time_stamp).getTime()
+            )
+          })
       })
       .catch((error) => {
         console.log(error)
