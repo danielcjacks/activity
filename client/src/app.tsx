@@ -11,6 +11,7 @@ import AssessmentIcon from '@material-ui/icons/Assessment';
 import HomeIcon from '@material-ui/icons/Home';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
+import AddAlarmIcon from '@material-ui/icons/AddAlarm';
 import { router_store } from './router_store'
 
 const useStyles = makeStyles({
@@ -44,21 +45,22 @@ const Toasts = observer(() => {
 })
 
 export const App = observer(() => {
-    const classes = useStyles();
+	const classes = useStyles();
 
-  	const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
+	const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
 		window.location.hash = newValue;
-  	};
+	};
 
 	
 	return <>
-    	<Router />
-		<BottomNavigation value={router_store.hash} onChange={handleChange} className={classes.root} showLabels={false}>
-      		<BottomNavigationAction label="Home" value="#/home" icon={<HomeIcon />} />
-      		<BottomNavigationAction label="Motivators" value="#/motivators" icon={<FavoriteIcon />} />
-      		<BottomNavigationAction label="Behaviours" value="#/behaviours" icon={<DirectionsRunIcon />} />
-      		<BottomNavigationAction label="Visualise" value="#/graph" icon={<AssessmentIcon />} />
+    <Router />
+			<BottomNavigation value={router_store.hash} onChange={handleChange} className={classes.root} showLabels={false}>
+      	<BottomNavigationAction label="Home" value="#/home" icon={<HomeIcon />} />
+      	<BottomNavigationAction label="Motivators" value="#/motivators" icon={<FavoriteIcon />} />
+      	<BottomNavigationAction label="Behaviours" value="#/behaviours" icon={<DirectionsRunIcon />} />
+				<BottomNavigationAction label="Events" value="#/events" icon={<AddAlarmIcon />} />
+      	<BottomNavigationAction label="Visualise" value="#/graph" icon={<AssessmentIcon />} />
     	</BottomNavigation>
-        <Toasts />
+      <Toasts />
     </>
 })
