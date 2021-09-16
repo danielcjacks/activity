@@ -57,7 +57,7 @@ model Behaviour {
   user_id              Int
   behaviour_motivators BehaviourMotivator[]
   behaviour_events     BehaviourEvent[]
-  schedule             String?
+  schedule             String
 }
 
 // This allows users to log when they perform a behaviour
