@@ -7,6 +7,10 @@ import { shared_store } from '../../shared_store'
 class BehaviourStore {
   name: string = ''
   description: string = ''
+  reminder_days: string[] = []
+  reminder_time: any = ''
+  including_reminder: boolean = false
+
   // List of all available motivators to add
   available_motivators: any[] = []
   // List of the ids of motivators currently added to the behaviour
@@ -29,6 +33,8 @@ class BehaviourStore {
     this.motivator_ids_added = []
     this.tombstoned_ids = new Set()
     this.previous_motivator_ids = []
+    this.reminder_days = []
+    this.reminder_time = ''
   }
 
   is_update = () => {

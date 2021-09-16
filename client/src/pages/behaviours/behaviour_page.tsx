@@ -12,6 +12,8 @@ import {
   InputLabel,
   Select,
   IconButton,
+  FormControlLabel,
+  Checkbox,
 } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import RemoveIcon from '@material-ui/icons/Remove'
@@ -159,8 +161,24 @@ const BehaviourFields = observer(() => {
           fullWidth
         />
       </Grid>
+      <Grid item xs={12} sm="auto">
+        <FormControlLabel
+          control={<Checkbox color="primary" />}
+          label="Send reminders"
+          value={behaviour_store.including_reminder}
+          onChange={action(() => {
+            behaviour_store.including_reminder =
+              !behaviour_store.including_reminder
+          })}
+        />
+      </Grid>
+      {behaviour_store.including_reminder && <ScheduleTimePicker />}
     </>
   )
+})
+
+const ScheduleTimePicker = observer(() => {
+  return <></>
 })
 
 const BehaviourTitle = () => {
