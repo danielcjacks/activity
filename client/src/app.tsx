@@ -3,6 +3,24 @@ import { Alert } from '@material-ui/lab'
 import { observer } from 'mobx-react-lite'
 import { Router } from './router'
 import { shared_store } from './shared_store'
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import AssessmentIcon from '@material-ui/icons/Assessment';
+import HomeIcon from '@material-ui/icons/Home';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
+import AddAlarmIcon from '@material-ui/icons/AddAlarm';
+import { router_store } from './router_store'
+
+const useStyles = makeStyles({
+	root: {
+	  position: 'fixed',
+	  width: '100%',
+	  bottom: '0px',
+	},
+  });
 
 const Toasts = observer(() => {
 	return (
@@ -26,9 +44,23 @@ const Toasts = observer(() => {
 	)
 })
 
-export const App = () => {
-    return <>
-        <Router />
-        <Toasts />
+export const App = observer(() => {
+	const classes = useStyles();
+
+	const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
+		window.location.hash = newValue;
+	};
+
+	
+	return <>
+    <Router />
+			<BottomNavigation value={router_store.hash} onChange={handleChange} className={classes.root} showLabels={false}>
+      	<BottomNavigationAction label="Home" value="#/home" icon={<HomeIcon />} />
+      	<BottomNavigationAction label="Motivators" value="#/motivators" icon={<FavoriteIcon />} />
+      	<BottomNavigationAction label="Behaviours" value="#/behaviours" icon={<DirectionsRunIcon />} />
+				<BottomNavigationAction label="Events" value="#/events" icon={<AddAlarmIcon />} />
+      	<BottomNavigationAction label="Visualise" value="#/graph" icon={<AssessmentIcon />} />
+    	</BottomNavigation>
+      <Toasts />
     </>
-}
+})

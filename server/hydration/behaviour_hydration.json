@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "name": "Paint",
+    "description": "Work on my painting skills",
+    "user_id": 4,
+    "schedule": "{\"reminding\":true,\"days\":[true,false,true,false,false,false,false],\"time\":\"02:00\"}"
+  },
+  {
+    "id": 2,
+    "name": "Visit my father",
+    "description": "",
+    "user_id": 4,
+    "schedule": "{\"reminding\":true,\"days\":[true,false,true,false,false,false,false],\"time\":\"02:00\"}"
+  },
+  {
+    "id": 3,
+    "name": "Watch TV",
+    "description": "",
+    "user_id": 4,
+    "schedule": "{\"reminding\":true,\"days\":[true,false,true,false,false,false,false],\"time\":\"02:00\"}"
+  },
+  {
+    "id": 4,
+    "name": "Sit on the couch",
+    "description": "",
+    "user_id": 4,
+    "schedule": "{\"reminding\":true,\"days\":[true,false,true,false,false,false,false],\"time\":\"02:00\"}"
+  },
+  {
+    "id": 5,
+    "name": "Opiod medication",
+    "description": "Take opiod medication",
+    "user_id": 4,
+    "schedule": "{\"reminding\":true,\"days\":[true,false,true,false,false,false,false],\"time\":\"02:00\"}"
+  }
+]
