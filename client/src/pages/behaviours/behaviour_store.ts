@@ -7,8 +7,9 @@ import { shared_store } from '../../shared_store'
 class BehaviourStore {
   name: string = ''
   description: string = ''
-  reminder_days: string[] = []
-  reminder_time: any = ''
+  reminder_days: boolean[] = [false, false, false, false, false, false, false]
+  day_letters = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+  reminder_time: any = '12:00'
   including_reminder: boolean = false
 
   // List of all available motivators to add
@@ -33,8 +34,12 @@ class BehaviourStore {
     this.motivator_ids_added = []
     this.tombstoned_ids = new Set()
     this.previous_motivator_ids = []
-    this.reminder_days = []
-    this.reminder_time = ''
+    this.reminder_days = [false, false, false, false, false, false, false]
+    this.reminder_time = '12:00'
+  }
+
+  toggle_day = (day_index) => {
+    this.reminder_days[day_index] = !this.reminder_days[day_index]
   }
 
   is_update = () => {
@@ -73,12 +78,22 @@ class BehaviourStore {
       },
     })
 
+    const schedule = this.parse_schedule_string(behaviour.schedule)
+
+    const motivator_ids = behaviour.behaviour_motivators.map(
+      (behaviour_motivator) => behaviour_motivator.motivator_id
+    )
+
+    console.log(motivator_ids)
+
     runInAction(() => {
+      this.including_reminder = schedule.reminding
+      this.reminder_days = schedule.days
+      this.reminder_time = schedule.time
       this.name = behaviour.name
       this.description = behaviour.description
-      this.motivator_ids_added = behaviour.behaviour_motivators.map(
-        (behaviour_motivators) => behaviour_motivators.motivator_id
-      )
+      this.motivator_ids_added = motivator_ids
+      this.previous_motivator_ids = [...this.motivator_ids_added]
     })
   }
 
@@ -89,6 +104,26 @@ class BehaviourStore {
     })
 
     this.available_motivators = motivators
+  }
+
+  create_schedule_string = () => {
+    const date = new Date()
+    date.setHours(this.reminder_time.slice(0, 2))
+    date.setMinutes(this.reminder_time.slice(3, 5))
+    const time =
+      String(date.getUTCHours()).padStart(2, '0') +
+      ':' +
+      String(date.getUTCMinutes()).padStart(2, '0')
+
+    return JSON.stringify({
+      reminding: this.including_reminder,
+      days: this.reminder_days,
+      time: time,
+    })
+  }
+
+  parse_schedule_string = (schedule_string: string) => {
+    return JSON.parse(schedule_string.replaceAll('\\', ''))
   }
 
   add_motivator = () => {
@@ -185,6 +220,7 @@ class BehaviourStore {
           create: this.get_motivator_connectors(),
           delete: this.get_motivator_disconnectors(),
         },
+        schedule: this.create_schedule_string(),
       },
       where: {
         id: +behaviour_id,
@@ -203,9 +239,11 @@ class BehaviourStore {
         behaviour_motivators: {
           create: this.get_motivator_connectors(),
         },
+        schedule: this.create_schedule_string(),
         user_id: shared_store.state.userId,
       },
     }
+
     return body
   }
 

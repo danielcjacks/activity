@@ -24,6 +24,7 @@ import { router_store } from '../../router_store'
 import { behaviour_store } from './behaviour_store'
 import { SaveButton } from '../../components/save_button'
 import { get_loading } from '../../utils/async_loaders'
+import { theme } from '../../theme'
 
 export const BehaviourPage = observer(() => {
   return (
@@ -163,13 +164,18 @@ const BehaviourFields = observer(() => {
       </Grid>
       <Grid item xs={12} sm="auto">
         <FormControlLabel
-          control={<Checkbox color="primary" />}
+          control={
+            <Checkbox
+              id="reminder-checkbox"
+              color="primary"
+              value={behaviour_store.including_reminder}
+              checked={behaviour_store.including_reminder}
+              onChange={action((e: any) => {
+                behaviour_store.including_reminder = e.target.checked
+              })}
+            />
+          }
           label="Send reminders"
-          value={behaviour_store.including_reminder}
-          onChange={action(() => {
-            behaviour_store.including_reminder =
-              !behaviour_store.including_reminder
-          })}
         />
       </Grid>
       {behaviour_store.including_reminder && <ScheduleTimePicker />}
@@ -178,7 +184,62 @@ const BehaviourFields = observer(() => {
 })
 
 const ScheduleTimePicker = observer(() => {
-  return <></>
+  return (
+    <>
+      <Grid item xs={12} sm="auto">
+        <TextField
+          label="Reminder time"
+          type="time"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          inputProps={{
+            step: 300, // 5 min
+          }}
+          value={behaviour_store.reminder_time}
+          onChange={action((e: any) => {
+            behaviour_store.reminder_time = e.target.value
+          })}
+        />
+      </Grid>
+      <Grid
+        item
+        xs={12}
+        sm="auto"
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          maxWidth: '500px',
+          paddingTop: '1em',
+          paddingBottom: '1em',
+        }}
+      >
+        {behaviour_store.day_letters.map((day_letter, i) => {
+          return (
+            <div
+              key={day_letter + String(i)}
+              style={{
+                backgroundColor: behaviour_store.reminder_days[i]
+                  ? theme.palette.secondary.main
+                  : theme.palette.primary.main,
+                width: '2em',
+                height: '2em',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '50%',
+              }}
+              onClick={(e: any) => {
+                behaviour_store.toggle_day(i)
+              }}
+            >
+              {day_letter}
+            </div>
+          )
+        })}
+      </Grid>
+    </>
+  )
 })
 
 const BehaviourTitle = () => {
