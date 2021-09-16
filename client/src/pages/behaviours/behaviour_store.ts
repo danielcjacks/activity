@@ -80,6 +80,15 @@ class BehaviourStore {
 
     const schedule = this.parse_schedule_string(behaviour.schedule)
 
+    const real_date = new Date()
+    real_date.setUTCHours(schedule.time.slice(0, 2))
+    real_date.setUTCMinutes(schedule.time.slice(3, 5))
+
+    const real_time =
+      String(real_date.getHours()).padStart(2, '0') +
+      ':' +
+      String(real_date.getMinutes()).padStart(2, '0')
+
     const motivator_ids = behaviour.behaviour_motivators.map(
       (behaviour_motivator) => behaviour_motivator.motivator_id
     )
@@ -89,7 +98,7 @@ class BehaviourStore {
     runInAction(() => {
       this.including_reminder = schedule.reminding
       this.reminder_days = schedule.days
-      this.reminder_time = schedule.time
+      this.reminder_time = real_time
       this.name = behaviour.name
       this.description = behaviour.description
       this.motivator_ids_added = motivator_ids
