@@ -209,7 +209,7 @@ const ScheduleTimePicker = observer(() => {
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          maxWidth: '500px',
+          maxWidth: '300px',
           paddingTop: '1em',
           paddingBottom: '1em',
         }}
