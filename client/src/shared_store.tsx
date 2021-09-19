@@ -1,5 +1,5 @@
 import { autorun, makeAutoObservable, toJS } from 'mobx'
-import { ReactElement } from 'react-transition-group/node_modules/@types/react'
+import { ReactElement } from 'react'
 import { router_store } from './router_store'
 
 type ToastSeverity = 'success' | 'error' | 'info' | 'warning'
