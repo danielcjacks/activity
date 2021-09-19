@@ -11,13 +11,42 @@ import { BehaviourEventsPage } from './pages/behaviour_events/behaviour_events_p
 import { BehaviourEventPage } from './pages/behaviour_events/behaviour_event_page'
 import { get_url_location_path } from './router_store'
 import { shared_store } from './shared_store'
+import { useEffect } from 'react'
+
 
 export const Router = observer(() => {
+
+    const authorised = shared_store.is_auth();
+
+    useEffect(() => {
+        // Wait until authorised
+        if (!authorised) return;
+        (async () => {
+            const sw = await navigator.serviceWorker.ready;
+            const sub = await sw.pushManager.getSubscription()
+
+            // If there is a subscription, dont ask to subscribe
+            if (sub) return console.log(sub);
+            ;
+
+            const vapidPublicKey = 'BEiHwB66I1_n1XB5N11SUAAW7a8Jk-f2xmzgqWbbZQQypNr__VfpxHjc3pXERrIOiafuFI7UX-dmVvD0MDE_KMU'
+
+            // Prompt user to subscribe
+            const push = await sw.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: vapidPublicKey
+            })
+
+            console.log(push);
+            
+        })()
+
+    }, [authorised])
 
     const path = get_url_location_path()
 
     // If a client does not have token, redirect to login
-    if (!shared_store.is_auth()) window.location.hash = '#/login'
+    if (!authorised) window.location.hash = '#/login'
 
     return (isEqual(path, ['home'])) ? <HomePage />
         : isEqual(path, ['login']) ? < LoginPage />
