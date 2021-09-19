@@ -26,18 +26,17 @@ export const Router = observer(() => {
             const sub = await sw.pushManager.getSubscription()
 
             // If there is a subscription, dont ask to subscribe
-            if (sub) return console.log(sub);
-            ;
+            if (sub) return;
 
             const vapidPublicKey = 'BEiHwB66I1_n1XB5N11SUAAW7a8Jk-f2xmzgqWbbZQQypNr__VfpxHjc3pXERrIOiafuFI7UX-dmVvD0MDE_KMU'
 
             // Prompt user to subscribe
+            // Send result of this push to server for notifications
             const push = await sw.pushManager.subscribe({
                 userVisibleOnly: true,
                 applicationServerKey: vapidPublicKey
             })
 
-            console.log(push);
             
         })()
 
