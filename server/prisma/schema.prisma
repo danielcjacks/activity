@@ -57,7 +57,21 @@ model Behaviour {
   user_id              Int
   behaviour_motivators BehaviourMotivator[]
   behaviour_events     BehaviourEvent[]
-  schedule             String
+  // True if user wants reminders
+  send_reminders       Boolean              @default(false)
+  // True if user wants reminders on the specific day
+  monday               Boolean              @default(false)
+  tuesday              Boolean              @default(false)
+  wednesday            Boolean              @default(false)
+  thursday             Boolean              @default(false)
+  friday               Boolean              @default(false)
+  saturday             Boolean              @default(false)
+  sunday               Boolean              @default(false)
+  // Reminder hour (UTC) (24hr)
+  hour                 Int                  @default(0)
+  // Reminder minute (UTC) (5 min intervals)
+  minute               Int                  @default(0)
+
 }
 
 // This allows users to log when they perform a behaviour
