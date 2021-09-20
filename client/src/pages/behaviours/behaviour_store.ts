@@ -9,6 +9,15 @@ class BehaviourStore {
   description: string = ''
   reminder_days: boolean[] = [false, false, false, false, false, false, false]
   day_letters = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+  dotw = [
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+    'sunday',
+  ]
   reminder_time: any = '12:00'
   including_reminder: boolean = false
 
@@ -78,11 +87,9 @@ class BehaviourStore {
       },
     })
 
-    const schedule = this.parse_schedule_string(behaviour.schedule)
-
     const real_date = new Date()
-    real_date.setUTCHours(schedule.time.slice(0, 2))
-    real_date.setUTCMinutes(schedule.time.slice(3, 5))
+    real_date.setUTCHours(behaviour.hour)
+    real_date.setUTCMinutes(behaviour.minute)
 
     const real_time =
       String(real_date.getHours()).padStart(2, '0') +
@@ -96,8 +103,10 @@ class BehaviourStore {
     console.log(motivator_ids)
 
     runInAction(() => {
-      this.including_reminder = schedule.reminding
-      this.reminder_days = schedule.days
+      this.including_reminder = behaviour.send_reminders
+      this.reminder_days = this.dotw.map((d) => {
+        return behaviour[d]
+      })
       this.reminder_time = real_time
       this.name = behaviour.name
       this.description = behaviour.description
@@ -113,26 +122,6 @@ class BehaviourStore {
     })
 
     this.available_motivators = motivators
-  }
-
-  create_schedule_string = () => {
-    const date = new Date()
-    date.setHours(this.reminder_time.slice(0, 2))
-    date.setMinutes(this.reminder_time.slice(3, 5))
-    const time =
-      String(date.getUTCHours()).padStart(2, '0') +
-      ':' +
-      String(date.getUTCMinutes()).padStart(2, '0')
-
-    return JSON.stringify({
-      reminding: this.including_reminder,
-      days: this.reminder_days,
-      time: time,
-    })
-  }
-
-  parse_schedule_string = (schedule_string: string) => {
-    return JSON.parse(schedule_string.replaceAll('\\', ''))
   }
 
   add_motivator = () => {
@@ -229,7 +218,10 @@ class BehaviourStore {
           create: this.get_motivator_connectors(),
           delete: this.get_motivator_disconnectors(),
         },
-        schedule: this.create_schedule_string(),
+        send_reminders: this.including_reminder,
+        hour: this.get_reminder_hour(),
+        minute: this.get_reminder_minute(),
+        ...this.get_days(),
       },
       where: {
         id: +behaviour_id,
@@ -237,6 +229,28 @@ class BehaviourStore {
     }
 
     return body
+  }
+
+  get_days() {
+    const days = {}
+    this.dotw.forEach((d, i) => {
+      days[d] = this.reminder_days[i]
+    })
+    return days
+  }
+
+  get_reminder_hour() {
+    const date = new Date()
+    date.setHours(this.reminder_time.slice(0, 2))
+    date.setMinutes(this.reminder_time.slice(3, 5))
+    return date.getUTCHours()
+  }
+
+  get_reminder_minute() {
+    const date = new Date()
+    date.setHours(this.reminder_time.slice(0, 2))
+    date.setMinutes(this.reminder_time.slice(3, 5))
+    return date.getUTCMinutes()
   }
 
   get_create_body = () => {
@@ -248,10 +262,15 @@ class BehaviourStore {
         behaviour_motivators: {
           create: this.get_motivator_connectors(),
         },
-        schedule: this.create_schedule_string(),
+        send_reminders: this.including_reminder,
+        hour: this.get_reminder_hour(),
+        minute: this.get_reminder_minute(),
+        ...this.get_days(),
         user_id: shared_store.state.userId,
       },
     }
+
+    console.log(body)
 
     return body
   }
