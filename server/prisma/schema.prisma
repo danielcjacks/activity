@@ -12,11 +12,12 @@ generator client {
 }
 
 model User {
-  id         Int         @id @default(autoincrement())
-  username   String      @unique
-  password   String
-  motivators Motivator[]
-  behaviours Behaviour[]
+  id            Int            @id @default(autoincrement())
+  username      String         @unique
+  password      String
+  motivators    Motivator[]
+  behaviours    Behaviour[]
+  subscriptions Subscription[]
 }
 
 // This a feeling that someone has that **motivates** different behaviours
@@ -83,4 +84,13 @@ model BehaviourEvent {
   behaviour_id Int
   comment      String?
   time_stamp   DateTime  @default(now())
+}
+
+// Store all the device push notification subscriptions
+// When a user gets a notification, they get it on all registered devices
+model Subscription {
+  id           Int    @id @default(autoincrement())
+  user         User   @relation(fields: [user_id], references: [id])
+  user_id      Int
+  subscription String
 }
