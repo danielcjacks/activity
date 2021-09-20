@@ -7,6 +7,7 @@ import { setup_async_loaders } from '../../utils/async_loaders'
 
 class HomeStore {
   behaviours: any[] = []
+  behaviour_events: Record<string, any>[] = []
 
   constructor() {
     setup_async_loaders(this)
@@ -17,6 +18,29 @@ class HomeStore {
     const behaviours = await server_post('/prisma/behaviour/findMany')
     if (behaviours && !behaviours.error) {
       runInAction(() => (this.behaviours = behaviours))
+    }
+  }
+
+  fetch_behaviour_events = async () => {
+    const behaviour_events = await server_post('/prisma/behaviourEvent/findMany', {
+      include: {
+        behaviour: {
+          include: {
+            behaviour_motivators: {
+              include: {
+                motivator: true
+              }
+            }
+          }
+        }
+      }
+    })
+    if (behaviour_events && !behaviour_events.error) {
+      const mapped_behaviour_events = behaviour_events.map(behaviour_event => ({
+        ...behaviour_event,
+        positivity: behaviour_event?.behaviour?.behaviour_motivators?.[0]?.motivator?.positivity ?? 0
+      }))
+      runInAction(() => (this.behaviour_events = mapped_behaviour_events))
     }
   }
 
@@ -32,6 +56,8 @@ class HomeStore {
         behaviour.behaviour_event = behaviour_event
       }
     }
+
+    await this.fetch_behaviour_events()
   }
 
   create_behaviour_event = async (behaviour_id: number) => {
