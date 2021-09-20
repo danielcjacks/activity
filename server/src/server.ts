@@ -7,10 +7,62 @@ import { login, signup, authorize_token } from './auth/auth_controllers'
 import { add_query_ownership_clauses } from './query/query_ownership'
 import { get_prisma_query } from './query/query_controller'
 export const prisma = new PrismaClient()
-
+import cron from 'node-cron'
+import webpush from 'web-push'
 
 export const start_server = () => {
   dotenv.config()
+
+  webpush.setVapidDetails(
+    'mailto:example@domain.com',
+    process.env.VAPID_PUBLIC_KEY,
+    process.env.VAPID_PRIVATE_KEY
+  )
+
+  cron.schedule('*/5 * * * *', async () => {
+    const dotw = [
+      'monday',
+      'tuesday',
+      'wednesday',
+      'thursday',
+      'friday',
+      'saturday',
+      'sunday',
+    ]
+    const date = new Date()
+    const hour = date.getUTCHours()
+    const minute = 20
+    const day = dotw[date.getUTCDay() - 1]
+
+    // TODO: Timezone days
+
+    const wheres = { hour: hour, minute: minute, send_reminders: true }
+    wheres[day] = true
+
+    const res = await prisma.behaviour.findMany({
+      where: wheres,
+      include: { user: { include: { subscriptions: true } } },
+    })
+
+    const data = res.map((behaviour) => {
+      return {
+        subscriptions: behaviour.user.subscriptions.map((s) =>
+          JSON.parse(s.subscription)
+        ),
+        name: behaviour.name,
+        description: behaviour.description,
+      }
+    })
+
+    console.log(data)
+
+    data.forEach((behaviour) => {
+      behaviour.subscriptions.forEach((s) => {
+        webpush.sendNotification(s, `ACTIVITY Reminder to "${behaviour.name}"`)
+        console.log('sent')
+      })
+    })
+  })
 
   // So we can use the prisma client in other files
   const app = express()
@@ -41,7 +93,6 @@ export const start_server = () => {
 
   app.post('/prisma/:table_name/:method', async (req, res) => {
     try {
-      
       const prisma_query_methods = [
         'findUnique',
         'findFirst',
