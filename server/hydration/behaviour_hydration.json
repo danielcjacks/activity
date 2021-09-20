@@ -4,34 +4,79 @@
     "name": "Paint",
     "description": "Work on my painting skills",
     "user_id": 4,
-    "schedule": "{\"reminding\":true,\"days\":[true,false,true,false,false,false,false],\"time\":\"02:00\"}"
+    "send_reminders": true,
+    "monday": true,
+    "tuesday": false,
+    "wednesday": true,
+    "thursday": false,
+    "friday": true,
+    "saturday": false,
+    "sunday": false,
+    "hour": 12,
+    "minute": 30
   },
   {
     "id": 2,
     "name": "Visit my father",
     "description": "",
     "user_id": 4,
-    "schedule": "{\"reminding\":true,\"days\":[true,false,true,false,false,false,false],\"time\":\"02:00\"}"
+    "send_reminders": true,
+    "monday": true,
+    "tuesday": false,
+    "wednesday": true,
+    "thursday": false,
+    "friday": true,
+    "saturday": false,
+    "sunday": false,
+    "hour": 12,
+    "minute": 30
   },
   {
     "id": 3,
     "name": "Watch TV",
     "description": "",
     "user_id": 4,
-    "schedule": "{\"reminding\":true,\"days\":[true,false,true,false,false,false,false],\"time\":\"02:00\"}"
+    "send_reminders": true,
+    "monday": true,
+    "tuesday": false,
+    "wednesday": true,
+    "thursday": false,
+    "friday": true,
+    "saturday": false,
+    "sunday": false,
+    "hour": 12,
+    "minute": 30
   },
   {
     "id": 4,
     "name": "Sit on the couch",
     "description": "",
     "user_id": 4,
-    "schedule": "{\"reminding\":true,\"days\":[true,false,true,false,false,false,false],\"time\":\"02:00\"}"
+    "send_reminders": true,
+    "monday": true,
+    "tuesday": false,
+    "wednesday": true,
+    "thursday": false,
+    "friday": true,
+    "saturday": false,
+    "sunday": false,
+    "hour": 12,
+    "minute": 30
   },
   {
     "id": 5,
     "name": "Opiod medication",
     "description": "Take opiod medication",
     "user_id": 4,
-    "schedule": "{\"reminding\":true,\"days\":[true,false,true,false,false,false,false],\"time\":\"02:00\"}"
+    "send_reminders": true,
+    "monday": true,
+    "tuesday": false,
+    "wednesday": true,
+    "thursday": false,
+    "friday": true,
+    "saturday": false,
+    "sunday": false,
+    "hour": 12,
+    "minute": 30
   }
 ]
