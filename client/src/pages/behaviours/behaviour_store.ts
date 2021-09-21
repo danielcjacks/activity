@@ -127,6 +127,12 @@ class BehaviourStore {
     this.motivator_ids_added.push('')
   }
 
+  get_filtered_motivators() {
+    return this.available_motivators.filter((m) => {
+      return !this.motivator_ids_added.includes(m.id)
+    })
+  }
+
   select_motivator = (motivator_index, motivator_id) => {
     const previous_id = this.motivator_ids_added[motivator_index]
 
@@ -225,6 +231,7 @@ class BehaviourStore {
         id: +behaviour_id,
       },
     }
+    console.log(JSON.stringify(body, null, 2))
 
     return body
   }
