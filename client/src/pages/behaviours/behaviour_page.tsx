@@ -246,6 +246,7 @@ const BehaviourTitle = () => {
   return (
     <Card>
       <CardHeader
+        style={{ paddingLeft: '2em' }}
         title={
           router_store.query.motivator_id
             ? `motivator ${router_store.query.motivator_id}`

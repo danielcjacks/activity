@@ -28,7 +28,7 @@ export const BehavioursPage = () => {
   return (
     <>
       <Card style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <CardHeader title={'Behaviours Page'} />
+        <CardHeader style={{ paddingLeft: '2em' }} title={'Behaviours Page'} />
         <IconButton
           style={{
             marginRight: '0.5em',

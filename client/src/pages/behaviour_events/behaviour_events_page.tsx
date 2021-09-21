@@ -28,7 +28,7 @@ export const BehaviourEventsPage = observer(() => {
   return (
     <>
       <Card style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <CardHeader title={'Behaviour Events'} />
+        <CardHeader style={{ paddingLeft: '2em' }} title={'Behaviour Events'} />
         <IconButton
           style={{
             marginRight: '0.5em',

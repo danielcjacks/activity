@@ -42,6 +42,7 @@ const MotivatorTitle = observer(() => {
   return (
     <Card>
       <CardHeader
+        style={{ paddingLeft: '2em' }}
         title={
           router_store.query.motivator_id
             ? `Motivator ${router_store.query.motivator_id}`

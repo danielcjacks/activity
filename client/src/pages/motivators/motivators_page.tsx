@@ -27,7 +27,7 @@ export const MotivatorsPage = observer(() => {
   return (
     <>
       <Card style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <CardHeader title={'Motivators'} />
+        <CardHeader style={{ paddingLeft: '2em' }} title={'Motivators'} />
         <IconButton
           style={{
             marginRight: '0.5em',
