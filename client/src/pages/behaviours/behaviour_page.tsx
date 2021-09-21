@@ -204,7 +204,7 @@ const ScheduleTimePicker = observer(() => {
     <>
       <Grid style={{ width: '100%', padding: '1em 2em', paddingTop: '0' }}>
         <TextField
-          style={{ color: 'white' }}
+          style={{ color: 'white', width: '10em' }}
           label="Reminder time"
           type="time"
           InputLabelProps={{
