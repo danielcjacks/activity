@@ -232,9 +232,28 @@ class BehaviourStore {
   }
 
   get_days() {
+    const date = new Date()
+    date.setHours(this.reminder_time.slice(0, 2))
+    date.setMinutes(this.reminder_time.slice(3, 5))
+
+    const testDay = 5
+    date.setDate(testDay)
+    const utcDay = date.getUTCDate()
+
+    // If reminder is on Tuesday local, and Tuesday UTC, set zero
+    // If reminder is on Tuesday local, but Wednesday UTC, set +1
+    // If reminder is on Tuesday local, but Monday UTC, set -1
+    const offset = testDay - utcDay
+
     const days = {}
+
     this.dotw.forEach((d, i) => {
-      days[d] = this.reminder_days[i]
+      // If reminder is on Tuesday local, and Tuesday UTC (offset = 0), save as Tuesday
+      // If reminder is on Tuesday local, but Wednesday UTC (offset = 1), save as Wednesday result as Tuesday
+      // If reminder is on Tuesday local, but Monday UTC (offset = -1), save as Monday result as Tuesday
+      const utcIndex = (i + offset) % 7
+      const utcDay = this.dotw[utcIndex]
+      days[utcDay] = this.reminder_days[i]
     })
     return days
   }
@@ -252,6 +271,8 @@ class BehaviourStore {
     date.setMinutes(this.reminder_time.slice(3, 5))
     return date.getUTCMinutes()
   }
+
+  get_reminder_days() {}
 
   get_create_body = () => {
     // This function generates the prisma body for creating a behaviour object
