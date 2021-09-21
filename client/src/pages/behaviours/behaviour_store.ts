@@ -133,6 +133,10 @@ class BehaviourStore {
     })
   }
 
+  form_valid() {
+    return this.name !== ''
+  }
+
   select_motivator = (motivator_index, motivator_id) => {
     const previous_id = this.motivator_ids_added[motivator_index]
 

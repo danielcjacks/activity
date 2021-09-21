@@ -32,7 +32,7 @@ export const BehaviourPage = observer(() => {
       <BehaviourMotivatorsAdder />
       {behaviour_store.is_update() ? <BehavioursRemoved /> : null}
       <SaveButton
-        can_save={true}
+        can_save={behaviour_store.form_valid()}
         is_loading={get_loading(behaviour_store, behaviour_store.save_changes)}
         on_save={() => behaviour_store.save_changes()}
       />
