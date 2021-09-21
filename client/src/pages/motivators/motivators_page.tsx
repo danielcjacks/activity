@@ -31,6 +31,8 @@ export const MotivatorsPage = observer(() => {
         <IconButton
           style={{
             marginRight: '0.5em',
+            height: 'min-content',
+            alignSelf: 'center',
           }}
           onClick={() => {
             window.location.hash = '#/motivators/create'
