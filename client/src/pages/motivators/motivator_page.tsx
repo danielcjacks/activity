@@ -61,15 +61,23 @@ const MotivatorTitle = observer(() => {
 
 const MotivatorFields = observer(() => {
   return (
-    <Grid container spacing={1}>
-      <Grid item xs={12} sm="auto">
+    <Grid style={{ width: '100%' }}>
+      <Grid
+        style={{
+          width: '100%',
+          padding: '2em 2em 1em 2em',
+        }}
+      >
         <TextField
+          style={{
+            width: '100%',
+          }}
           {...get_field_props(['name'])}
           variant="filled"
           label="Name"
         />
       </Grid>
-      <Grid item xs>
+      <Grid style={{ width: '100%', padding: '1em 2em' }}>
         <TextField
           {...get_field_props(['description'])}
           variant="filled"
@@ -78,12 +86,14 @@ const MotivatorFields = observer(() => {
           fullWidth
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid style={{ padding: '1em 2em', width: '100%' }}>
         <Typography gutterBottom>Positivity</Typography>
-      </Grid>
-      <Grid item xs={12}>
         <Slider
-          style={{ maxWidth: '500px' }}
+          style={{
+            maxWidth: '500px',
+            margin: 'auto',
+            display: 'block',
+          }}
           value={motivator_store.motivator?.positivity ?? 0}
           onChange={action(
             (e, new_value) => (motivator_store.motivator.positivity = new_value)
@@ -96,6 +106,7 @@ const MotivatorFields = observer(() => {
           max={5}
         />
       </Grid>
+      <Grid item xs={12}></Grid>
     </Grid>
   )
 })
