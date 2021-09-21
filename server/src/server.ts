@@ -31,7 +31,7 @@ export const start_server = () => {
     ]
     const date = new Date()
     const hour = date.getUTCHours()
-    const minute = 20
+    const minute = date.getUTCMinutes()
     const day = dotw[date.getUTCDay() - 1]
 
     // TODO: Timezone days
@@ -51,10 +51,10 @@ export const start_server = () => {
         ),
         name: behaviour.name,
         description: behaviour.description,
+        hour: behaviour.hour,
+        minute: behaviour.minute,
       }
     })
-
-    console.log(data)
 
     data.forEach((behaviour) => {
       behaviour.subscriptions.forEach((s) => {
