@@ -105,7 +105,7 @@ const BehavioursTable = observer(() => {
                   <IconButton
                     onClick={() => {
                       // This route is not implemented yet
-                      window.location.hash = `#/behaviour/update?behaviour_id=${behaviour.id}`
+                      window.location.hash = `#/behaviours/update?behaviour_id=${behaviour.id}`
                     }}
                   >
                     <EditIcon />
