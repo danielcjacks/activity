@@ -10,6 +10,7 @@ import {
   IconButton,
   FormControlLabel,
   Checkbox,
+  MenuItem,
 } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import RemoveIcon from '@material-ui/icons/Remove'
@@ -131,24 +132,22 @@ const MotivatorSelect: React.FC<MotivatorSelectPropTypes> = observer(
     )
 
     return (
-      <FormControl variant="filled">
+      <FormControl style={{ width: '100%' }} variant="filled">
         <InputLabel>Motivator {motivator_index + 1}</InputLabel>
         <Select
           style={{ width: '100%', height: '100%' }}
-          native
           value={motivator_id}
           onChange={action((e: any) =>
             behaviour_store.select_motivator(motivator_index, e.target.value)
           )}
         >
-          {selected_motivator && (
-            <option value={motivator_id}>{selected_motivator.name}</option>
-          )}
-          {behaviour_store.get_filtered_motivators().map((motivator) => {
+          {behaviour_store.available_motivators.map((motivator) => {
+            console.log(motivator.id)
+
             return (
-              <option key={motivator.id} value={motivator.id}>
+              <MenuItem key={motivator.id} value={motivator.id}>
                 {motivator.name}
-              </option>
+              </MenuItem>
             )
           })}
         </Select>

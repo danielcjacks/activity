@@ -6,10 +6,12 @@ import {
   TextField,
   Select,
   MenuItem,
+  FormControl,
+  InputLabel,
 } from '@material-ui/core'
 import { action } from 'mobx'
 import { observer } from 'mobx-react-lite'
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { event_store } from './behaviour_event_store'
 import { SaveButton } from '../../components/save_button'
 import { get_loading } from '../../utils/async_loaders'
@@ -36,23 +38,23 @@ export const BehaviourEventPage = () => {
 const Fields = observer(() => {
   return (
     <>
-      <Grid item xs={12}>
-        <Typography>Behaviour</Typography>
-      </Grid>
-      <Grid item xs={12}>
-        <Select
-          style={{ width: '50%', margin: '1em', padding: '0.5em' }}
-          value={event_store.behaviour_id}
-          onChange={event_store.handle_select}
-        >
-          {event_store.behaviours.map((behaviour) => {
-            return (
-              <MenuItem key={behaviour.id} value={behaviour.id}>
-                {behaviour.name}
-              </MenuItem>
-            )
-          })}
-        </Select>
+      <Grid style={{ padding: '2em 2em 1em 2em', width: '100%' }}>
+        <FormControl style={{ width: '100%' }} variant="filled">
+          <InputLabel>Behaviour</InputLabel>
+          <Select
+            value={event_store.behaviour_id}
+            onChange={event_store.handle_select}
+            label="Behaviour"
+          >
+            {event_store.behaviours.map((b) => {
+              return (
+                <MenuItem key={b.id} value={b.id}>
+                  {b.name}
+                </MenuItem>
+              )
+            })}
+          </Select>
+        </FormControl>
       </Grid>
       <Grid item xs={12}>
         <Grid item xs={12} sm="auto">
