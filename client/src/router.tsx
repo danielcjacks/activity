@@ -27,7 +27,21 @@ export const Router = observer(() => {
       console.log(sub)
 
       // If there is a subscription, dont ask to subscribe
-      if (sub) return
+      if (sub) {
+        const result = await server_post('/prisma/subscription/upsert', {
+          where: {
+            subscription: JSON.stringify(sub),
+          },
+          update: {},
+          create: {
+            user_id: shared_store.state.userId,
+            subscription: JSON.stringify(sub),
+          },
+        })
+
+        console.log(result)
+        return
+      }
 
       const vapidPublicKey =
         'BEiHwB66I1_n1XB5N11SUAAW7a8Jk-f2xmzgqWbbZQQypNr__VfpxHjc3pXERrIOiafuFI7UX-dmVvD0MDE_KMU'
@@ -39,10 +53,14 @@ export const Router = observer(() => {
         applicationServerKey: vapidPublicKey,
       })
 
-      const result = await server_post('/prisma/subscription/create', {
+      const result = await server_post('/prisma/subscription/upsert', {
+        where: {
+          user_id: shared_store.state.userId,
+          subscription: JSON.stringify(sub),
+        },
         data: {
           user_id: shared_store.state.userId,
-          subscription: JSON.stringify(push),
+          subscription: JSON.stringify(sub),
         },
       })
 
