@@ -15,7 +15,7 @@ import {
 import AddIcon from '@material-ui/icons/Add'
 import EditIcon from '@material-ui/icons/Edit'
 import CloseIcon from '@material-ui/icons/Close'
-import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
+import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import { observer } from 'mobx-react-lite'
 import { useEffect } from 'react'
@@ -24,11 +24,12 @@ import { behaviours_store } from './behaviours_store'
 export const BehavioursPage = () => {
   useEffect(() => {
     behaviours_store.component_load()
-  }, []); 
-  return <>
-  <Card style = {{ display: 'flex', justifyContent: 'space-between' }}>
-    <CardHeader title={'Behaviours Page'} />
-    <IconButton
+  }, [])
+  return (
+    <>
+      <Card style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <CardHeader title={'Behaviours Page'} />
+        <IconButton
           style={{
             marginRight: '0.5em',
           }}
@@ -38,11 +39,12 @@ export const BehavioursPage = () => {
         >
           <AddIcon />
         </IconButton>
-  </Card>
-  <BehavioursTable/>
-  <DescriptionModal/>
-  <DeleteModal/>
-  </>
+      </Card>
+      <BehavioursTable />
+      <DescriptionModal />
+      <DeleteModal />
+    </>
+  )
 }
 const BehavioursTable = observer(() => {
   return (
@@ -58,9 +60,9 @@ const BehavioursTable = observer(() => {
           })}
         </TableRow>
       </TableHead>
-      
+
       <TableBody>
-       {behaviours_store.behaviours.map((behaviour) => {
+        {behaviours_store.behaviours.map((behaviour) => {
           console.log(behaviour)
           return (
             <TableRow key={behaviour.id}>
@@ -71,7 +73,9 @@ const BehavioursTable = observer(() => {
               <TableCell style={{ maxWidth: '25%' }}>
                 <IconButton
                   onClick={() => {
-                    behaviours_store.select_behaviour_for_description(behaviour.id)
+                    behaviours_store.select_behaviour_for_description(
+                      behaviour.id
+                    )
                   }}
                 >
                   <MoreHorizIcon />
@@ -119,7 +123,7 @@ const BehavioursTable = observer(() => {
           )
         })}
       </TableBody>
-    </Table> 
+    </Table>
   )
 })
 
@@ -137,9 +141,7 @@ const DescriptionModal = observer(() => {
             alignItems: 'center',
           }}
         >
-          <Typography variant="h6">
-            {behaviours_store.get_behaviour_name()} Description
-          </Typography>
+          <Typography variant="h6">Description</Typography>
           <IconButton onClick={behaviours_store.toggle_description_modal}>
             <CloseIcon />
           </IconButton>
