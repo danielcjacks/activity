@@ -21,7 +21,7 @@ export const BehaviourEventPage = () => {
   return (
     <>
       <Card>
-        <CardHeader title={`Behaviour Event`} />
+        <CardHeader style={{ paddingLeft: '2em' }} title={`Behaviour Event`} />
       </Card>
       <Fields />
       <SaveButton
