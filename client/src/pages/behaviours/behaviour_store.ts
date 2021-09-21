@@ -100,8 +100,6 @@ class BehaviourStore {
       (behaviour_motivator) => behaviour_motivator.motivator_id
     )
 
-    console.log(motivator_ids)
-
     runInAction(() => {
       this.including_reminder = behaviour.send_reminders
       this.reminder_days = this.dotw.map((d) => {
