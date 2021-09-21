@@ -65,7 +65,7 @@ model Behaviour {
 // TODO: does this store the goal
 model BehaviourEvent {
   id           Int       @id @default(autoincrement())
-  behaviour    Behaviour @relation(fields: [behaviour_id], references: [id])
+  behaviour    Behaviour @relation(fields: [behaviour_id], references: [id], onDelete: Cascade)
   behaviour_id Int
   comment      String?
   time_stamp   DateTime  @default(now())
