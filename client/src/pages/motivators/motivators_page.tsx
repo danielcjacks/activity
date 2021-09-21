@@ -11,6 +11,7 @@ import {
   IconButton,
   Typography,
   Button,
+  Box,
 } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import EditIcon from '@material-ui/icons/Edit'
@@ -130,14 +131,20 @@ const DescriptionModal = observer(() => {
             alignItems: 'center',
           }}
         >
-          <Typography variant="h6">
-            {motivators_store.get_motivator_name()} Description
-          </Typography>
+          <Typography variant="h6">Description</Typography>
           <IconButton onClick={motivators_store.toggle_description_modal}>
             <CloseIcon />
           </IconButton>
         </div>
-        <Typography>{motivators_store.get_motivator_description()}</Typography>
+        {motivators_store.get_motivator_description() ? (
+          <Typography>
+            {motivators_store.get_motivator_description()}
+          </Typography>
+        ) : (
+          <Box fontStyle="italic">
+            <Typography>This motivator has no comment</Typography>
+          </Box>
+        )}
       </DialogTitle>
     </Dialog>
   )
