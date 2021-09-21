@@ -24,8 +24,6 @@ export const Router = observer(() => {
       const sw = await navigator.serviceWorker.ready
       const sub = await sw.pushManager.getSubscription()
 
-      console.log(sub)
-
       // If there is a subscription, dont ask to subscribe
       if (sub) {
         const result = await server_post('/prisma/subscription/upsert', {
@@ -39,7 +37,6 @@ export const Router = observer(() => {
           },
         })
 
-        console.log(result)
         return
       }
 
@@ -53,18 +50,16 @@ export const Router = observer(() => {
         applicationServerKey: vapidPublicKey,
       })
 
-      const result = await server_post('/prisma/subscription/upsert', {
+      await server_post('/prisma/subscription/upsert', {
         where: {
           user_id: shared_store.state.userId,
-          subscription: JSON.stringify(sub),
+          subscription: JSON.stringify(push),
         },
         data: {
           user_id: shared_store.state.userId,
-          subscription: JSON.stringify(sub),
+          subscription: JSON.stringify(push),
         },
       })
-
-      console.log(result)
     })()
   }, [authorised])
 

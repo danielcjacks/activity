@@ -59,7 +59,6 @@ export const start_server = () => {
     data.forEach((behaviour) => {
       behaviour.subscriptions.forEach((s) => {
         webpush.sendNotification(s, `ACTIVITY Reminder to "${behaviour.name}"`)
-        console.log('sent')
       })
     })
   })

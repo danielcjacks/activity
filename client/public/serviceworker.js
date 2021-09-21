@@ -47,7 +47,6 @@ self.addEventListener('activate', (event) => {
 
 // Display push notifications
 self.addEventListener('push', (event) => {
-  console.log('lsjflksjdflksdjf')
   // Display the message sent from the server in the notification
   self.registration.showNotification(event.data.text())
 })
