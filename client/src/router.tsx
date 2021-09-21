@@ -52,7 +52,6 @@ export const Router = observer(() => {
 
       await server_post('/prisma/subscription/upsert', {
         where: {
-          user_id: shared_store.state.userId,
           subscription: JSON.stringify(push),
         },
         data: {
