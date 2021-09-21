@@ -37,8 +37,6 @@ class EventStore {
 
   is_update = () => {
     const path = router_store.hash.split('/')
-    console.log(path)
-
     return path[path.length - 1].split('?')[0] === 'update'
   }
 
