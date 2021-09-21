@@ -27,7 +27,7 @@ const Toasts = observer(() => {
   return (
     <Snackbar
       anchorOrigin={{
-        vertical: 'bottom',
+        vertical: 'top',
         horizontal: 'center',
       }}
       open={shared_store.toast_is_open}
