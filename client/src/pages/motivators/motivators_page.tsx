@@ -20,13 +20,14 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import { observer } from 'mobx-react-lite'
 import { useEffect } from 'react'
 import { motivators_store } from './motivators_store'
+import { motivator_store } from './motivator_store'
 
 export const MotivatorsPage = observer(() => {
   useEffect(() => {
     motivators_store.component_load()
   }, [])
   return (
-    <>
+    <div style={{ marginBottom: '10em' }}>
       <Card style={{ display: 'flex', justifyContent: 'space-between' }}>
         <CardHeader style={{ paddingLeft: '2em' }} title={'Motivators'} />
         <IconButton
@@ -45,19 +46,21 @@ export const MotivatorsPage = observer(() => {
       <MotivatorsTable />
       <DeleteModal />
       <DescriptionModal />
-    </>
+    </div>
   )
 })
 
 const MotivatorsTable = observer(() => {
   return (
-    <Table>
+    <Table style={{ width: '100vw', overflow: 'auto' }}>
       <TableHead>
         <TableRow>
-          {['Name', 'Description', 'Positivity', 'Actions'].map((col_name) => {
+          {['Name', 'Desc.', 'Positivity', 'Actions'].map((col_name) => {
             return (
-              <TableCell style={{ maxWidth: '25%' }}>
-                <Typography variant="caption">{col_name}</Typography>
+              <TableCell style={{ maxWidth: '25vw' }}>
+                <Typography variant="caption" style={{ textAlign: 'center' }}>
+                  {col_name}
+                </Typography>
               </TableCell>
             )
           })}
@@ -67,24 +70,31 @@ const MotivatorsTable = observer(() => {
         {motivators_store.motivators.map((motivator) => {
           return (
             <TableRow key={motivator.id}>
-              <TableCell style={{ maxWidth: '25%' }}>
+              <TableCell style={{ maxWidth: '25vw' }}>
                 <Typography variant="caption">{motivator.name}</Typography>
               </TableCell>
-              <TableCell style={{ maxWidth: '25%' }}>
-                <IconButton
-                  onClick={() => {
-                    motivators_store.select_motivator_for_description(
-                      motivator.id
-                    )
-                  }}
-                >
-                  <MoreHorizIcon />
-                </IconButton>
+              <TableCell
+                style={{
+                  maxWidth: '25vw',
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <IconButton
+                    style={{ width: '1em', height: '1em' }}
+                    onClick={() => {
+                      motivators_store.select_motivator_for_description(
+                        motivator.id
+                      )
+                    }}
+                  >
+                    <MoreHorizIcon />
+                  </IconButton>
+                </div>
               </TableCell>
-              <TableCell style={{ maxWidth: '25%' }}>
-                {motivator.positivity}
+              <TableCell style={{ maxWidth: '25vw' }}>
+                <div style={{ paddingLeft: '1em' }}>{motivator.positivity}</div>
               </TableCell>
-              <TableCell style={{ maxWidth: '25%', paddingLeft: '0' }}>
+              <TableCell style={{ maxWidth: '25vw', paddingLeft: '0' }}>
                 <div
                   style={{
                     display: 'flex',
