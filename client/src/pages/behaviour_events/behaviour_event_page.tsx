@@ -16,7 +16,7 @@ import { event_store } from './behaviour_event_store'
 import { SaveButton } from '../../components/save_button'
 import { get_loading } from '../../utils/async_loaders'
 
-export const BehaviourEventPage = () => {
+export const BehaviourEventPage = observer(() => {
   useEffect(() => {
     event_store.on_component_load()
   }, [])
@@ -27,13 +27,13 @@ export const BehaviourEventPage = () => {
       </Card>
       <Fields />
       <SaveButton
-        can_save={true}
+        can_save={event_store.form_valid()}
         is_loading={get_loading(event_store, event_store.save)}
         on_save={() => event_store.save()}
       />
     </>
   )
-}
+})
 
 const Fields = observer(() => {
   return (

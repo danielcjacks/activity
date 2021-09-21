@@ -22,6 +22,19 @@ class EventStore {
     this.timestamp = new Date()
   }
 
+  form_valid() {
+    console.log(
+      'lasjdf;aslj',
+      this.behaviours.find((b) => {
+        return b.id === this.behaviour_id
+      })
+    )
+
+    return !!this.behaviours.find((b) => {
+      return b.id === this.behaviour_id
+    })
+  }
+
   get_date_time = () => {
     const year = this.timestamp.getFullYear()
     const month = String(this.timestamp.getMonth()).padStart(2, '0')
