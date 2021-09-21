@@ -65,7 +65,6 @@ const BehavioursTable = observer(() => {
 
       <TableBody>
         {behaviours_store.behaviours.map((behaviour) => {
-          console.log(behaviour)
           return (
             <TableRow key={behaviour.id}>
               <TableCell style={{ maxWidth: '25%' }}>
