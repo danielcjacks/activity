@@ -110,6 +110,7 @@ export const App = observer(() => {
           display: 'flex',
           justifyContent: 'center',
           backgroundColor: '#424242',
+          zIndex: 100,
         }}
       >
         {routes.map(({ label, link, icon }, i) => {
