@@ -17,12 +17,19 @@ export const SaveButton = observer(
         <Box position="fixed" bottom={75} right={15}>
           <Fab
             color="primary"
-            style={{ backgroundColor: theme.palette.success.main }}
+            style={{
+              backgroundColor: theme.palette.success.main,
+            }}
             onClick={on_save}
             disabled={!can_save}
           >
             <LoadingContainer is_loading={is_loading}>
-              <Save fontSize="large" />
+              <Save
+                style={{
+                  color: 'white',
+                }}
+                fontSize="large"
+              />
             </LoadingContainer>
           </Fab>
         </Box>
