@@ -122,8 +122,6 @@ interface MotivatorSelectPropTypes {
 
 const MotivatorSelect: React.FC<MotivatorSelectPropTypes> = observer(
   ({ motivator_index }) => {
-    console.log('asfasf', behaviour_store.motivator_ids_added[motivator_index])
-
     const motivator_id = behaviour_store.motivator_ids_added[motivator_index]
     const selected_motivator = behaviour_store.available_motivators.find(
       (m) => {
@@ -142,8 +140,6 @@ const MotivatorSelect: React.FC<MotivatorSelectPropTypes> = observer(
           )}
         >
           {behaviour_store.available_motivators.map((motivator) => {
-            console.log(motivator.id)
-
             return (
               <MenuItem key={motivator.id} value={motivator.id}>
                 {motivator.name}

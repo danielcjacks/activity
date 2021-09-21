@@ -235,7 +235,6 @@ class BehaviourStore {
         id: +behaviour_id,
       },
     }
-    console.log(JSON.stringify(body, null, 2))
 
     return body
   }
@@ -299,8 +298,6 @@ class BehaviourStore {
         user_id: shared_store.state.userId,
       },
     }
-
-    console.log(body)
 
     return body
   }

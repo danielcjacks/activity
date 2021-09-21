@@ -32,8 +32,6 @@ class MotivatorStore {
       },
     }
 
-    console.log(prisma_body)
-
     server_post(`/prisma/motivator/${prisma_method}`, prisma_body)
       .then((response) => {
         if (response.error) {

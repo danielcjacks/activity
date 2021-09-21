@@ -23,13 +23,6 @@ class EventStore {
   }
 
   form_valid() {
-    console.log(
-      'lasjdf;aslj',
-      this.behaviours.find((b) => {
-        return b.id === this.behaviour_id
-      })
-    )
-
     return !!this.behaviours.find((b) => {
       return b.id === this.behaviour_id
     })
