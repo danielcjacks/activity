@@ -28,22 +28,18 @@ import { theme } from '../../theme'
 
 export const BehaviourPage = observer(() => {
   return (
-    <>
+    // Add some space for scrolling
+    <div style={{ paddingBottom: '20em' }}>
       <BehaviourTitle />
-      <Box m={2}>
-        <BehaviourFields />
-        <BehaviourMotivatorsAdder />
-        {behaviour_store.is_update() ? <BehavioursRemoved /> : null}
-        <SaveButton
-          can_save={true}
-          is_loading={get_loading(
-            behaviour_store,
-            behaviour_store.save_changes
-          )}
-          on_save={() => behaviour_store.save_changes()}
-        />
-      </Box>
-    </>
+      <BehaviourFields />
+      <BehaviourMotivatorsAdder />
+      {behaviour_store.is_update() ? <BehavioursRemoved /> : null}
+      <SaveButton
+        can_save={true}
+        is_loading={get_loading(behaviour_store, behaviour_store.save_changes)}
+        on_save={() => behaviour_store.save_changes()}
+      />
+    </div>
   )
 })
 
@@ -51,23 +47,26 @@ const BehavioursRemoved = observer(() => {
   if (behaviour_store.tombstoned_ids.size === 0) return null
 
   return (
-    <Grid item xs={12} sm="auto">
-      <Typography>Motivators Removed</Typography>
-      <List>
-        {behaviour_store.filter_tombstone().map((motivator_id) => {
-          return (
-            <ListItem key={motivator_id}>
-              <Typography color="error">
-                {
-                  behaviour_store.available_motivators.find((motivator) => {
-                    return motivator.id === +motivator_id
-                  }).name
-                }
-              </Typography>
-            </ListItem>
-          )
-        })}
-      </List>
+    <Grid style={{ padding: '1em 2em' }}>
+      <Typography>Motivators Being Removed</Typography>
+      {behaviour_store.filter_tombstone().map((motivator_id) => {
+        return (
+          <div key={motivator_id} style={{ display: 'flex', padding: '0.5em' }}>
+            <RemoveIcon color="error" />
+            <Typography
+              style={{ marginLeft: '0.5em' }}
+              color="error"
+              key={motivator_id}
+            >
+              {
+                behaviour_store.available_motivators.find((motivator) => {
+                  return motivator.id === +motivator_id
+                }).name
+              }
+            </Typography>
+          </div>
+        )
+      })}
     </Grid>
   )
 })
@@ -77,32 +76,45 @@ const BehaviourMotivatorsAdder = observer(() => {
     behaviour_store.on_component_load()
   }, [])
   return (
-    <Grid item xs={12} sm="auto">
+    <Grid
+      style={{ padding: '1em 2em', display: 'flex', flexDirection: 'column' }}
+    >
       <Typography>Motivators</Typography>
-      <List>
-        {behaviour_store.motivator_ids_added.map((_, motivator_index) => {
-          return (
-            <ListItem key={motivator_index}>
-              <MotivatorSelect motivator_index={motivator_index} />
-              <IconButton
-                onClick={action(() =>
-                  behaviour_store.remove_motivator(motivator_index)
-                )}
-              >
-                <RemoveIcon />
-              </IconButton>
-            </ListItem>
-          )
-        })}
-
-        <ListItem>
-          <ListItemIcon>
-            <IconButton onClick={action(() => behaviour_store.add_motivator())}>
-              <AddIcon />
+      {behaviour_store.motivator_ids_added.map((_, motivator_index) => {
+        return (
+          <div
+            key={motivator_index}
+            style={{
+              marginTop: '2em',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <MotivatorSelect motivator_index={motivator_index} />
+            <IconButton
+              onClick={action(() =>
+                behaviour_store.remove_motivator(motivator_index)
+              )}
+            >
+              <RemoveIcon />
             </IconButton>
-          </ListItemIcon>
-        </ListItem>
-      </List>
+          </div>
+        )
+      })}
+
+      <IconButton
+        style={{
+          marginTop: '0.5em',
+          width: '1.5em',
+          height: '1.5em',
+          display: 'block',
+        }}
+        onClick={action(() => behaviour_store.add_motivator())}
+      >
+        <AddIcon />
+      </IconButton>
     </Grid>
   )
 })
@@ -113,20 +125,30 @@ interface MotivatorSelectPropTypes {
 
 const MotivatorSelect: React.FC<MotivatorSelectPropTypes> = observer(
   ({ motivator_index }) => {
+    console.log('asfasf', behaviour_store.motivator_ids_added[motivator_index])
+
+    const motivator_id = behaviour_store.motivator_ids_added[motivator_index]
+    const selected_motivator = behaviour_store.available_motivators.find(
+      (m) => {
+        return m.id === motivator_id
+      }
+    )
+
     return (
-      <FormControl>
-        <InputLabel htmlFor="age-native-simple">
-          Motivator {motivator_index + 1}
-        </InputLabel>
+      <FormControl variant="filled">
+        <InputLabel>Motivator {motivator_index + 1}</InputLabel>
         <Select
+          style={{ width: '100%', height: '100%' }}
           native
-          value={behaviour_store.motivator_ids_added[motivator_index]}
+          value={motivator_id}
           onChange={action((e: any) =>
             behaviour_store.select_motivator(motivator_index, e.target.value)
           )}
         >
-          <option aria-label="None" value="" />
-          {behaviour_store.available_motivators.map((motivator) => {
+          {selected_motivator && (
+            <option value={motivator_id}>{selected_motivator.name}</option>
+          )}
+          {behaviour_store.get_filtered_motivators().map((motivator) => {
             return (
               <option key={motivator.id} value={motivator.id}>
                 {motivator.name}
@@ -142,16 +164,18 @@ const MotivatorSelect: React.FC<MotivatorSelectPropTypes> = observer(
 const BehaviourFields = observer(() => {
   return (
     <>
-      <Grid item xs={12} sm="auto">
+      <Grid style={{ width: '100%', padding: '2em 2em 1em 2em' }}>
         <TextField
+          style={{ width: '100%' }}
           variant="filled"
           label="Name"
           value={behaviour_store.name}
           onChange={action((e: any) => (behaviour_store.name = e.target.value))}
         />
       </Grid>
-      <Grid item xs={12} sm="auto">
+      <Grid style={{ width: '100%', padding: '1em 2em' }}>
         <TextField
+          style={{ width: '100%' }}
           value={behaviour_store.description}
           onChange={action(
             (e: any) => (behaviour_store.description = e.target.value)
@@ -162,7 +186,7 @@ const BehaviourFields = observer(() => {
           fullWidth
         />
       </Grid>
-      <Grid item xs={12} sm="auto">
+      <Grid style={{ width: '100%', padding: '1em 2em' }}>
         <FormControlLabel
           control={
             <Checkbox
@@ -186,8 +210,9 @@ const BehaviourFields = observer(() => {
 const ScheduleTimePicker = observer(() => {
   return (
     <>
-      <Grid item xs={12} sm="auto">
+      <Grid style={{ width: '100%', padding: '1em 2em', paddingTop: '0' }}>
         <TextField
+          style={{ color: 'white' }}
           label="Reminder time"
           type="time"
           InputLabelProps={{
@@ -207,11 +232,12 @@ const ScheduleTimePicker = observer(() => {
         xs={12}
         sm="auto"
         style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          maxWidth: '300px',
           paddingTop: '1em',
           paddingBottom: '1em',
+          padding: '1em 2em',
+          display: 'flex',
+          justifyContent: 'space-between',
+          maxWidth: '400px',
         }}
       >
         {behaviour_store.day_letters.map((day_letter, i) => {
@@ -220,14 +246,15 @@ const ScheduleTimePicker = observer(() => {
               key={day_letter + String(i)}
               style={{
                 backgroundColor: behaviour_store.reminder_days[i]
-                  ? theme.palette.secondary.main
-                  : theme.palette.primary.main,
+                  ? theme.palette.primary.main
+                  : '#676767',
                 width: '2em',
                 height: '2em',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 borderRadius: '50%',
+                cursor: 'pointer',
               }}
               onClick={(e: any) => {
                 behaviour_store.toggle_day(i)
