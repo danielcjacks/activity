@@ -4,11 +4,7 @@ import {
   Typography,
   Grid,
   TextField,
-  List,
-  ListItem,
   FormControl,
-  ListItemIcon,
-  Box,
   InputLabel,
   Select,
   IconButton,
@@ -208,6 +204,7 @@ const BehaviourFields = observer(() => {
 })
 
 const ScheduleTimePicker = observer(() => {
+  const inputProps = { step: 300 }
   return (
     <>
       <Grid style={{ width: '100%', padding: '1em 2em', paddingTop: '0' }}>
@@ -218,9 +215,7 @@ const ScheduleTimePicker = observer(() => {
           InputLabelProps={{
             shrink: true,
           }}
-          inputProps={{
-            step: 300, // 5 min
-          }}
+          inputProps={inputProps}
           value={behaviour_store.reminder_time}
           onChange={action((e: any) => {
             behaviour_store.reminder_time = e.target.value
