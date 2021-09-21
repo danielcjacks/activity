@@ -10,10 +10,15 @@ class MotivatorStore {
   constructor() {
     setup_async_loaders(this)
     makeAutoObservable(this)
+    this.motivator.positivity = 0
   }
 
   get motivator_id() {
     return router_store.query.motivator_id
+  }
+
+  form_valid() {
+    return !!this.motivator.name
   }
 
   save_changes = () => {
@@ -26,6 +31,8 @@ class MotivatorStore {
         user_id: shared_store.state.userId,
       },
     }
+
+    console.log(prisma_body)
 
     server_post(`/prisma/motivator/${prisma_method}`, prisma_body)
       .then((response) => {

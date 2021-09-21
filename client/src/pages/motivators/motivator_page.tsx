@@ -30,7 +30,7 @@ export const MotivatorPage = observer(() => {
       <MotivatorTitle />
       <MotivatorFields />
       <SaveButton
-        can_save={true}
+        can_save={motivator_store.form_valid()}
         is_loading={get_loading(motivator_store, motivator_store.save_changes)}
         on_save={motivator_store.save_changes}
       />
