@@ -4,31 +4,29 @@ import { observer } from 'mobx-react-lite'
 import { theme } from '../theme'
 import { LoadingContainer } from './loading_container'
 
-
 type SaveButtonProps = {
-    can_save: boolean
-    is_loading: boolean
-    on_save: React.MouseEventHandler<HTMLButtonElement> | undefined
+  can_save: boolean
+  is_loading: boolean
+  on_save: React.MouseEventHandler<HTMLButtonElement> | undefined
 }
 
-export const SaveButton = observer(({ can_save, is_loading, on_save}: SaveButtonProps) => {
-
+export const SaveButton = observer(
+  ({ can_save, is_loading, on_save }: SaveButtonProps) => {
     return (
-        <Tooltip title={can_save ? 'Save changes' : 'No changes to save'}>
-            <Box position='fixed' bottom={70} right={15}>
-                <Fab
-                    color='primary'
-                    style={{ backgroundColor: theme.palette.success.main }}
-                    onClick={on_save}
-                    disabled={!can_save}
-                >
-                    <LoadingContainer
-                        is_loading={is_loading}
-                    >
-                        <Save fontSize='large' />
-                    </LoadingContainer>
-                </Fab>
-            </Box>
-        </Tooltip>
+      <Tooltip title={can_save ? 'Save changes' : 'No changes to save'}>
+        <Box position="fixed" bottom={75} right={15}>
+          <Fab
+            color="primary"
+            style={{ backgroundColor: theme.palette.success.main }}
+            onClick={on_save}
+            disabled={!can_save}
+          >
+            <LoadingContainer is_loading={is_loading}>
+              <Save fontSize="large" />
+            </LoadingContainer>
+          </Fab>
+        </Box>
+      </Tooltip>
     )
-})
+  }
+)
