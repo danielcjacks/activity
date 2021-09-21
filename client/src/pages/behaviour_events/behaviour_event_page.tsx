@@ -56,22 +56,19 @@ const Fields = observer(() => {
           </Select>
         </FormControl>
       </Grid>
-      <Grid item xs={12}>
-        <Grid item xs={12} sm="auto">
-          <TextField
-            value={event_store.comment}
-            onChange={action(
-              (e: any) => (event_store.comment = e.target.value)
-            )}
-            variant="filled"
-            multiline={true}
-            label="Comment"
-            fullWidth
-          />
-        </Grid>
-      </Grid>
-      <Grid item xs={12}>
+      <Grid style={{ padding: '1em 2em' }}>
         <TextField
+          value={event_store.comment}
+          onChange={action((e: any) => (event_store.comment = e.target.value))}
+          variant="filled"
+          multiline={true}
+          label="Comment"
+          fullWidth
+        />
+      </Grid>
+      <Grid style={{ padding: '1em 2em' }}>
+        <TextField
+          label="Time Stamp"
           value={event_store.get_date_time()}
           onChange={(e: any) => event_store.set_date_time(e.target.value)}
           style={{ color: 'white' }}
