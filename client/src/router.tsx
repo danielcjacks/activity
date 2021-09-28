@@ -24,6 +24,7 @@ export const Router = observer(() => {
         : isEqual(path, ['graph']) ? < GraphPage />
         : isEqual(path, ['motivators']) ? < MotivatorsPage />
         : isEqual(path, ['motivators', 'create']) ? < MotivatorPage />
+        : isEqual(path, ['motivators', 'update']) ? < MotivatorPage />
         : isEqual(path, ['behaviours']) ? < BehavioursPage />
         : isEqual(path, ['behaviours', 'create']) ? <BehaviourPage />
         : isEqual(path, ['behaviours', 'update']) ? <BehaviourPage />
