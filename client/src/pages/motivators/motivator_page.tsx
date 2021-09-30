@@ -9,6 +9,7 @@ import {
 import { get, set } from 'lodash'
 import { action } from 'mobx'
 import { observer } from 'mobx-react-lite'
+import { useEffect } from 'react'
 import { DeleteButton } from '../../components/delete_button'
 import { SaveButton } from '../../components/save_button'
 import { router_store } from '../../router_store'
@@ -25,6 +26,9 @@ const get_field_props = (path: (string | number)[]) => {
 }
 
 export const MotivatorPage = observer(() => {
+  useEffect(() => {
+    motivator_store.on_component_load()
+  }, [])
   return (
     <>
       <MotivatorTitle />
@@ -44,7 +48,7 @@ const MotivatorTitle = observer(() => {
       <CardHeader
         title={
           router_store.query.motivator_id
-            ? `Motivator ${router_store.query.motivator_id}`
+            ? `Update Motivator`
             : `New motivator`
         }
         action={

@@ -8,7 +8,7 @@ class BehavioursStore {
   description_modal_open = false
   selected_behaviour_id = ''
 
-  constructor(){
+  constructor() {
     makeAutoObservable(this)
   }
 
@@ -17,12 +17,16 @@ class BehavioursStore {
     this.description_modal_open = false
     this.delete_modal_open = false
     this.selected_behaviour_id = ''
-    
+
     server_post(`/prisma/behaviour/findMany`, {
       where: { user_id: shared_store.state.user_id },
     })
       .then((response) => {
-        this.behaviours = response
+        this.behaviours = response.sort((a, b) => {
+          if (a.name < b.name) return -1
+          if (a.name > b.name) return 1
+          return 0
+        })
       })
       .catch((error) => {
         console.log(error)
@@ -64,7 +68,7 @@ class BehavioursStore {
     const behaviour = this.behaviours.find(
       (behaviour) => behaviour.id === this.selected_behaviour_id
     )
-    
+
     if (!behaviour) return ''
     return behaviour.name
   }
@@ -87,4 +91,5 @@ class BehavioursStore {
   }
 }
 
-export const behaviours_store = ((window as any).behaviours_store = new BehavioursStore())
+export const behaviours_store = ((window as any).behaviours_store =
+  new BehavioursStore())
