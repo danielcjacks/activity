@@ -22,7 +22,11 @@ class MotivatorsStore {
       where: { user_id: shared_store.state.user_id },
     })
       .then((response) => {
-        this.motivators = response
+        this.motivators = response.sort((a, b) => {
+          if (a.name < b.name) return -1
+          if (a.name > b.name) return 1
+          return 0
+        })
       })
       .catch((error) => {
         console.log(error)
