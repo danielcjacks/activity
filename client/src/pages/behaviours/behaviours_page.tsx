@@ -32,6 +32,8 @@ export const BehavioursPage = () => {
         <IconButton
           style={{
             marginRight: '0.5em',
+            height: 'min-content',
+            alignSelf: 'center',
           }}
           onClick={() => {
             window.location.hash = '#/behaviours/create'
@@ -63,7 +65,6 @@ const BehavioursTable = observer(() => {
 
       <TableBody>
         {behaviours_store.behaviours.map((behaviour) => {
-          console.log(behaviour)
           return (
             <TableRow key={behaviour.id}>
               <TableCell style={{ maxWidth: '25%' }}>
@@ -141,9 +142,7 @@ const DescriptionModal = observer(() => {
             alignItems: 'center',
           }}
         >
-          <Typography variant="h6">
-            {behaviours_store.get_behaviour_name()} Description
-          </Typography>
+          <Typography variant="h6">Description</Typography>
           <IconButton onClick={behaviours_store.toggle_description_modal}>
             <CloseIcon />
           </IconButton>
