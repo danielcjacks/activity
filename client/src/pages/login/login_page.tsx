@@ -15,7 +15,7 @@ export const LoginPage = () => {
   return (
     <>
       <LoginTitle />
-      <Box m={2}>
+      <Box>
         <LoginFields />
         <LoginButtons />
       </Box>
@@ -26,7 +26,7 @@ export const LoginPage = () => {
 const LoginTitle = () => {
   return (
     <Card>
-      <CardHeader title={'Login'} />
+      <CardHeader style={{ paddingLeft: '2em' }} title={'Login'} />
     </Card>
   )
 }
@@ -34,8 +34,14 @@ const LoginTitle = () => {
 const LoginFields = observer(() => {
   return (
     <>
-      <Grid item xs={12} sm="auto">
+      <Grid
+        style={{
+          padding: '2em 2em 1em 2em',
+          width: '100%',
+        }}
+      >
         <TextField
+          style={{ width: '100%' }}
           value={login_store.username}
           onChange={action((e: any) => (login_store.username = e.target.value))}
           variant="filled"
@@ -48,8 +54,14 @@ const LoginFields = observer(() => {
           error={login_store.invalid_username_error()}
         />
       </Grid>
-      <Grid item xs>
+      <Grid
+        style={{
+          padding: '1em 2em',
+          width: '100%',
+        }}
+      >
         <TextField
+          style={{ width: '100%' }}
           type="password"
           value={login_store.password}
           onChange={action((e: any) => (login_store.password = e.target.value))}
@@ -70,8 +82,15 @@ const LoginFields = observer(() => {
 const LoginButtons = observer(() => {
   return (
     <>
-      <Grid item xs>
+      <div
+        style={{
+          padding: '1em 2em',
+          width: '100%',
+          display: 'flex',
+        }}
+      >
         <Button
+          style={{ marginRight: '2em', width: '6em' }}
           color="primary"
           variant="contained"
           onClick={() => login_store.login()}
@@ -79,9 +98,8 @@ const LoginButtons = observer(() => {
         >
           Login
         </Button>
-      </Grid>
-      <Grid item xs>
         <Button
+          style={{ width: '6em' }}
           color="secondary"
           variant="contained"
           onClick={() => login_store.signup()}
@@ -89,7 +107,7 @@ const LoginButtons = observer(() => {
         >
           Signup
         </Button>
-      </Grid>
+      </div>
     </>
   )
 })

@@ -26,9 +26,9 @@ export const BehaviourEventsPage = observer(() => {
     events_store.on_component_load()
   }, [])
   return (
-    <>
+    <div style={{ marginBottom: '10em' }}>
       <Card style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <CardHeader title={'Behaviour Events'} />
+        <CardHeader style={{ paddingLeft: '2em' }} title={'Behaviour Events'} />
         <IconButton
           style={{
             marginRight: '0.5em',
@@ -45,7 +45,7 @@ export const BehaviourEventsPage = observer(() => {
       <EventsTable />
       <DeleteModal />
       <CommentModal />
-    </>
+    </div>
   )
 })
 
@@ -54,7 +54,7 @@ const EventsTable = observer(() => {
     <Table>
       {/* <TableHead>
         <TableRow>
-          {['Behaviour', 'Comment', 'Time Stamp', 'Actions'].map((col_name) => {
+          {['Behaviour', 'Comment', 'Time', 'Actions'].map((col_name) => {
             return (
               <TableCell key={col_name} style={{ maxWidth: '25%' }}>
                 <Typography variant="caption">{col_name}</Typography>
@@ -67,13 +67,14 @@ const EventsTable = observer(() => {
         {events_store.events.map((event) => {
           return (
             <TableRow key={event.id}>
-              <TableCell style={{ maxWidth: '25%' }}>
+              <TableCell style={{ maxWidth: '15vw' }}>
                 <Typography variant="caption">
                   {event.behaviour.name}
                 </Typography>
               </TableCell>
-              <TableCell style={{ maxWidth: '25%' }}>
+              <TableCell style={{ maxWidth: '10vw' }}>
                 <IconButton
+                  style={{ width: '1em', height: '1em' }}
                   onClick={() => {
                     events_store.select_event_for_comment(event.id)
                   }}
@@ -81,13 +82,20 @@ const EventsTable = observer(() => {
                   <MoreHorizIcon />
                 </IconButton>
               </TableCell>
-              <TableCell style={{ maxWidth: '25%' }}>
-                <Typography variant="caption">
-                  {events_store.timestamp_to_date(event.time_stamp)}{' '}
+              <TableCell style={{ maxWidth: '14vw' }}>
+                <Typography variant="caption" style={{ textAlign: 'center' }}>
+                  {events_store.timestamp_to_date(event.time_stamp)}
+                  <br />
                   {events_store.timestamp_to_time(event.time_stamp)}
                 </Typography>
               </TableCell>
-              <TableCell style={{ maxWidth: '25%' }}>
+              <TableCell
+                style={{
+                  maxWidth: '37vw',
+                  paddingLeft: '0',
+                  paddingRight: '0',
+                }}
+              >
                 <div
                   style={{
                     display: 'flex',
@@ -96,6 +104,7 @@ const EventsTable = observer(() => {
                   }}
                 >
                   <IconButton
+                    style={{ width: '1em', height: '1em' }}
                     onClick={() => {
                       // This route is not implemented yet
                       window.location.hash = `#/events/update?event_id=${event.id}`
@@ -104,6 +113,7 @@ const EventsTable = observer(() => {
                     <EditIcon />
                   </IconButton>
                   <IconButton
+                    style={{ width: '1em', height: '1em' }}
                     onClick={() => {
                       events_store.select_event_for_delete(event.id)
                     }}

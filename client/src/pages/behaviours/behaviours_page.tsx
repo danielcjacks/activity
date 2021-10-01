@@ -11,6 +11,7 @@ import {
   IconButton,
   Typography,
   Button,
+  Box,
 } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import EditIcon from '@material-ui/icons/Edit'
@@ -26,9 +27,9 @@ export const BehavioursPage = () => {
     behaviours_store.component_load()
   }, [])
   return (
-    <>
+    <div style={{ marginBottom: '10em' }}>
       <Card style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <CardHeader title={'Behaviours Page'} />
+        <CardHeader style={{ paddingLeft: '2em' }} title={'Behaviours Page'} />
         <IconButton
           style={{
             marginRight: '0.5em',
@@ -45,21 +46,23 @@ export const BehavioursPage = () => {
       <BehavioursTable />
       <DescriptionModal />
       <DeleteModal />
-    </>
+    </div>
   )
 }
 const BehavioursTable = observer(() => {
   return (
-    <Table>
+    <Table style={{ maxWidth: '100vw' }}>
       <TableHead>
         <TableRow>
-          {['Name', 'Description', 'Actions'].map((col_name) => {
-            return (
-              <TableCell style={{ maxWidth: '25%' }}>
-                <Typography variant="caption">{col_name}</Typography>
-              </TableCell>
-            )
-          })}
+          <TableCell style={{ maxWidth: '32vw' }}>
+            <Typography variant="caption">Name</Typography>
+          </TableCell>
+          <TableCell style={{ maxWidth: '20vw', textAlign: 'center' }}>
+            <Typography variant="caption">Desc.</Typography>
+          </TableCell>
+          <TableCell style={{ maxWidth: '48vw', textAlign: 'center' }}>
+            <Typography variant="caption">Actions</Typography>
+          </TableCell>
         </TableRow>
       </TableHead>
 
@@ -67,27 +70,30 @@ const BehavioursTable = observer(() => {
         {behaviours_store.behaviours.map((behaviour) => {
           return (
             <TableRow key={behaviour.id}>
-              <TableCell style={{ maxWidth: '25%' }}>
+              <TableCell style={{ width: '32vw' }}>
                 <Typography variant="caption">{behaviour.name}</Typography>
               </TableCell>
 
-              <TableCell style={{ maxWidth: '25%' }}>
-                <IconButton
-                  onClick={() => {
-                    behaviours_store.select_behaviour_for_description(
-                      behaviour.id
-                    )
-                  }}
-                >
-                  <MoreHorizIcon />
-                </IconButton>
+              <TableCell style={{ width: '20vw' }}>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <IconButton
+                    style={{ width: '1em', height: '1em' }}
+                    onClick={() => {
+                      behaviours_store.select_behaviour_for_description(
+                        behaviour.id
+                      )
+                    }}
+                  >
+                    <MoreHorizIcon />
+                  </IconButton>
+                </div>
               </TableCell>
 
               {/* <TableCell style={{ maxWidth: '25%' }}>
                 {behaviour.positivity}
               </TableCell> */}
 
-              <TableCell style={{ maxWidth: '25%', paddingLeft: '0' }}>
+              <TableCell style={{ maxWidth: '48vw', padding: '0' }}>
                 <div
                   style={{
                     display: 'flex',
@@ -96,6 +102,7 @@ const BehavioursTable = observer(() => {
                   }}
                 >
                   <IconButton
+                    style={{ width: '1em', height: '1em', padding: '0 0.5em' }}
                     onClick={() => {
                       // This route is not implemented yet
                       window.location.hash = `#/events/create?behaviour_id=${behaviour.id}`
@@ -104,6 +111,7 @@ const BehavioursTable = observer(() => {
                     <PlaylistAddIcon />
                   </IconButton>
                   <IconButton
+                    style={{ width: '1em', height: '1em', padding: '0 0.5em' }}
                     onClick={() => {
                       // This route is not implemented yet
                       window.location.hash = `#/behaviours/update?behaviour_id=${behaviour.id}`
@@ -112,6 +120,7 @@ const BehavioursTable = observer(() => {
                     <EditIcon />
                   </IconButton>
                   <IconButton
+                    style={{ width: '1em', height: '1em', padding: '0 0.5em' }}
                     onClick={() => {
                       behaviours_store.select_behaviour_for_delete(behaviour.id)
                     }}
@@ -147,7 +156,15 @@ const DescriptionModal = observer(() => {
             <CloseIcon />
           </IconButton>
         </div>
-        <Typography>{behaviours_store.get_behaviour_description()}</Typography>
+        {behaviours_store.get_behaviour_description() ? (
+          <Typography>
+            {behaviours_store.get_behaviour_description()}
+          </Typography>
+        ) : (
+          <Box fontStyle="italic">
+            <Typography>This motivator has no comment</Typography>
+          </Box>
+        )}
       </DialogTitle>
     </Dialog>
   )

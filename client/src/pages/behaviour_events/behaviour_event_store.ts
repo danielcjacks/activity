@@ -5,7 +5,7 @@ import { shared_store } from '../../shared_store'
 import { setup_async_loaders } from '../../utils/async_loaders'
 
 class EventStore {
-  behaviour_id: number | null = null
+  behaviour_id: number | string = ''
   behaviours: any[] = []
   comment: string = ''
   timestamp: Date = new Date()
@@ -16,10 +16,16 @@ class EventStore {
   }
 
   reset_state = () => {
-    this.behaviour_id = null
+    this.behaviour_id = ''
     this.behaviours = []
     this.comment = ''
     this.timestamp = new Date()
+  }
+
+  form_valid() {
+    return !!this.behaviours.find((b) => {
+      return b.id === this.behaviour_id
+    })
   }
 
   get_date_time = () => {

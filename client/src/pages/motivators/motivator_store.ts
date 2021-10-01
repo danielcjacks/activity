@@ -10,6 +10,7 @@ class MotivatorStore {
   constructor() {
     setup_async_loaders(this)
     makeAutoObservable(this)
+    this.motivator.positivity = 0
   }
 
   reset_state = () => {
@@ -43,6 +44,10 @@ class MotivatorStore {
 
   get motivator_id() {
     return router_store.query.motivator_id
+  }
+
+  form_valid() {
+    return !!this.motivator.name
   }
 
   save_changes = () => {

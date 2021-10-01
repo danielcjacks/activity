@@ -19,7 +19,7 @@ export const start_server = () => {
     process.env.VAPID_PRIVATE_KEY
   )
 
-  cron.schedule('*/5 * * * *', async () => {
+  cron.schedule('*/1 * * * *', async () => {
     const dotw = [
       'monday',
       'tuesday',
@@ -33,8 +33,6 @@ export const start_server = () => {
     const hour = date.getUTCHours()
     const minute = date.getUTCMinutes()
     const day = dotw[date.getUTCDay() - 1]
-
-    // TODO: Timezone days
 
     const wheres = { hour: hour, minute: minute, send_reminders: true }
     wheres[day] = true
