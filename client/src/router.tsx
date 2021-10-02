@@ -54,7 +54,8 @@ export const Router = observer(() => {
         where: {
           subscription: JSON.stringify(push),
         },
-        data: {
+        update: {},
+        create: {
           user_id: shared_store.state.userId,
           subscription: JSON.stringify(push),
         },
