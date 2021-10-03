@@ -104,8 +104,7 @@ export const App = observer(() => {
       <div
         style={{
           position: 'fixed',
-          top: '100vh',
-          transform: 'translateY(-100%)',
+          bottom: '0',
           width: '100vw',
           overflow: 'auto',
           display: 'flex',
