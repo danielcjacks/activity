@@ -21,6 +21,8 @@ export const start_server = () => {
   )
 
   cron.schedule('*/1 * * * *', async () => {
+    console.log('Sending notifications...')
+
     const dotw = [
       'monday',
       'tuesday',
@@ -30,10 +32,11 @@ export const start_server = () => {
       'saturday',
       'sunday',
     ]
+
     const date = new Date()
     const hour = date.getUTCHours()
     const minute = date.getUTCMinutes()
-    const day = dotw[date.getUTCDay() - 1]
+    const day = dotw[(date.getUTCDay() - 1 + 7) % 7]
 
     const wheres = { hour: hour, minute: minute, send_reminders: true }
     wheres[day] = true
@@ -42,6 +45,8 @@ export const start_server = () => {
       where: wheres,
       include: { user: { include: { subscriptions: true } } },
     })
+
+    console.log('Behaviours: ', JSON.stringify(res, null, 2))
 
     const data = res.map((behaviour) => {
       return {
