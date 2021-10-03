@@ -9,6 +9,7 @@ import { get_prisma_query } from './query/query_controller'
 export const prisma = new PrismaClient()
 import cron from 'node-cron'
 import webpush from 'web-push'
+import morgan from 'morgan'
 
 export const start_server = () => {
   dotenv.config()
@@ -75,6 +76,7 @@ export const start_server = () => {
 
   app.use(express.json())
   app.use(cors())
+  app.use(morgan('tiny'))
 
   app.get('/health', (req, res) => {
     res.status(200).json()
