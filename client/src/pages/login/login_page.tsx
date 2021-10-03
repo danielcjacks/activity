@@ -41,6 +41,8 @@ const LoginFields = observer(() => {
         }}
       >
         <TextField
+          autoCapitalize="false"
+          autoCorrect="false"
           style={{ width: '100%' }}
           value={login_store.username}
           onChange={action((e: any) => (login_store.username = e.target.value))}
