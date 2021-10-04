@@ -65,7 +65,7 @@ export const start_server = () => {
         try {
           webpush.sendNotification(
             s,
-            `ACTIVITY Reminder to "${behaviour.name}"`
+            `ACTIVITY Reminder for "${behaviour.name}"`
           )
         } catch (e) {
           console.log("Couldn't send push notification")
