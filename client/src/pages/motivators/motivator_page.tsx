@@ -92,7 +92,7 @@ const MotivatorFields = observer(() => {
         />
       </Grid>
       <Grid style={{ padding: '1em 2em', width: '100%' }}>
-        <Typography gutterBottom>Positivity</Typography>
+        <Typography gutterBottom>Away / Toward</Typography>
         <Slider
           style={{
             maxWidth: '500px',
