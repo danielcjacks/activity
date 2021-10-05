@@ -9,7 +9,8 @@
         "coverage-watch": "live-server coverage",
         "q": "taskkill /f /im node.exe",
         "hy": "cd ./server && npm run hy",
-        "dehy": "cd ./server && npm run dehy"
+        "dehy": "cd ./server && npm run dehy",
+        "build-server": "cd ./server && tsc"
     },
     "devDependencies": {
         "@types/chai": "^4.2.21",

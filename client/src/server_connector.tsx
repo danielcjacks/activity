@@ -6,8 +6,13 @@ import { shared_store } from './shared_store'
 export const server_post = async (server_route, body?) => {
   const jwt = shared_store.is_auth() ? shared_store.state.token : ''
 
+  const server_link =
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:5000'
+      : 'https://monash-activity.live'
+
   try {
-    const response = await fetch(`http://localhost:5000${server_route}`, {
+    const response = await fetch(`${server_link}${server_route}`, {
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',

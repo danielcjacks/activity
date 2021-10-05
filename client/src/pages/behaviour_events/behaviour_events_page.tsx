@@ -1,3 +1,4 @@
+import { observer } from 'mobx-react-lite'
 import {
   Table,
   TableBody,
@@ -17,19 +18,17 @@ import AddIcon from '@material-ui/icons/Add'
 import EditIcon from '@material-ui/icons/Edit'
 import CloseIcon from '@material-ui/icons/Close'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
-import { observer } from 'mobx-react-lite'
 import { useEffect } from 'react'
-import { motivators_store } from './motivators_store'
-import { motivator_store } from './motivator_store'
+import { events_store } from './behaviour_events_store'
 
-export const MotivatorsPage = observer(() => {
+export const BehaviourEventsPage = observer(() => {
   useEffect(() => {
-    motivators_store.component_load()
+    events_store.on_component_load()
   }, [])
   return (
     <div style={{ marginBottom: '10em' }}>
       <Card style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <CardHeader style={{ paddingLeft: '2em' }} title={'Motivators'} />
+        <CardHeader style={{ paddingLeft: '2em' }} title={'Behaviour Events'} />
         <IconButton
           style={{
             marginRight: '0.5em',
@@ -37,64 +36,66 @@ export const MotivatorsPage = observer(() => {
             alignSelf: 'center',
           }}
           onClick={() => {
-            window.location.hash = '#/motivators/create'
+            window.location.hash = '#/events/create'
           }}
         >
           <AddIcon />
         </IconButton>
       </Card>
-      <MotivatorsTable />
+      <EventsTable />
       <DeleteModal />
-      <DescriptionModal />
+      <CommentModal />
     </div>
   )
 })
 
-const MotivatorsTable = observer(() => {
+const EventsTable = observer(() => {
   return (
-    <Table style={{ width: '100vw', overflow: 'auto' }}>
-      <TableHead>
+    <Table>
+      {/* <TableHead>
         <TableRow>
-          {['Name', 'Desc.', 'Positivity', 'Actions'].map((col_name) => {
+          {['Behaviour', 'Comment', 'Time', 'Actions'].map((col_name) => {
             return (
-              <TableCell style={{ maxWidth: '25vw' }}>
-                <Typography variant="caption" style={{ textAlign: 'center' }}>
-                  {col_name}
-                </Typography>
+              <TableCell key={col_name} style={{ maxWidth: '25%' }}>
+                <Typography variant="caption">{col_name}</Typography>
               </TableCell>
             )
           })}
         </TableRow>
-      </TableHead>
+      </TableHead> */}
       <TableBody>
-        {motivators_store.motivators.map((motivator) => {
+        {events_store.events.map((event) => {
           return (
-            <TableRow key={motivator.id}>
-              <TableCell style={{ maxWidth: '25vw' }}>
-                <Typography variant="caption">{motivator.name}</Typography>
+            <TableRow key={event.id}>
+              <TableCell style={{ maxWidth: '15vw' }}>
+                <Typography variant="caption">
+                  {event.behaviour.name}
+                </Typography>
+              </TableCell>
+              <TableCell style={{ maxWidth: '10vw' }}>
+                <IconButton
+                  style={{ width: '1em', height: '1em' }}
+                  onClick={() => {
+                    events_store.select_event_for_comment(event.id)
+                  }}
+                >
+                  <MoreHorizIcon />
+                </IconButton>
+              </TableCell>
+              <TableCell style={{ maxWidth: '14vw' }}>
+                <Typography variant="caption" style={{ textAlign: 'center' }}>
+                  {events_store.timestamp_to_date(event.time_stamp)}
+                  <br />
+                  {events_store.timestamp_to_time(event.time_stamp)}
+                </Typography>
               </TableCell>
               <TableCell
                 style={{
-                  maxWidth: '25vw',
+                  maxWidth: '37vw',
+                  paddingLeft: '0',
+                  paddingRight: '0',
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <IconButton
-                    style={{ width: '1em', height: '1em' }}
-                    onClick={() => {
-                      motivators_store.select_motivator_for_description(
-                        motivator.id
-                      )
-                    }}
-                  >
-                    <MoreHorizIcon />
-                  </IconButton>
-                </div>
-              </TableCell>
-              <TableCell style={{ maxWidth: '25vw' }}>
-                <div style={{ paddingLeft: '1em' }}>{motivator.positivity}</div>
-              </TableCell>
-              <TableCell style={{ maxWidth: '25vw', paddingLeft: '0' }}>
                 <div
                   style={{
                     display: 'flex',
@@ -103,16 +104,18 @@ const MotivatorsTable = observer(() => {
                   }}
                 >
                   <IconButton
+                    style={{ width: '1em', height: '1em' }}
                     onClick={() => {
                       // This route is not implemented yet
-                      window.location.hash = `#/motivators/update?motivator_id=${motivator.id}`
+                      window.location.hash = `#/events/update?event_id=${event.id}`
                     }}
                   >
                     <EditIcon />
                   </IconButton>
                   <IconButton
+                    style={{ width: '1em', height: '1em' }}
                     onClick={() => {
-                      motivators_store.select_motivator_for_delete(motivator.id)
+                      events_store.select_event_for_delete(event.id)
                     }}
                   >
                     <CloseIcon color="error" />
@@ -127,11 +130,11 @@ const MotivatorsTable = observer(() => {
   )
 })
 
-const DescriptionModal = observer(() => {
+const CommentModal = observer(() => {
   return (
     <Dialog
-      open={motivators_store.description_modal_open}
-      onClose={motivators_store.toggle_description_modal}
+      open={events_store.comment_modal_open}
+      onClose={events_store.toggle_comment_modal}
     >
       <DialogTitle>
         <div
@@ -141,18 +144,18 @@ const DescriptionModal = observer(() => {
             alignItems: 'center',
           }}
         >
-          <Typography variant="h6">Description</Typography>
-          <IconButton onClick={motivators_store.toggle_description_modal}>
+          <Typography variant="h6">
+            {events_store.get_selected_event_behaviour()}
+          </Typography>
+          <IconButton onClick={events_store.toggle_comment_modal}>
             <CloseIcon />
           </IconButton>
         </div>
-        {motivators_store.get_motivator_description() ? (
-          <Typography>
-            {motivators_store.get_motivator_description()}
-          </Typography>
+        {!!events_store.get_selected_event_comment() ? (
+          <Typography>{events_store.get_selected_event_comment()}</Typography>
         ) : (
           <Box fontStyle="italic">
-            <Typography>This motivator has no comment</Typography>
+            <Typography>This event has no comment</Typography>
           </Box>
         )}
       </DialogTitle>
@@ -163,8 +166,8 @@ const DescriptionModal = observer(() => {
 const DeleteModal = observer(() => {
   return (
     <Dialog
-      open={motivators_store.delete_modal_open}
-      onClose={motivators_store.toggle_delete_modal}
+      open={events_store.delete_modal_open}
+      onClose={events_store.toggle_delete_modal}
     >
       <DialogTitle>
         <div
@@ -174,14 +177,13 @@ const DeleteModal = observer(() => {
             alignItems: 'center',
           }}
         >
-          <Typography variant="h6">Motivator Delete</Typography>
-          <IconButton onClick={motivators_store.toggle_delete_modal}>
+          <Typography variant="h6">Event Delete</Typography>
+          <IconButton onClick={events_store.toggle_delete_modal}>
             <CloseIcon />
           </IconButton>
         </div>
         <Typography>
-          Are you sure you want to delete this motivator. It cannot be
-          recovered.
+          Are you sure you want to delete this event. It cannot be recovered.
         </Typography>
 
         <div
@@ -194,14 +196,14 @@ const DeleteModal = observer(() => {
           <Button
             color="primary"
             variant="contained"
-            onClick={motivators_store.delete_motivator}
+            onClick={events_store.delete_event}
           >
             Confirm
           </Button>
           <Button
             color="secondary"
             variant="contained"
-            onClick={motivators_store.toggle_delete_modal}
+            onClick={events_store.toggle_delete_modal}
           >
             Cancel
           </Button>

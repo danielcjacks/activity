@@ -7,6 +7,20 @@ import { shared_store } from '../../shared_store'
 class BehaviourStore {
   name: string = ''
   description: string = ''
+  reminder_days: boolean[] = [false, false, false, false, false, false, false]
+  day_letters = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+  dotw = [
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+    'sunday',
+  ]
+  reminder_time: any = '12:00'
+  including_reminder: boolean = false
+
   // List of all available motivators to add
   available_motivators: any[] = []
   // List of the ids of motivators currently added to the behaviour
@@ -29,6 +43,12 @@ class BehaviourStore {
     this.motivator_ids_added = []
     this.tombstoned_ids = new Set()
     this.previous_motivator_ids = []
+    this.reminder_days = [false, false, false, false, false, false, false]
+    this.reminder_time = '12:00'
+  }
+
+  toggle_day = (day_index) => {
+    this.reminder_days[day_index] = !this.reminder_days[day_index]
   }
 
   is_update = () => {
@@ -67,14 +87,31 @@ class BehaviourStore {
       },
     })
 
+    const real_date = new Date()
+    real_date.setUTCHours(behaviour.hour)
+    real_date.setUTCMinutes(behaviour.minute)
+
+    const real_time =
+      String(real_date.getHours()).padStart(2, '0') +
+      ':' +
+      String(real_date.getMinutes()).padStart(2, '0')
+
+    const motivator_ids = behaviour.behaviour_motivators.map(
+      (behaviour_motivator) => behaviour_motivator.motivator_id
+    )
+
     runInAction(() => {
-      if (behaviour) {
-        this.name = behaviour.name
-        this.description = behaviour.description
-        this.motivator_ids_added = behaviour.behaviour_motivators.map(
-          (behaviour_motivators) => behaviour_motivators.motivator_id
-        )
-      }
+        if (behaviour) {
+            this.including_reminder = behaviour.send_reminders
+            this.reminder_days = this.dotw.map((d) => {
+                return behaviour[d]
+            })
+            this.reminder_time = real_time
+            this.name = behaviour.name
+            this.description = behaviour.description
+            this.motivator_ids_added = motivator_ids
+            this.previous_motivator_ids = [...this.motivator_ids_added]   
+        }
     })
   }
 
@@ -90,6 +127,16 @@ class BehaviourStore {
   add_motivator = () => {
     // Add a motivator that can be selected
     this.motivator_ids_added.push('')
+  }
+
+  get_filtered_motivators() {
+    return this.available_motivators.filter((m) => {
+      return !this.motivator_ids_added.includes(m.id)
+    })
+  }
+
+  form_valid() {
+    return this.name !== ''
   }
 
   select_motivator = (motivator_index, motivator_id) => {
@@ -181,6 +228,10 @@ class BehaviourStore {
           create: this.get_motivator_connectors(),
           delete: this.get_motivator_disconnectors(),
         },
+        send_reminders: this.including_reminder,
+        hour: this.get_reminder_hour(),
+        minute: this.get_reminder_minute(),
+        ...this.get_days(),
       },
       where: {
         id: +behaviour_id,
@@ -189,6 +240,49 @@ class BehaviourStore {
 
     return body
   }
+
+  get_days() {
+    const date = new Date()
+    date.setHours(this.reminder_time.slice(0, 2))
+    date.setMinutes(this.reminder_time.slice(3, 5))
+
+    const testDay = 5
+    date.setDate(testDay)
+    const utcDay = date.getUTCDate()
+
+    // If reminder is on Tuesday local, and Tuesday UTC, set zero
+    // If reminder is on Tuesday local, but Wednesday UTC, set +1
+    // If reminder is on Tuesday local, but Monday UTC, set -1
+    const offset = testDay - utcDay
+
+    const days = {}
+
+    this.dotw.forEach((d, i) => {
+      // If reminder is on Tuesday local, and Tuesday UTC (offset = 0), save as Tuesday
+      // If reminder is on Tuesday local, but Wednesday UTC (offset = 1), save as Wednesday result as Tuesday
+      // If reminder is on Tuesday local, but Monday UTC (offset = -1), save as Monday result as Tuesday
+      const utcIndex = (i + offset) % 7
+      const utcDay = this.dotw[utcIndex]
+      days[utcDay] = this.reminder_days[i]
+    })
+    return days
+  }
+
+  get_reminder_hour() {
+    const date = new Date()
+    date.setHours(this.reminder_time.slice(0, 2))
+    date.setMinutes(this.reminder_time.slice(3, 5))
+    return date.getUTCHours()
+  }
+
+  get_reminder_minute() {
+    const date = new Date()
+    date.setHours(this.reminder_time.slice(0, 2))
+    date.setMinutes(this.reminder_time.slice(3, 5))
+    return date.getUTCMinutes()
+  }
+
+  get_reminder_days() {}
 
   get_create_body = () => {
     // This function generates the prisma body for creating a behaviour object
@@ -199,9 +293,14 @@ class BehaviourStore {
         behaviour_motivators: {
           create: this.get_motivator_connectors(),
         },
+        send_reminders: this.including_reminder,
+        hour: this.get_reminder_hour(),
+        minute: this.get_reminder_minute(),
+        ...this.get_days(),
         user_id: shared_store.state.userId,
       },
     }
+
     return body
   }
 

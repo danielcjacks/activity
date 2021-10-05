@@ -9,6 +9,7 @@ import {
 import { get, set } from 'lodash'
 import { action } from 'mobx'
 import { observer } from 'mobx-react-lite'
+import { useEffect } from 'react'
 import { DeleteButton } from '../../components/delete_button'
 import { SaveButton } from '../../components/save_button'
 import { router_store } from '../../router_store'
@@ -25,12 +26,15 @@ const get_field_props = (path: (string | number)[]) => {
 }
 
 export const MotivatorPage = observer(() => {
+  useEffect(() => {
+    motivator_store.on_component_load()
+  }, [])
   return (
     <>
       <MotivatorTitle />
       <MotivatorFields />
       <SaveButton
-        can_save={true}
+        can_save={motivator_store.form_valid()}
         is_loading={get_loading(motivator_store, motivator_store.save_changes)}
         on_save={motivator_store.save_changes}
       />
@@ -42,9 +46,10 @@ const MotivatorTitle = observer(() => {
   return (
     <Card>
       <CardHeader
+        style={{ paddingLeft: '2em' }}
         title={
           router_store.query.motivator_id
-            ? `Motivator ${router_store.query.motivator_id}`
+            ? `Update Motivator`
             : `New motivator`
         }
         action={
@@ -61,15 +66,23 @@ const MotivatorTitle = observer(() => {
 
 const MotivatorFields = observer(() => {
   return (
-    <Grid container spacing={1}>
-      <Grid item xs={12} sm="auto">
+    <Grid style={{ width: '100%' }}>
+      <Grid
+        style={{
+          width: '100%',
+          padding: '2em 2em 1em 2em',
+        }}
+      >
         <TextField
+          style={{
+            width: '100%',
+          }}
           {...get_field_props(['name'])}
           variant="filled"
           label="Name"
         />
       </Grid>
-      <Grid item xs>
+      <Grid style={{ width: '100%', padding: '1em 2em' }}>
         <TextField
           {...get_field_props(['description'])}
           variant="filled"
@@ -78,12 +91,14 @@ const MotivatorFields = observer(() => {
           fullWidth
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid style={{ padding: '1em 2em', width: '100%' }}>
         <Typography gutterBottom>Positivity</Typography>
-      </Grid>
-      <Grid item xs={12}>
         <Slider
-          style={{ maxWidth: '500px' }}
+          style={{
+            maxWidth: '500px',
+            margin: 'auto',
+            display: 'block',
+          }}
           value={motivator_store.motivator?.positivity ?? 0}
           onChange={action(
             (e, new_value) => (motivator_store.motivator.positivity = new_value)
@@ -96,6 +111,7 @@ const MotivatorFields = observer(() => {
           max={5}
         />
       </Grid>
+      <Grid item xs={12}></Grid>
     </Grid>
   )
 })

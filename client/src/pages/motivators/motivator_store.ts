@@ -12,8 +12,42 @@ class MotivatorStore {
     makeAutoObservable(this)
   }
 
+  reset_state = () => {
+    this.motivator = {}
+    this.motivator.positivity = 0
+  }
+
+  on_component_load() {
+    this.reset_state()
+    // If on update path, load the motivator
+    if (this.is_update()) {
+      // If in update mode, but no motivator_id, redirect home
+      if (!router_store.query.motivator_id) {
+        window.location.hash = '#/home'
+      }
+      this.load_motivator()
+    }
+  }
+
+  async load_motivator() {
+    const motivator = await server_post('/prisma/motivator/findUnique', {
+      where: { id: +router_store.query.motivator_id },
+    })
+
+    this.motivator = motivator
+  }
+
+  is_update = () => {
+    const path = router_store.hash.split('/')
+    return path[path.length - 1].split('?')[0] === 'update'
+  }
+
   get motivator_id() {
     return router_store.query.motivator_id
+  }
+
+  form_valid() {
+    return !!this.motivator.name
   }
 
   save_changes = () => {
@@ -27,7 +61,11 @@ class MotivatorStore {
       },
     }
 
-    console.log(prisma_body)
+    if (is_update) {
+      prisma_body['where'] = {
+        id: this.motivator.id,
+      }
+    }
 
     server_post(`/prisma/motivator/${prisma_method}`, prisma_body)
       .then((response) => {
