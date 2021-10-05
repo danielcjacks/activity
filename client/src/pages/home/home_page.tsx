@@ -24,7 +24,7 @@ export const HomePage = observer(() => {
   }, [])
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: '20px', marginBottom: '5em' }}>
       <Grid container spacing={2} justifyContent="center">
         <Grid item xs={12}>
           <center>
@@ -140,7 +140,6 @@ const SpineChart = observer(() => {
               type: 'ordinal',
               // aggregate: 'average',
               axis: {
-                
                 gridColor: 'dimgrey',
                 title: 'Days ago',
                 titleColor: 'grey',
@@ -173,8 +172,8 @@ const SpineChart = observer(() => {
               legend: {
                 labelColor: 'lightgrey',
                 title: 'Away / Towards',
-                titleColor: 'grey'
-              }
+                titleColor: 'grey',
+              },
             },
             order: {
               field: 'positivity',
