@@ -101,15 +101,17 @@ class BehaviourStore {
     )
 
     runInAction(() => {
-      this.including_reminder = behaviour.send_reminders
-      this.reminder_days = this.dotw.map((d) => {
-        return behaviour[d]
-      })
-      this.reminder_time = real_time
-      this.name = behaviour.name
-      this.description = behaviour.description
-      this.motivator_ids_added = motivator_ids
-      this.previous_motivator_ids = [...this.motivator_ids_added]
+        if (behaviour) {
+            this.including_reminder = behaviour.send_reminders
+            this.reminder_days = this.dotw.map((d) => {
+                return behaviour[d]
+            })
+            this.reminder_time = real_time
+            this.name = behaviour.name
+            this.description = behaviour.description
+            this.motivator_ids_added = motivator_ids
+            this.previous_motivator_ids = [...this.motivator_ids_added]   
+        }
     })
   }
 

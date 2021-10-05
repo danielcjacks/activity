@@ -21,8 +21,55 @@ const reset_layout = () => {
           nodeDimensionsIncludeLabels: true, //@ts-ignore
           rankDir: 'LR',
           fit: true,
+          // transform: (node, pos) => {
+          //   // set positions for axis labels
+          //   const node_type = node.data('type')
+          //   if (node_type !== 'axis_node') {
+          //     return pos
+          //   }
+
+          //   const position = node.data('position')
+          //   const axis = node.data('axis')
+
+          //   const multipliers = {
+          //     bot: 0,
+          //     mid: 1,
+          //     top: 2,
+          //   }
+
+          //   const axis_length = 200
+
+          //   const x = axis === 'x' ? axis_length * multipliers[position] : 0
+          //   const y = axis === 'y' ? axis_length * multipliers[position] : 0
+
+          //   return { x, y }
+          // },
         })
         ?.run()
+
+      graph_store?.cy?.nodes().forEach((ele) => {
+        // set positions for axis labels
+        const node_type = ele.data('type')
+        if (node_type !== 'axis_node') {
+          return
+        }
+
+        const position = ele.data('position')
+        const axis = ele.data('axis')
+
+        const multipliers = {
+          bot: 0,
+          mid: 1,
+          top: 2,
+        }
+
+        const axis_length = 200
+
+        const x = axis === 'x' ? axis_length * multipliers[position] : 0
+        const y = axis === 'y' ? axis_length * multipliers[position] : 0
+
+        ele.position({ x, y: y - 20 })
+      })
     })
   }
 }
@@ -61,24 +108,24 @@ const RecenterButton = observer(() => {
   )
 })
 
-const Graph1 = observer(() => {
-  return (
-    <CytoscapeComponent
-      style={{ width: '600px', height: '600px', backgroundColor: 'grey' }}
-      elements={graph_store.get_cytoscape_elements()}
-      layout={{
-        name: 'cose',
-      }} // @ts-ignore
-      stylesheet={get_stylesheet()}
-      pan={{ x: 0, y: 0 }}
-      zoom={1}
-    />
-  )
-})
-
 const get_stylesheet = () => [
   {
     selector: 'node',
+    style: {
+      color: '#fff',
+      'text-background-color': '#303030',
+      'text-background-opacity': 0.7
+    }
+  },
+  {
+    selector: 'edge',
+    style: {
+      color: '#fff',
+      'line-color': '#7a7a7a'
+    }
+  },
+  {
+    selector: 'node[type = "data"]',
     style: {
       label: 'data(name)',
       backgroundColor: '#666',
@@ -126,15 +173,57 @@ const get_stylesheet = () => [
     },
   },
   {
-    selector: 'edge',
+    selector: 'edge[type = "data"]',
     style: {
       width: 3,
-      'line-color': '#ccc',
       'target-arrow-color': '#ccc',
       'curve-style': 'bezier',
       'source-arrow-shape': 'none',
       'target-arrow-shape': 'none',
     },
+  },
+  {
+    selector: 'node[type = "axis_node"]',
+    style: {
+      'background-opacity': 0,
+    },
+  },
+  {
+    selector: 'edge[type = "axis_edge"]',
+    style: {
+      label: 'test label cool',
+      width: 3,
+      'target-arrow-color': '#ccc',
+      'curve-style': 'bezier',
+      'source-arrow-shape': 'none',
+      'target-arrow-shape': 'triangle',
+    },
+  },
+  {
+    selector: 'edge[type = "axis_edge"]',
+    style: {
+      label: 'test label cool',
+      width: 3,
+      'target-arrow-color': '#ccc',
+      'curve-style': 'bezier',
+      'source-arrow-shape': 'none',
+      'target-arrow-shape': 'triangle',
+    },
+  },
+  {
+    selector: 'edge[type = "axis_edge"][axis = "y"]',
+    style: {
+      'label': 'data(label)',
+      'text-rotation': '270deg',
+      'text-margin-x': '-10',
+    }
+  },
+  {
+    selector: 'edge[type = "axis_edge"][axis = "x"]',
+    style: {
+      'label': 'data(label)',
+      'text-margin-y': '-10'
+    }
   },
 ]
 
@@ -147,19 +236,19 @@ const Graph2 = observer(() => {
         position: 'absolute',
         top: '0px',
         bottom: '56px',
-        backgroundColor: 'grey',
+        backgroundColor: '#303030',
       }}
       elements={graph_store.get_cytoscape_elements()}
       // @ts-ignore
       stylesheet={get_stylesheet()}
       wheelSensitivity={0.1}
-      pan={{ x: 0, y: 0 }}
+      pan={{ x: 0, y: -20 }}
       zoom={1}
     />
   )
 })
 
-const get_motivator_color = (
+export const get_motivator_color = (
   positivity,
   min_positivity: number,
   max_positivity: number
@@ -167,7 +256,6 @@ const get_motivator_color = (
   const scale = chroma.bezier(['indianred', '#666', '#477951']).scale()
   const percent = invlerp(min_positivity, max_positivity, positivity)
   const color = scale(percent).hex()
-  // console.log('color', positivity, percent, color)
   return color
 }
 
