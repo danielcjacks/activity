@@ -55,7 +55,7 @@ const MotivatorsTable = observer(() => {
     <Table style={{ width: '100vw', overflow: 'auto' }}>
       <TableHead>
         <TableRow>
-          {['Name', 'Desc.', 'Positivity', 'Actions'].map((col_name) => {
+          {['Name', 'Desc.', 'Rating', 'Actions'].map((col_name) => {
             return (
               <TableCell style={{ maxWidth: '25vw' }}>
                 <Typography variant="caption" style={{ textAlign: 'center' }}>
