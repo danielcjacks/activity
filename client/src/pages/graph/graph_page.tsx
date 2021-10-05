@@ -253,7 +253,7 @@ export const get_motivator_color = (
   min_positivity: number,
   max_positivity: number
 ) => {
-  const scale = chroma.bezier(['indianred', '#666', '#477951']).scale()
+  const scale = chroma.bezier(['#F50057', '#666', '#64B5F6']).scale()
   const percent = invlerp(min_positivity, max_positivity, positivity)
   const color = scale(percent).hex()
   return color
