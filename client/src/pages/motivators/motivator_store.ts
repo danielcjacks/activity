@@ -10,11 +10,11 @@ class MotivatorStore {
   constructor() {
     setup_async_loaders(this)
     makeAutoObservable(this)
-    this.motivator.positivity = 0
   }
 
   reset_state = () => {
     this.motivator = {}
+    this.motivator.positivity = 0
   }
 
   on_component_load() {

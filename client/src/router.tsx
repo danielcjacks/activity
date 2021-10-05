@@ -21,6 +21,7 @@ export const Router = observer(() => {
     // Wait until authorised
     if (!authorised) return
     ;(async () => {
+      if (!('serviceWorker' in navigator)) return
       const sw = await navigator.serviceWorker.ready
       const sub = await sw.pushManager.getSubscription()
 
@@ -77,6 +78,8 @@ export const Router = observer(() => {
   ) : isEqual(path, ['motivators']) ? (
     <MotivatorsPage />
   ) : isEqual(path, ['motivators', 'create']) ? (
+    <MotivatorPage />
+  ) : isEqual(path, ['motivators', 'update']) ? (
     <MotivatorPage />
   ) : isEqual(path, ['behaviours']) ? (
     <BehavioursPage />

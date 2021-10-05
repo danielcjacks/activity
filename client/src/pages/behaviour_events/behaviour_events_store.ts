@@ -72,6 +72,7 @@ class EventsStore {
       include: { behaviour: true },
     })
       .then((response) => {
+        if (!response) return
         this.events = response
         // Sort from most recent to least
         this.events

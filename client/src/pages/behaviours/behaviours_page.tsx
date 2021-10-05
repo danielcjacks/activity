@@ -29,7 +29,7 @@ export const BehavioursPage = () => {
   return (
     <div style={{ marginBottom: '10em' }}>
       <Card style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <CardHeader style={{ paddingLeft: '2em' }} title={'Behaviours Page'} />
+        <CardHeader style={{ paddingLeft: '2em' }} title={'Behaviours'} />
         <IconButton
           style={{
             marginRight: '0.5em',
