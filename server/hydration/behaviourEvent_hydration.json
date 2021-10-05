@@ -1,62 +1,46 @@
 [
     {
         "behaviour_id": 1,
-        "time_stamp": "2021-07-07T21:05:22Z"
+        "time_stamp": "2021-09-28T21:05:22Z"
     },
     {
         "behaviour_id": 1,
-        "time_stamp": "2021-06-07T21:05:22Z"
+        "time_stamp": "2021-10-02T21:05:22Z"
     },
     {
         "behaviour_id": 1,
-        "time_stamp": "2021-05-07T21:05:22Z"
+        "time_stamp": "2021-09-27T21:05:22Z"
     },
     {
         "behaviour_id": 1,
-        "time_stamp": "2021-05-07T21:05:22Z"
+        "time_stamp": "2021-09-26T21:05:22Z"
     },
     {
         "behaviour_id": 2,
-        "time_stamp": "2021-05-07T21:05:22Z"
+        "time_stamp": "2021-10-03T21:05:22Z"
     },
     {
         "behaviour_id": 3,
-        "time_stamp": "2021-05-07T21:05:22Z"
+        "time_stamp": "2021-10-01T21:05:22Z"
     },
     {
         "behaviour_id": 3,
-        "time_stamp": "2021-05-07T21:05:22Z"
+        "time_stamp": "2021-09-29T21:05:22Z"
     },
     {
         "behaviour_id": 4,
-        "time_stamp": "2021-05-07T21:05:22Z"
+        "time_stamp": "2021-10-03T21:05:22Z"
     },
     {
         "behaviour_id": 5,
-        "time_stamp": "2021-07-07T21:05:22Z"
+        "time_stamp": "2021-10-03T21:05:22Z"
     },
     {
         "behaviour_id": 5,
-        "time_stamp": "2021-06-07T21:05:22Z"
+        "time_stamp": "2021-10-01T21:05:22Z"
     },
     {
         "behaviour_id": 5,
-        "time_stamp": "2021-05-07T21:05:22Z"
-    },
-    {
-        "behaviour_id": 5,
-        "time_stamp": "2021-05-07T21:05:22Z"
-    },
-    {
-        "behaviour_id": 5,
-        "time_stamp": "2021-07-07T21:05:22Z"
-    },
-    {
-        "behaviour_id": 5,
-        "time_stamp": "2021-06-07T21:05:22Z"
-    },
-    {
-        "behaviour_id": 5,
-        "time_stamp": "2021-05-07T21:05:22Z"
+        "time_stamp": "2021-09-25T21:05:22Z"
     }
 ]

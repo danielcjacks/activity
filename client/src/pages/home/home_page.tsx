@@ -117,6 +117,7 @@ const SpineChart = observer(() => {
     .concat(
       new Array(30).fill(0).map((_, i) => ({ positivity: 0, days_passed: i }))
     )
+    .sort((a, b) => a.positivity - b.positivity)
 
   return (
     <>
@@ -139,6 +140,7 @@ const SpineChart = observer(() => {
               type: 'ordinal',
               // aggregate: 'average',
               axis: {
+                
                 gridColor: 'dimgrey',
                 title: 'Days ago',
                 titleColor: 'grey',
@@ -148,11 +150,13 @@ const SpineChart = observer(() => {
             x: {
               field: 'positivity',
               type: 'quantitative',
+              aggregate: 'sum',
               sort: {
                 field: 'order',
               },
               axis: {
-                grid: false,
+                grid: true,
+                gridColor: 'dimgrey',
                 title: 'Away / Towards (Total)',
                 titleColor: 'grey',
                 labelColor: 'lightgrey',
