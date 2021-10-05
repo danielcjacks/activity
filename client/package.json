@@ -35,7 +35,8 @@
     "@types/lodash": "^4.14.171",
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0"
+    "@types/react-dom": "^17.0.0",
+    "@types/react-leaflet": "^2.8.2"
   },
   "scripts": {
     "start": "react-scripts start",

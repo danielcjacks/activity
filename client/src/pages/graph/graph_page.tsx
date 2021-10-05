@@ -22,7 +22,6 @@ const reset_layout = () => {
           rankDir: 'LR',
           fit: true,
           // transform: (node, pos) => {
-          //   console.log(graph_store.cy?.extent())
           //   // set positions for axis labels
           //   const node_type = node.data('type')
           //   if (node_type !== 'axis_node') {
@@ -49,7 +48,6 @@ const reset_layout = () => {
         ?.run()
 
       graph_store?.cy?.nodes().forEach((ele) => {
-        console.log(graph_store.cy?.extent())
         // set positions for axis labels
         const node_type = ele.data('type')
         if (node_type !== 'axis_node') {
@@ -70,7 +68,7 @@ const reset_layout = () => {
         const x = axis === 'x' ? axis_length * multipliers[position] : 0
         const y = axis === 'y' ? axis_length * multipliers[position] : 0
 
-        ele.position({ x, y })
+        ele.position({ x, y: y - 20 })
       })
     })
   }
@@ -110,22 +108,22 @@ const RecenterButton = observer(() => {
   )
 })
 
-const Graph1 = observer(() => {
-  return (
-    <CytoscapeComponent
-      style={{ width: '600px', height: '600px', backgroundColor: 'grey' }}
-      elements={graph_store.get_cytoscape_elements()}
-      layout={{
-        name: 'cose',
-      }} // @ts-ignore
-      stylesheet={get_stylesheet()}
-      pan={{ x: 0, y: 0 }}
-      zoom={1}
-    />
-  )
-})
-
 const get_stylesheet = () => [
+  {
+    selector: 'node',
+    style: {
+      color: '#fff',
+      'text-background-color': '#303030',
+      'text-background-opacity': 0.7
+    }
+  },
+  {
+    selector: 'edge',
+    style: {
+      color: '#fff',
+      'line-color': '#7a7a7a'
+    }
+  },
   {
     selector: 'node[type = "data"]',
     style: {
@@ -178,7 +176,6 @@ const get_stylesheet = () => [
     selector: 'edge[type = "data"]',
     style: {
       width: 3,
-      'line-color': '#ccc',
       'target-arrow-color': '#ccc',
       'curve-style': 'bezier',
       'source-arrow-shape': 'none',
@@ -196,7 +193,6 @@ const get_stylesheet = () => [
     style: {
       label: 'test label cool',
       width: 3,
-      'line-color': '#ccc',
       'target-arrow-color': '#ccc',
       'curve-style': 'bezier',
       'source-arrow-shape': 'none',
@@ -208,7 +204,6 @@ const get_stylesheet = () => [
     style: {
       label: 'test label cool',
       width: 3,
-      'line-color': '#ccc',
       'target-arrow-color': '#ccc',
       'curve-style': 'bezier',
       'source-arrow-shape': 'none',
@@ -221,7 +216,6 @@ const get_stylesheet = () => [
       'label': 'data(label)',
       'text-rotation': '270deg',
       'text-margin-x': '-10',
-      'target-arrow-shape': 'none',
     }
   },
   {
@@ -242,13 +236,13 @@ const Graph2 = observer(() => {
         position: 'absolute',
         top: '0px',
         bottom: '56px',
-        backgroundColor: 'grey',
+        backgroundColor: '#303030',
       }}
       elements={graph_store.get_cytoscape_elements()}
       // @ts-ignore
       stylesheet={get_stylesheet()}
       wheelSensitivity={0.1}
-      pan={{ x: 0, y: 0 }}
+      pan={{ x: 0, y: -20 }}
       zoom={1}
     />
   )

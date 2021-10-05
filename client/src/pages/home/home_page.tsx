@@ -2,12 +2,20 @@ import { format } from 'date-fns'
 import { observer } from 'mobx-react-lite'
 import en_au from 'date-fns/locale/en-AU'
 import { cloneDeep, range, set } from 'lodash'
-import { Checkbox, FormControlLabel, Grid } from '@material-ui/core'
+import {
+  Box,
+  Card,
+  CardContent,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+} from '@material-ui/core'
 import { home_store } from './home_store'
 import { useEffect } from 'react'
 import { action } from 'mobx'
 import { VegaLite } from 'react-vega'
 import { get_motivator_color } from '../graph/graph_page'
+import { differenceInCalendarDays } from 'date-fns/esm'
 
 export const HomePage = observer(() => {
   useEffect(() => {
@@ -16,11 +24,37 @@ export const HomePage = observer(() => {
   }, [])
 
   return (
-    <>
-      <Greeting />
-      <BehaviourLog />
-      <SpineChart />
-    </>
+    <div style={{ padding: '20px' }}>
+      <Grid container spacing={2} justifyContent="center">
+        <Grid item xs={12}>
+          <center>
+            <Card style={{ maxWidth: '500px' }}>
+              <Box padding={0}>
+                <Greeting />
+              </Box>
+            </Card>
+          </center>
+        </Grid>
+        <Grid item xs={12}>
+          <center>
+            <Card style={{ maxWidth: '500px' }}>
+              <CardContent>
+                <BehaviourLog />
+              </CardContent>
+            </Card>
+          </center>
+        </Grid>
+        <Grid item xs={12}>
+          <center>
+            <Card style={{ maxWidth: '500px' }}>
+              <CardContent>
+                <SpineChart />
+              </CardContent>
+            </Card>
+          </center>
+        </Grid>
+      </Grid>
+    </div>
   )
 })
 
@@ -32,7 +66,7 @@ const Greeting = observer(() => {
   // should be a string like 'morning' or 'evening'
   const time_message = format(date, 'BBBB', { locale })
 
-  return <h1>Good {time_message}</h1>
+  return <h1 style={{ color: 'darkgrey' }}>Good {time_message}</h1>
 })
 
 const BehaviourLog = observer(() => {
@@ -71,58 +105,94 @@ const BehaviourItem = observer(({ behaviour_index }: Props) => {
 })
 
 const SpineChart = observer(() => {
-  const values = home_store.behaviour_events.map((el) => ({
-    positivity: el.positivity,
-  }))
-  console.log(values)
+  const values = home_store.behaviour_events
+    .map((el) => ({
+      positivity: el.positivity,
+      days_passed: differenceInCalendarDays(
+        new Date(),
+        new Date(el.time_stamp)
+      ),
+    }))
+    .filter((el) => el.days_passed <= 30)
+    .concat(
+      new Array(30).fill(0).map((_, i) => ({ positivity: 0, days_passed: i }))
+    )
 
   return (
     <>
       <VegaLite
         spec={{
-          width: 400,
-          height: 200,
+          // width: '100%',
+          height: 400,
           mark: {
             type: 'bar',
           },
-          transform: [{
-            calculate: 'datum.positivity + 5', as: 'order'
-          }],
+          transform: [
+            {
+              calculate: 'datum.positivity + 5',
+              as: 'order',
+            },
+          ],
           encoding: {
-            y: { field: 'time_stamp', timeUnit: 'date' },
-            x: { 
-              field: 'positivity', 
+            y: {
+              field: 'days_passed',
+              type: 'ordinal',
+              // aggregate: 'average',
+              axis: {
+                gridColor: 'dimgrey',
+                title: 'Days ago',
+                titleColor: 'grey',
+                labelColor: 'lightgrey',
+              },
+            },
+            x: {
+              field: 'positivity',
               type: 'quantitative',
               sort: {
                 field: 'order',
-              }
+              },
+              axis: {
+                grid: false,
+                title: 'Away / Towards (Total)',
+                titleColor: 'grey',
+                labelColor: 'lightgrey',
+              },
             },
-            color: { 
-              field: 'positivity', 
-              scale: { 
+            color: {
+              field: 'positivity',
+              scale: {
                 domain: range(-5, 6),
-                range: range(-5, 6).map(positivity => 
+                range: range(-5, 6).map((positivity) =>
                   get_motivator_color(positivity, -5, 5)
                 ),
               },
+              legend: {
+                labelColor: 'lightgrey',
+                title: 'Away / Towards',
+                titleColor: 'grey'
+              }
             },
             order: {
               field: 'positivity',
-              aggregate: 'count'
+              aggregate: 'count',
             },
-            tooltip: [{
-              field: 'positivity'
-            }, {
-              field: 'order'
-            }]
+            tooltip: [
+              {
+                field: 'positivity',
+              },
+              {
+                field: 'order',
+              },
+            ],
           },
           data: { name: 'table' },
+          background: '#424242',
         }}
         // data={{
         //   values,
         // }}
-        data= {{
-          table: home_store.behaviour_events,
+        data={{
+          table: values,
         }}
       />
     </>
