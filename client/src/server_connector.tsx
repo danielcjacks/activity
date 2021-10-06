@@ -1,4 +1,5 @@
 import { shared_store } from './shared_store'
+import config from './config'
 
 /**
  * @param server_route a server route like '/login'
@@ -9,7 +10,7 @@ export const server_post = async (server_route, body?) => {
   const server_link =
     process.env.NODE_ENV === 'development'
       ? 'http://localhost:5000'
-      : 'https://monash-activity.live'
+      : config.SERVER_ADDRESS
 
   try {
     const response = await fetch(`${server_link}${server_route}`, {
