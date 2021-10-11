@@ -51,7 +51,7 @@ class EventStore {
     const event_id = router_store.query.event_id
     if (!event_id) return
 
-    const event = await server_post('/prisma/behaviourEvent/findUnique', {
+    const event = await server_post('/prisma/behaviourEvent/findFirst', {
       where: {
         id: +event_id,
       },

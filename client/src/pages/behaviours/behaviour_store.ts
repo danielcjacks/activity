@@ -78,7 +78,7 @@ class BehaviourStore {
     if (!behaviour_id) return
 
     // Find behaviour
-    const behaviour = await server_post('/prisma/behaviour/findUnique', {
+    const behaviour = await server_post('/prisma/behaviour/findFirst', {
       where: {
         id: +behaviour_id,
       },

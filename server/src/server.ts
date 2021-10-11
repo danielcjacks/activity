@@ -118,16 +118,15 @@ export const start_server = () => {
         throw new Error('Body must be an object')
       }
 
-      // let mapped_query
-      // if (prisma_query_methods.includes(req.params.method)) {
-      //   // @ts-ignore
-      //   mapped_query = get_prisma_query(req.body, req.params.table_name, req.username)
-      // }
+      let mapped_query = req.body
+      if (prisma_query_methods.includes(req.params.method)) {
+        // @ts-ignore
+        mapped_query = get_prisma_query(req.body, req.params.table_name, req.username)
+      }
 
       // @ts-ignore
       const result = await prisma[req.params.table_name][req.params.method](
-        // mapped_query
-        req.body
+        mapped_query
       )
 
       res.status(201).json(result)
