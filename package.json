@@ -30,7 +30,7 @@
         "require": [
             "sucrase/register/ts"
         ],
-        "spec": "server/**/*.test.ts",
+        "spec": ["server/**/*.test.ts", "client/src/**/*.test.ts"],
         "timeout": 0
     },
     "nodemonConfig": {
