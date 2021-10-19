@@ -96,9 +96,12 @@ const generate_insert_statements = (records: Record<string, unknown>[], table_na
   }, new Set() as Set<string>)
 
   const values = records.map(record => {
+    // @ts-ignore
     const record_values = [...insert_keys].map(key => record[key] ?? null)
     return record_values
   })
+
+  // @ts-ignore
 
   const key_names = [...insert_keys]
   const sql_values = sqlstring.escape(values) // escape function puts () and ,

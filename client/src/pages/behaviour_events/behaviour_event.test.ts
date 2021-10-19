@@ -50,9 +50,6 @@ describe('behaviour_event', () => {
 
         await event_store.on_component_load()
 
-        const val = toJS(event_store)
-        const val2 = toJS(router_store)
-
         // check event loaded
         expect(event_store.comment === null).to.equal(true)
         expect(event_store.behaviour_id === 2).to.equal(true)
