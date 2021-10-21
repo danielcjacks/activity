@@ -30,7 +30,7 @@ class MotivatorStore {
   }
 
   async load_motivator() {
-    const motivator = await server_post('/prisma/motivator/findUnique', {
+    const motivator = await server_post('/prisma/motivator/findFirst', {
       where: { id: +router_store.query.motivator_id },
     })
 

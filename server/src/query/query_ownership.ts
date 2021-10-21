@@ -156,7 +156,7 @@ export type Path = (string | number)[]
  * @param owner_values the owner values we want to restrict results to. For example 'john@gmail.com'
  * @returns A copy of the prisma query with ownership clauses
  */
-export const add_query_ownership_clauses = (root_table: string, ownership_paths: OwnershipPaths, owner_column: string, owner_values: any[], prisma_query: Record<string, unknown>) => {
+export const add_query_ownership_clauses = (root_table: string, ownership_paths: OwnershipPaths, root_ownership_paths: OwnershipPaths, owner_column: string, owner_values: any[], prisma_query: Record<string, unknown>) => {
     const mapped_prisma_query = deep_map(prisma_query, (value, path) => {
         const table_name = last(path)?.toString()
         // deep map will be called on keys that are not tables, for example 'select' or 'where'. For these keys, do nothing
@@ -165,6 +165,13 @@ export const add_query_ownership_clauses = (root_table: string, ownership_paths:
         }
 
         const ownership_path = get_ownership_path(ownership_paths, table_name)
+
+        // This is basically to hack around the fact that prisma syntax doesnt allow 
+        // where clauses on nested parent tables
+        if (ownership_path === null) {
+            return value
+        }
+
         const parent_table = first(ownership_path)
         const higher_table = findLast(
             dropRight(path, 1), // exclude current table, otherwise higher_table will always equal the current table
@@ -191,7 +198,7 @@ export const add_query_ownership_clauses = (root_table: string, ownership_paths:
 
     // prisma syntax treats the root table differently than all other tables (as in it is a method name, and not a property of
     // 'select' or 'includes' like other nested tables), so we need to handle it separetely. But the logic is exactly the same.
-    const root_ownership_path = get_ownership_path(ownership_paths, root_table)
+    const root_ownership_path = get_ownership_path(root_ownership_paths, root_table)
     const root_where = generate_ownership_where(root_ownership_path, owner_column, owner_values)
     const combined_root_where = combine_wheres([root_where, prisma_query.where], 'AND')
 
@@ -206,7 +213,7 @@ export const add_query_ownership_clauses = (root_table: string, ownership_paths:
  * no one forgot to make an ownership route)
  */
 export const get_ownership_path = (ownership_paths: OwnershipPaths, table_name: string) => {
-    if (ownership_paths[table_name]) {
+    if (ownership_paths[table_name] !== undefined) {
         return ownership_paths[table_name]
     }
 

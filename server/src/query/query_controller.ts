@@ -5,20 +5,34 @@ const ownership_paths: OwnershipPaths = {
     User: [],
     users: [],
     user: [],
-    Value: ['User'],
-    values: ['User'],
-    value: ['User'],
-    Goal: ['User'],
-    goals: ['User'],
-    goal: ['User'],
-    Behaviour: ['Goal', 'User'],
-    behaviours: ['Goal', 'User'],
-    behaviour: ['Goal', 'User'],
-    BehaviourEvent: ['Behaviour', 'Goal', 'User'],
-    behaviourEvents: ['Behaviour', 'Goal', 'User'],
-    behaviourEvent: ['Behaviour', 'Goal', 'User'],
+    Motivator: ['user'],
+    motivators: ['user'],
+    motivator: null,
+    Behaviour: ['user'],
+    behaviours: ['user'],
+    behaviour: null,
+    BehaviourEvent: ['behaviour', 'user'],
+    behaviourEvents: ['behaviour', 'user'],
+    behaviourEvent: null,
+    Subscription: ['user'],
+    subscriptions: ['user'],
+    subscription: null,
+    BehaviourMotivator: ['behaviour', 'user'],
+    behaviourMotivator: null,
+    behaviour_motivator: ['behaviour', 'user'],
+    behaviour_motivators: ['behaviour', 'user']
+}
+
+// theres a separate lookup for root tables to try to hack aroung prisma's inconsistent syntax
+const root_ownership_paths: OwnershipPaths = {
+    user: [],
+    motivator: ['user'],
+    behaviour: ['user'],
+    behaviourEvent: ['behaviour', 'user'],
+    subscription: ['user'],
+    behaviourMotivator: ['behaviour', 'user'],
 }
 
 export const get_prisma_query = (prisma_query: any, root_table: string, username: string) => {
-    return add_query_ownership_clauses(root_table, ownership_paths, 'username', [username], prisma_query)
+    return add_query_ownership_clauses(root_table, ownership_paths, root_ownership_paths, 'username', [username], prisma_query)
 }
