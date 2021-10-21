@@ -52,7 +52,9 @@ class BehaviourStore {
   }
 
   is_update = () => {
+    // Get the current url
     const path = router_store.hash.split('/')
+    // Extract the last element of the path, and if it is "update", then return true
     return path[path.length - 1].split('?')[0] === 'update'
   }
 
@@ -101,17 +103,17 @@ class BehaviourStore {
     )
 
     runInAction(() => {
-        if (behaviour) {
-            this.including_reminder = behaviour.send_reminders
-            this.reminder_days = this.dotw.map((d) => {
-                return behaviour[d]
-            })
-            this.reminder_time = real_time
-            this.name = behaviour.name
-            this.description = behaviour.description
-            this.motivator_ids_added = motivator_ids
-            this.previous_motivator_ids = [...this.motivator_ids_added]   
-        }
+      if (behaviour) {
+        this.including_reminder = behaviour.send_reminders
+        this.reminder_days = this.dotw.map((d) => {
+          return behaviour[d]
+        })
+        this.reminder_time = real_time
+        this.name = behaviour.name
+        this.description = behaviour.description
+        this.motivator_ids_added = motivator_ids
+        this.previous_motivator_ids = [...this.motivator_ids_added]
+      }
     })
   }
 
@@ -217,7 +219,6 @@ class BehaviourStore {
 
   get_update_body = () => {
     // This function creates the prisma body for updating the behaviour object
-    // Does not delete tombstoned motivators, but does add new motivators
     const behaviour_id = router_store.query.behaviour_id
 
     const body = {
@@ -305,29 +306,39 @@ class BehaviourStore {
   }
 
   save_changes = () => {
-    // This is called when the save button is pressed
-    const behaviour_id = router_store.query.behaviour_id
-    const is_update = !!behaviour_id
+    // This is called when the save button is pressed on the behaviour creation / update page
+
+    // Set `prisma_method` depending on update state
     const prisma_method = this.is_update() ? 'update' : 'create'
 
-    const prisma_body = is_update
+    // Get the object that defines how to either create or update the behaviour,
+    // based on the current state of the store
+    const prisma_body = this.is_update()
       ? this.get_update_body()
       : this.get_create_body()
 
+    // Send the request to the server, with the path including the `primsa_method`,
+    // and the body including the object defining how to update / delete
     return server_post(`/prisma/behaviour/${prisma_method}`, prisma_body)
       .then((response) => {
+        // Once a response has been received, check for an error
         if (response.error) {
+          // If there is an error, show an error message and stop execution
           shared_store.show_toast('error', response.error.message)
           return
         }
+        // If no error, reset the state so next time there is no left over information
         this.reset_state()
+        // Redirect user to the home screen
         window.location.hash = '#/home'
+        // Show a success message
         shared_store.show_toast(
           'success',
-          `Behaviour ${is_update ? 'updated' : 'saved'}`
+          `Behaviour ${this.is_update() ? 'updated' : 'saved'}`
         )
       })
       .catch((e) => {
+        // If the entire request failed, show an error message
         shared_store.show_toast('error', 'Something went wrong')
       })
   }

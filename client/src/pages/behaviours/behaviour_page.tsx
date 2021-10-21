@@ -116,22 +116,21 @@ const BehaviourMotivatorsAdder = observer(() => {
   )
 })
 
+// The types of what the component receives as an argument
 interface MotivatorSelectPropTypes {
   motivator_index: number
 }
 
 const MotivatorSelect: React.FC<MotivatorSelectPropTypes> = observer(
   ({ motivator_index }) => {
+    // Get the id of the motivator the dropdown represents
     const motivator_id = behaviour_store.motivator_ids_added[motivator_index]
-    const selected_motivator = behaviour_store.available_motivators.find(
-      (m) => {
-        return m.id === motivator_id
-      }
-    )
 
     return (
       <FormControl style={{ width: '100%' }} variant="filled">
         <InputLabel>Motivator {motivator_index + 1}</InputLabel>
+        {/* The actual dropdown component */}
+        {/* When the user changes something, update the id with what was selected */}
         <Select
           style={{ width: '100%', height: '100%' }}
           value={motivator_id}
@@ -139,6 +138,7 @@ const MotivatorSelect: React.FC<MotivatorSelectPropTypes> = observer(
             behaviour_store.select_motivator(motivator_index, e.target.value)
           )}
         >
+          {/* Map over the available motivators to chose from, and put them into the dropdown */}
           {behaviour_store.available_motivators.map((motivator) => {
             return (
               <MenuItem key={motivator.id} value={motivator.id}>
