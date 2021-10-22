@@ -1,3 +1,5 @@
+// @ts-nocheck
+ 
 /**
  * Query ownership uses a simple parent/child ownerhship model.
  * 
@@ -130,7 +132,7 @@ last item being 'User' (unless its the Users table as a key, then the path is em
 
 */
 export type OwnershipPaths = {
-    [table_name: string]: string[]
+    [table_name: string]: string[] | null
 }
 
 /*
@@ -160,7 +162,7 @@ export const add_query_ownership_clauses = (root_table: string, ownership_paths:
     const mapped_prisma_query = deep_map(prisma_query, (value, path) => {
         const table_name = last(path)?.toString()
         // deep map will be called on keys that are not tables, for example 'select' or 'where'. For these keys, do nothing
-        if (!is_table_name(table_name, ownership_paths)) {
+        if (!table_name || !is_table_name(table_name, ownership_paths)) {
             return value
         }
 

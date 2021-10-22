@@ -29,9 +29,6 @@ import { event_store } from '../behaviour_events/behaviour_event_store'
 import { router_store } from '../../router_store'
 import { server_post } from '../../server_connector';
 import { hydrate } from '../../../../server/scripts/hydration'
-import util from 'util'
-import { exec } from 'child_process'
-const ascyn_exec = util.promisify(exec)
 
 
 describe('behaviour_event', () => {

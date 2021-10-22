@@ -5,6 +5,7 @@ import { server_post } from '../../server_connector'
 import { setup_async_loaders } from '../../utils/async_loaders'
 import { cartesian } from '../../utils/math_utils'
 
+
 class GraphStore {
   data = {
     motivators: [] as Record<string, any>[],
@@ -43,7 +44,7 @@ class GraphStore {
     runInAction(() => {
       if (motivators) {
         motivators.sort((a, b) => (b.positivity || 0) - (a.positivity || 0))
-  
+
         this.data.motivators = motivators
       }
 
@@ -51,9 +52,9 @@ class GraphStore {
         this.data.behaviours = behaviours
       }
 
-      if (behaviour_motivators) { 
+      if (behaviour_motivators) {
         this.data.behaviour_motivators = behaviour_motivators
-      }      
+      }
     })
   }
 
@@ -81,8 +82,8 @@ class GraphStore {
       }))
 
     const axis_edge_positions = [
-      {source: 'mid', target: 'bot'}, 
-      {source: 'mid', target: 'top'}
+      { source: 'mid', target: 'bot' },
+      { source: 'mid', target: 'top' }
     ]
 
     const edge_labels = {
@@ -93,7 +94,7 @@ class GraphStore {
     }
 
     const axis_edges = cartesian(axis_edge_positions, axes)
-      .map(([{source, target}, axis]) => ({
+      .map(([{ source, target }, axis]) => ({
         data: {
           source: `_${axis}_axis_${source}`,
           target: `_${axis}_axis_${target}`,

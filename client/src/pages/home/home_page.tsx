@@ -14,7 +14,7 @@ import { home_store } from './home_store'
 import { useEffect } from 'react'
 import { action } from 'mobx'
 import { VegaLite } from 'react-vega'
-import { get_motivator_color } from '../graph/graph_page'
+import { get_motivator_color } from '../graph/graph_functions'
 import { differenceInCalendarDays } from 'date-fns/esm'
 
 export const HomePage = observer(() => {
