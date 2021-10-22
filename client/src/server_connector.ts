@@ -1,5 +1,6 @@
 import { shared_store } from './shared_store'
 import config from './config'
+import React from 'react'
 
 /**
  * @param server_route a server route like '/login'
@@ -36,7 +37,9 @@ export const server_post = async (server_route, body?) => {
     if (json_response.error) {
       shared_store.show_toast(
         'error',
-        <pre>Error: {json_response.error.message}</pre>
+        React.createElement('pre', { 
+          children: `Error: ${json_response.error.message}` 
+        })
       )
     }
     return json_response

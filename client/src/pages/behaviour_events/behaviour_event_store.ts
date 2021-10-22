@@ -30,7 +30,8 @@ class EventStore {
 
   get_date_time = () => {
     const year = this.timestamp.getFullYear()
-    const month = String(this.timestamp.getMonth()).padStart(2, '0')
+    // add one since javascript getMonth() is 0-indexed, but months are actually 1-indexed
+    const month = String(this.timestamp.getMonth() + 1).padStart(2, '0')
     const date = String(this.timestamp.getDate()).padStart(2, '0')
     const hours = String(this.timestamp.getHours()).padStart(2, '0')
     const minutes = String(this.timestamp.getMinutes()).padStart(2, '0')
@@ -65,29 +66,34 @@ class EventStore {
   }
 
   // Runs every time the component is loaded, even re-loads
-  on_component_load = () => {
+  on_component_load = async () => {
     this.reset_state()
     if (this.is_update()) {
       // If in update mode, but no event_id, redirect home
       if (!router_store.query.event_id) {
         window.location.hash = '#/home'
+        return
       }
-      this.load_event()
+      await this.load_event()
     }
 
     // If query param set, auto load the behaviour
     const behaviour_id = router_store.query.behaviour_id
     if (behaviour_id || !isNaN(+behaviour_id)) {
-      this.behaviour_id = +behaviour_id
+      runInAction(() => {
+        this.behaviour_id = +behaviour_id
+      })
     }
 
-    server_post('/prisma/behaviour/findMany', {
+    await server_post('/prisma/behaviour/findMany', {
       where: { user_id: shared_store.state.userId },
     })
       .then((response) => {
-        this.behaviours = response
-        this.behaviours.forEach((behaviour) => {
-          behaviour.id = +behaviour.id
+        runInAction(() => {
+          this.behaviours = response
+          this.behaviours.forEach((behaviour) => {
+            behaviour.id = +behaviour.id
+          })
         })
       })
       .catch((error) => {

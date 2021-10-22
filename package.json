@@ -5,7 +5,8 @@
         "start-server": "cd ./server && npm run start",
         "start-client": "cd ./client && npm run start",
         "test": "mocha --package package.json",
-        "nt": "nodemon --exec nyc --reporter html npm run test",
+        "nt": "nodemon --signal SIGKILL --exec nyc --all --reporter=lcov mocha --package package.json --exit",
+        "coverage": "nyc --reporter=text mocha --package package.json --exit",
         "coverage-watch": "live-server coverage",
         "q": "taskkill /f /im node.exe",
         "hy": "cd ./server && npm run hy",
@@ -30,7 +31,7 @@
         "require": [
             "sucrase/register/ts"
         ],
-        "spec": "server/**/*.test.ts",
+        "spec": ["server/**/*.test.ts", "client/src/**/*.test.ts"],
         "timeout": 0
     },
     "nodemonConfig": {
